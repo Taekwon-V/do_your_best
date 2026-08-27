@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-cream: #fef6e4;
+  --color-navy: #001858;
+  --color-navy-muted: #172c66;
+  --color-coral: #f582ae;
+  --color-sky: #8bd3dd;
+  --color-peach: #f3d2c1;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 커스텀 스크롤바 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fef6e4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f3d2c1;
+  border-radius: 4px;
+  border: 1px solid #001858;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f582ae;
+}
