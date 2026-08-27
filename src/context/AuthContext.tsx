@@ -16,7 +16,6 @@ interface AuthContextType {
   allowedEmails: string[];
   isLoading: boolean;
   loginWithGoogle: () => Promise<void>;
-  loginWithDemoAccount: (email: string, name: string) => void;
   logout: () => Promise<void>;
   addAllowedEmail: (email: string) => void;
   removeAllowedEmail: (email: string) => void;
@@ -43,12 +42,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // 2. Firebase Auth 인증 상태 실시간 리스너
+  // 2. Firebase Auth 인증 상태 실시간 리스너 (철저한 화이트리스트 대조)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser && firebaseUser.email) {
         const userEmail = firebaseUser.email.trim().toLowerCase();
-        // 저장된 목록 또는 기본 목록 대조
+        
         const currentAllowed = (() => {
           try {
             const saved = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
@@ -58,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         })();
 
+        // 엄격한 화이트리스트 검사
         const isAllowed = currentAllowed.some(
           (email: string) => email.trim().toLowerCase() === userEmail
         );
@@ -70,17 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isAllowedFamily: isAllowed,
         });
       } else {
-        // Firebase에 세션이 없으면 로컬 데모 세션 확인
-        const demoSession = localStorage.getItem('admission_app_demo_user');
-        if (demoSession) {
-          try {
-            setUser(JSON.parse(demoSession));
-          } catch {
-            setUser(null);
-          }
-        } else {
-          setUser(null);
-        }
+        setUser(null);
       }
       setIsLoading(false);
     });
@@ -94,26 +84,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const result = await signInWithPopup(auth, googleProvider);
       const email = result.user.email?.trim().toLowerCase() || '';
-      const isAllowed = allowedEmails.some(
-        (e) => e.trim().toLowerCase() === email
-      );
+      
+      const currentAllowed = (() => {
+        try {
+          const saved = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
+          return saved ? JSON.parse(saved) : allowedEmails;
+        } catch {
+          return allowedEmails;
+        }
+      })();
 
-      // 만약 첫 로그인 사용자인 경우 자동으로 가족 화이트리스트에 첫 계정으로 등록 허용 지원
-      let currentAllowed = [...allowedEmails];
-      if (currentAllowed.length <= 5 && !currentAllowed.includes(email) && email) {
-        currentAllowed.push(email);
-        setAllowedEmails(currentAllowed);
-        localStorage.setItem(ALLOWED_EMAILS_STORAGE_KEY, JSON.stringify(currentAllowed));
-      }
+      // 철저한 화이트리스트 검증 (자가 등록 불가)
+      const isAllowed = currentAllowed.some(
+        (e: string) => e.trim().toLowerCase() === email
+      );
 
       setUser({
         id: result.user.uid,
         name: result.user.displayName || '가족 구성원',
         email: email,
         avatarUrl: result.user.photoURL || undefined,
-        isAllowedFamily: isAllowed || currentAllowed.includes(email),
+        isAllowedFamily: isAllowed,
       });
-      localStorage.removeItem('admission_app_demo_user');
     } catch (error: any) {
       console.error('Google Sign-in Error:', error);
       if (error.code === 'auth/popup-blocked') {
@@ -126,22 +118,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // 데모/테스트 계정 로그인
-  const loginWithDemoAccount = (email: string, name: string) => {
-    const isAllowed = allowedEmails.some(
-      (e) => e.trim().toLowerCase() === email.trim().toLowerCase()
-    );
-    const demoUser: AuthUser = {
-      id: `demo-${Date.now()}`,
-      name,
-      email: email.trim().toLowerCase(),
-      isAllowedFamily: isAllowed,
-      avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${email}`,
-    };
-    setUser(demoUser);
-    localStorage.setItem('admission_app_demo_user', JSON.stringify(demoUser));
-  };
-
   // 로그아웃
   const logout = async () => {
     try {
@@ -150,10 +126,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Sign out error', e);
     }
     setUser(null);
-    localStorage.removeItem('admission_app_demo_user');
   };
 
-  // 허용 이메일 추가
+  // 허용 이메일 추가 (관리자 기능)
   const addAllowedEmail = (email: string) => {
     const cleaned = email.trim().toLowerCase();
     if (cleaned && !allowedEmails.includes(cleaned)) {
@@ -177,7 +152,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         allowedEmails,
         isLoading,
         loginWithGoogle,
-        loginWithDemoAccount,
         logout,
         addAllowedEmail,
         removeAllowedEmail,

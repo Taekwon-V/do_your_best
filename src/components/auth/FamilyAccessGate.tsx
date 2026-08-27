@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { ShieldCheck, ShieldAlert, Lock } from 'lucide-react';
+import { ShieldAlert, Lock, ShieldCheck } from 'lucide-react';
 
 export default function FamilyAccessGate({ children }: { children: React.ReactNode }) {
-  const { user, isLoading, loginWithGoogle, logout, addAllowedEmail } = useAuth();
+  const { user, isLoading, loginWithGoogle, logout } = useAuth();
 
   if (isLoading) {
     return (
@@ -18,7 +18,7 @@ export default function FamilyAccessGate({ children }: { children: React.ReactNo
     );
   }
 
-  // 1. 비로그인 상태: 오직 실제 구글 로그인만 제공 (테스트 우회 버튼 완전 제거)
+  // 1. 비로그인 상태: 오직 실제 Google 계정 로그인만 허용
   if (!user) {
     return (
       <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-4">
@@ -31,13 +31,13 @@ export default function FamilyAccessGate({ children }: { children: React.ReactNo
             <h1 className="text-2xl font-black text-navy tracking-tight">
               2028 대입 전략 매니저
             </h1>
-            <p className="text-xs sm:text-sm text-navy-muted">
+            <p className="text-xs sm:text-sm text-navy-muted leading-relaxed">
               자녀의 대입 성적 및 목표 전략 보호를 위해<br />
-              <strong className="text-navy font-bold">지정된 가족의 Google 계정</strong>으로만 로그인할 수 있습니다.
+              <strong className="text-navy font-bold">지정된 가족의 Google 계정</strong>으로만 접근할 수 있습니다.
             </p>
           </div>
 
-          {/* 실제 구글 팝업 로그인 버튼 */}
+          {/* 구글 팝업 로그인 버튼 */}
           <div className="space-y-3 pt-2">
             <button
               onClick={loginWithGoogle}
@@ -65,12 +65,11 @@ export default function FamilyAccessGate({ children }: { children: React.ReactNo
             </button>
           </div>
 
-          {/* 보안 안내 배지 */}
           <div className="p-3.5 bg-peach/30 rounded-2xl border border-navy/20 flex items-start gap-2.5 text-left">
             <ShieldCheck className="w-5 h-5 text-navy shrink-0 mt-0.5" />
             <div className="text-[11px] text-navy-muted leading-relaxed">
               <span className="font-bold text-navy">가족 화이트리스트 보안 시스템</span><br />
-              등록된 가족의 구글 이메일만 대시보드에 접근할 수 있으며, 그 외 계정은 엄격히 차단됩니다.
+              등록되지 않은 제3자 계정은 시스템에서 엄격히 차단됩니다.
             </div>
           </div>
         </div>
@@ -78,7 +77,7 @@ export default function FamilyAccessGate({ children }: { children: React.ReactNo
     );
   }
 
-  // 2. 비인가 계정 접근 시: 차단 화면
+  // 2. 비인가 계정 접근 시: 철저한 차단 화면 (자가 승인 불가 ⛔)
   if (!user.isAllowedFamily) {
     return (
       <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-4">
@@ -89,23 +88,23 @@ export default function FamilyAccessGate({ children }: { children: React.ReactNo
 
           <div className="space-y-2">
             <h2 className="text-2xl font-black text-red-600 tracking-tight">
-              접근이 제한되었습니다
+              접근이 차단되었습니다
             </h2>
             <p className="text-xs sm:text-sm text-navy-muted leading-relaxed">
               로그인하신 계정(<span className="font-bold text-navy">{user.email}</span>)은<br />
-              등록된 가족 구성원 명단에 존재하지 않습니다.
+              <strong className="text-red-600">사전 등록된 가족 구성원 명단에 없습니다.</strong>
             </p>
           </div>
 
           <div className="p-3.5 bg-red-50 rounded-2xl border border-red-200 text-xs text-red-700 text-left leading-relaxed">
-            본 서비스는 수험생 자녀의 개인정보 및 성적 보호를 위해 가족 전용으로 운영됩니다. 가족 계정으로 다시 로그인해 주세요.
+            본 서비스는 수험생 자녀의 개인정보 및 성적 보호를 위해 가족 전용 화이트리스트로만 운영됩니다. 외부인은 열람할 수 없습니다.
           </div>
 
           <button
             onClick={logout}
-            className="w-full py-3 px-4 bg-navy hover:bg-navy-dark text-cream font-bold rounded-2xl border-2 border-navy shadow-retro text-sm"
+            className="w-full py-3.5 px-4 bg-navy hover:bg-navy-dark text-cream font-bold rounded-2xl border-2 border-navy shadow-retro text-sm transition-all"
           >
-            로그아웃 후 가족 계정으로 로그인
+            로그아웃 후 등록된 가족 계정으로 로그인
           </button>
         </div>
       </div>
