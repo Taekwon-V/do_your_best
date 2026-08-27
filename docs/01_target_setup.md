@@ -37,8 +37,12 @@
 
 ## 3. 대학별 공식 모집요강 데이터베이스 (`docs/universities/`)
 
-각 대학별 상세 모집요강 분석 문서를 분리하여 관리합니다:
+각 대학별 상세 모집요강 분석 문서를 분리하여 체계적으로 관리합니다:
 
 * 🏫 **[인하대학교 (INHA)](file:///c:/work/do_your_best/docs/universities/inha/README.md)**:
   * **[2027 수시모집요강 분석서 (susi_2027.md)](file:///c:/work/do_your_best/docs/universities/inha/susi_2027.md)**: 학생부교과(지역균형 438명), 학생부종합(인하미래인재 면접 939명/서류 261명), 논술(457명), 수능최저
   * **[2026 정시모집요강 분석서 (jeongsi_2026.md)](file:///c:/work/do_your_best/docs/universities/inha/jeongsi_2026.md)**: 가/나/다군 분할 선발(1,197명), 자연(수35%+탐30%+미적/과탐 3% 가산), 인문(국35%+탐25%), 융합학부 유리한 점수 산출
+
+* 🏫 **[국립인천대학교 (INU)](file:///c:/work/do_your_best/docs/universities/incheon/README.md)**:
+  * **[2027 수시모집요강 분석서 (susi_2027.md)](file:///c:/work/do_your_best/docs/universities/incheon/susi_2027.md)**: 학생부교과(교과성적우수자 456명/수능최저 2개 합 7), 학생부교과(지역균형 293명/수능최저 없음), 학생부종합(자기추천 694명), 이수단위 가산점 공식
+  * **[2027 정시모집요강 분석서 (jeongsi_2027.md)](file:///c:/work/do_your_best/docs/universities/incheon/jeongsi_2027.md)**: 가/나/다군 분할 선발(774명), 자연(수35%+탐30%+국25%+영10%/과탐 지정 폐지), 인문(국35%+수30%+탐25%+영10%)
