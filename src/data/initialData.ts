@@ -3,7 +3,7 @@ import { ChildProfile, FamilyAppData } from '@/types/admissions';
 export const INITIAL_CHILDREN: ChildProfile[] = [
   {
     id: 'child-1-go2',
-    name: '고2 첫째',
+    name: '고2 아들',
     currentGrade: 2,
     targetAdmissionYear: 2028,
     targetMajorField: '컴퓨터공학 / AI 융합',
@@ -63,9 +63,9 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
         susiRequirements: {
           subjectWeight: { 전교과: 1.0 },
           gradeWeight: { 1: 1.0, 2: 1.0, 3: 1.0 },
-          expectedCutoffGrade: 1.08,
+          expectedCutoffGrade: 1.10,
           minimumCsatRequirement: {
-            description: '국수영탐 중 3개 영역 합 7 이내',
+            description: '국수영탐 3개 영역 등급 합 7 이내',
             requiredSubjectsCount: 3,
             sumGradeLimit: 7,
           },
@@ -81,11 +81,11 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
         susiRequirements: {
           subjectWeight: { 국어: 1.0, 수학: 1.0, 영어: 1.0, 과학: 1.0 },
           gradeWeight: { 1: 1.0, 2: 1.0, 3: 1.0 },
-          expectedCutoffGrade: 1.18,
+          expectedCutoffGrade: 1.25,
           minimumCsatRequirement: {
-            description: '국수 중 1개 포함 2개 합 5 이내, 영 3, 한 4',
+            description: '국수 중 1개 포함 2개 1등급, 영 3 이내',
             requiredSubjectsCount: 2,
-            sumGradeLimit: 5,
+            sumGradeLimit: 4,
           },
         },
       },
@@ -99,9 +99,9 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
         susiRequirements: {
           subjectWeight: { 국어: 1.0, 수학: 1.0, 영어: 1.0, 과학: 1.0 },
           gradeWeight: { 1: 1.0, 2: 1.0, 3: 1.0 },
-          expectedCutoffGrade: 1.32,
+          expectedCutoffGrade: 1.40,
           minimumCsatRequirement: {
-            description: '국수영탐 3개 영역 합 7 이내',
+            description: '3개 합 7 및 한국사 4등급 이내',
             requiredSubjectsCount: 3,
             sumGradeLimit: 7,
           },
@@ -111,10 +111,10 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
   },
   {
     id: 'child-2-go1',
-    name: '고1 둘째',
+    name: '고1 딸',
     currentGrade: 1,
     targetAdmissionYear: 2029,
-    targetMajorField: '경영학 / 빅데이터 금융',
+    targetMajorField: '경영학 / 데이터 비즈니스',
     completedSemesters: ['1-1'],
     dDayMilestones: [
       { title: '2학기 중간고사', targetDate: '2026-10-05', tag: '내신', isImportant: true },
@@ -192,11 +192,12 @@ export const INITIAL_FAMILY_DATA: FamilyAppData = {
   familyId: 'our-happy-family',
   activeChildId: 'child-1-go2',
   allowedEmails: [
+    'inchul17kim@gmail.com',
+    'mybest1725@gmail.com',
+    'dreamingjacob4628@gmail.com',
+    'dreamingjacob4628@gmal.com',
+    'happydana4628@gmail.com',
     'family.manager@gmail.com',
-    'father@gmail.com',
-    'mother@gmail.com',
-    'child1@gmail.com',
-    'child2@gmail.com',
   ],
   children: INITIAL_CHILDREN,
 };
