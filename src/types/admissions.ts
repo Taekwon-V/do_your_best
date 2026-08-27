@@ -9,8 +9,12 @@ export type SubjectCategory =
   | '사회'
   | '과학'
   | '한국사'
-  | '기술가정'
+  | '기술가정/정보'
+  | '제2외국어/한문'
   | '기타';
+
+export type RankGrade5 = 1 | 2 | 3 | 4 | 5;
+export type AchievementLevel = 'A' | 'B' | 'C' | 'D' | 'E';
 
 export interface SemesterCourseGrade {
   id: string;
@@ -20,7 +24,7 @@ export interface SemesterCourseGrade {
   courseName: string;
   unitCount: number; // 단위수 (e.g. 4)
   rankGrade: number; // 석차등급 (1 ~ 5)
-  achievement: 'A' | 'B' | 'C' | 'D' | 'E';
+  achievement: AchievementLevel;
   rawScore?: number;
   classAverage?: number;
 }
@@ -58,50 +62,47 @@ export interface TargetUniversity {
   universityName: string;
   departmentName: string;
   admissionType: '교과' | '종합' | '논술' | '수능위주';
-  
-  // 수시 기준
   susiRequirements?: {
-    subjectWeight: { [category: string]: number };
-    gradeWeight: { [grade: string]: number };
-    expectedCutoffGrade: number; // 5등급제 환산 예상 컷 (예: 1.25)
+    subjectWeight?: Record<string, number>;
+    gradeWeight?: { 1: number; 2: number; 3: number };
+    expectedCutoffGrade?: number;
     minimumCsatRequirement?: {
       description: string;
       requiredSubjectsCount: number;
       sumGradeLimit: number;
     };
   };
-
-  // 정시 기준
   jeongsiRequirements?: {
-    scoreWeights: {
+    convertedStandardScoreCutoff?: number;
+    percentileCutoff?: number;
+    subjectWeights: {
       korean: number;
       math: number;
       english: number;
       inquiry: number;
-      koreanHistory: number;
+      history: number;
     };
-    expectedConvertedCutoff: number;
   };
 }
 
 export interface DDayMilestone {
   title: string;
   targetDate: string;
-  tag: string;
+  tag: '내신' | '모의고사' | '수능' | '수시원서';
   isImportant?: boolean;
 }
 
 export interface ChildProfile {
-  id: string;
-  name: string;
+  id: string; // 'child-1-go2' | 'child-2-go1'
+  name: string; // '고2 아들' | '고1 딸'
   currentGrade: GradeLevel;
   targetAdmissionYear: AdmissionYear;
   targetMajorField: string;
   completedSemesters: SemesterKey[];
+  dDayMilestones: DDayMilestone[];
   courses: SemesterCourseGrade[];
   mockExams: MockExamRecord[];
   targetUniversities: TargetUniversity[];
-  dDayMilestones: DDayMilestone[];
 }
 
 export interface AuthUser {

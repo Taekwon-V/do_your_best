@@ -3,14 +3,20 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ChildProfile, SemesterCourseGrade, FamilyAppData } from '@/types/admissions';
 import { INITIAL_FAMILY_DATA } from '@/data/initialData';
+import { calculateWeightedGPA } from '@/utils/gpaCalculator';
 
 interface AdmissionsContextType {
   childrenList: ChildProfile[];
   activeChildId: string;
   activeChild: ChildProfile;
+  targetGPA: number;
+  setTargetGPA: (gpa: number) => void;
   switchChild: (childId: string) => void;
   updateChildName: (childId: string, name: string) => void;
   updateTargetField: (childId: string, field: string) => void;
+  addCourse: (childId: string, course: SemesterCourseGrade) => void;
+  updateCourse: (childId: string, course: SemesterCourseGrade) => void;
+  deleteCourse: (childId: string, courseId: string) => void;
   calculateCumulativeGPA: (courses: SemesterCourseGrade[]) => number;
   calculateDDay: (targetDateStr: string) => number;
   resetToInitialData: () => void;
@@ -19,16 +25,22 @@ interface AdmissionsContextType {
 const AdmissionsContext = createContext<AdmissionsContextType | undefined>(undefined);
 
 const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data';
+const TARGET_GPA_STORAGE_KEY = 'admission_app_target_gpa';
 
 export function AdmissionsProvider({ children }: { children: React.ReactNode }) {
   const [familyData, setFamilyData] = useState<FamilyAppData>(INITIAL_FAMILY_DATA);
+  const [targetGPA, setTargetGPAState] = useState<number>(1.15);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
-      if (saved) {
-        setFamilyData(JSON.parse(saved));
+      const savedData = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
+      if (savedData) {
+        setFamilyData(JSON.parse(savedData));
+      }
+      const savedTarget = localStorage.getItem(TARGET_GPA_STORAGE_KEY);
+      if (savedTarget) {
+        setTargetGPAState(parseFloat(savedTarget));
       }
     } catch (e) {
       console.error('Failed to load admissions data from storage', e);
@@ -40,6 +52,12 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
   const saveFamilyData = (newData: FamilyAppData) => {
     setFamilyData(newData);
     localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(newData));
+  };
+
+  const setTargetGPA = (gpa: number) => {
+    const rounded = Number(gpa.toFixed(2));
+    setTargetGPAState(rounded);
+    localStorage.setItem(TARGET_GPA_STORAGE_KEY, rounded.toString());
   };
 
   const activeChild = useMemo(() => {
@@ -76,24 +94,53 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     });
   };
 
-  // 2028 5등급제 가중평균 환산 (단위수 × 석차등급 합 / 총 단위수)
-  const calculateCumulativeGPA = (courses: SemesterCourseGrade[]): number => {
-    if (!courses || courses.length === 0) return 0;
-    const completedCourses = courses.filter((c) => !c.isSimulated);
-    if (completedCourses.length === 0) return 0;
-
-    let totalUnits = 0;
-    let weightedSum = 0;
-
-    for (const c of completedCourses) {
-      if (c.rankGrade && c.unitCount) {
-        totalUnits += c.unitCount;
-        weightedSum += c.unitCount * c.rankGrade;
+  // 과목 추가
+  const addCourse = (childId: string, course: SemesterCourseGrade) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        return {
+          ...child,
+          courses: [...child.courses, course],
+        };
       }
-    }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
 
-    if (totalUnits === 0) return 0;
-    return Number((weightedSum / totalUnits).toFixed(2));
+  // 과목 수정
+  const updateCourse = (childId: string, course: SemesterCourseGrade) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const updatedCourses = child.courses.map((c) => (c.id === course.id ? course : c));
+        return {
+          ...child,
+          courses: updatedCourses,
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
+  // 과목 삭제
+  const deleteCourse = (childId: string, courseId: string) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const updatedCourses = child.courses.filter((c) => c.id !== courseId);
+        return {
+          ...child,
+          courses: updatedCourses,
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
+  // 2028 5등급제 가중평균 환산
+  const calculateCumulativeGPA = (courses: SemesterCourseGrade[]): number => {
+    return calculateWeightedGPA(courses);
   };
 
   // D-Day 계산 유틸리티
@@ -104,12 +151,12 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     target.setHours(0, 0, 0, 0);
 
     const diffTime = target.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   const resetToInitialData = () => {
     saveFamilyData(INITIAL_FAMILY_DATA);
+    setTargetGPA(1.15);
   };
 
   return (
@@ -118,9 +165,14 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         childrenList: familyData.children,
         activeChildId: familyData.activeChildId,
         activeChild,
+        targetGPA,
+        setTargetGPA,
         switchChild,
         updateChildName,
         updateTargetField,
+        addCourse,
+        updateCourse,
+        deleteCourse,
         calculateCumulativeGPA,
         calculateDDay,
         resetToInitialData,
