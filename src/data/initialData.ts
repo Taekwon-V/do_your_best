@@ -195,9 +195,8 @@ export const INITIAL_FAMILY_DATA: FamilyAppData = {
     'inchul17kim@gmail.com',
     'mybest1725@gmail.com',
     'dreamingjacob4628@gmail.com',
-    'dreamingjacob4628@gmal.com',
     'happydana4628@gmail.com',
-    'family.manager@gmail.com',
   ],
   children: INITIAL_CHILDREN,
 };
+
