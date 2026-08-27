@@ -13,7 +13,7 @@ export default function Home() {
       <div className="min-h-screen bg-cream flex flex-col justify-between">
         <div>
           <Navbar />
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          <main className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8">
             <HeroBanner />
             <OverviewGrid />
           </main>
