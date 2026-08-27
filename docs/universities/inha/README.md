@@ -10,6 +10,7 @@
 | :--- | :--- | :---: |
 | **[susi_2027.md](file:///c:/work/do_your_best/docs/universities/inha/susi_2027.md)** | 학생부교과(지역균형), 학생부종합(인하미래인재 면접/서류), 논술우수자, 교과 반영방식 및 수능최저 | **2027 수시** |
 | **[jeongsi_2026.md](file:///c:/work/do_your_best/docs/universities/inha/jeongsi_2026.md)** | 가/나/다군 군별 모집, 수능 영역별 반영비율(국/수/영/탐), 가산점(미적/과탐 3%), 영어/한국사 환산표 | **2026 정시** |
+| **[past_results_2026.md](file:///c:/work/do_your_best/docs/universities/inha/past_results_2026.md)** | 2026학년도 수시(지역균형/인하미래인재 면접·서류) & 정시(가나다군) 50%/70% Cut 및 백분위/환산점수 입결 통계 | **2026 입결** |
 
 ---
 

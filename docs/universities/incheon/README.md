@@ -10,6 +10,7 @@
 | :--- | :--- | :---: |
 | **[susi_2027.md](file:///c:/work/do_your_best/docs/universities/incheon/susi_2027.md)** | 학생부교과(교과성적우수자/지역균형), 학생부종합(자기추천), 실기우수자, 교과 반영비율 & 수능최저 | **2027 수시** |
 | **[jeongsi_2027.md](file:///c:/work/do_your_best/docs/universities/incheon/jeongsi_2027.md)** | 가/나/다군 일반학생 전형, 수능 백분위 반영비율(인문 국35%/수30%, 자연 수35%/탐30%), 영어 환산표 | **2027 정시** |
+| **[past_results_2026.md](file:///c:/work/do_your_best/docs/universities/incheon/past_results_2026.md)** | 2026학년도 수시(교과우수/지균/자기추천) & 정시(가나다군) 최종등록자 70% Cut 및 백분위/환산점수 입결 통계 | **2026 입결** |
 
 ---
 
