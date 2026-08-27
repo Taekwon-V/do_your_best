@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdmissionsProvider } from '@/context/AdmissionsContext';
+import InAppBrowserHandler from '@/components/common/InAppBrowserHandler';
 
 export const metadata: Metadata = {
   title: '2028 대입 전략 매니저 - 고2/고1 가족 전용 입시 대시보드',
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-screen bg-cream text-navy selection:bg-coral selection:text-navy">
+        <InAppBrowserHandler />
         <AuthProvider>
           <AdmissionsProvider>{children}</AdmissionsProvider>
         </AuthProvider>
