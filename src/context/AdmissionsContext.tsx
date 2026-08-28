@@ -52,16 +52,47 @@ const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data';
 const TARGET_GPA_STORAGE_KEY = 'admission_app_target_gpa';
 const ACTIVE_TAB_STORAGE_KEY = 'admission_app_active_tab';
 
-// Helper to ensure data contains actual baseline data if empty
+// Helper to ensure data contains actual baseline data if empty or outdated
 function ensureCompleteFamilyData(data: FamilyAppData | null): FamilyAppData {
   if (!data || !data.children || data.children.length === 0) {
     return INITIAL_FAMILY_DATA;
   }
   const child1 = data.children.find((c) => c.id === 'child-1-go2');
-  if (!child1 || (child1.courses.length === 0 && child1.mockExams.length === 0 && child1.targetUniversities.length === 0)) {
-    return INITIAL_FAMILY_DATA;
-  }
-  return data;
+  if (!child1) return INITIAL_FAMILY_DATA;
+
+  const defaultChild1 = INITIAL_FAMILY_DATA.children[0];
+
+  const mergedCourses =
+    child1.courses && child1.courses.length >= defaultChild1.courses.length
+      ? child1.courses
+      : defaultChild1.courses;
+
+  const mergedMockExams =
+    child1.mockExams && child1.mockExams.length >= defaultChild1.mockExams.length
+      ? child1.mockExams
+      : defaultChild1.mockExams;
+
+  const mergedTargetUniversities =
+    child1.targetUniversities && child1.targetUniversities.length >= defaultChild1.targetUniversities.length
+      ? child1.targetUniversities
+      : defaultChild1.targetUniversities;
+
+  const updatedChildren = data.children.map((c) => {
+    if (c.id === 'child-1-go2') {
+      return {
+        ...c,
+        courses: mergedCourses,
+        mockExams: mergedMockExams,
+        targetUniversities: mergedTargetUniversities,
+      };
+    }
+    return c;
+  });
+
+  return {
+    ...data,
+    children: updatedChildren,
+  };
 }
 
 export function AdmissionsProvider({ children }: { children: React.ReactNode }) {

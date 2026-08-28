@@ -38,13 +38,13 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
       { id: 'c_2_1_phy', semester: '2-1', category: '과학', courseName: '물리학', unitCount: 3, rankGrade: 2, achievement: 'A' },
       { id: 'c_2_1_chm', semester: '2-1', category: '과학', courseName: '화학', unitCount: 3, rankGrade: 3, achievement: 'B' },
     ],
-    // 2028 통합수능 모의고사 성적
+    // 2028 통합수능 모의고사 2회 성적 전수 수록
     mockExams: [
       {
-        id: 'mock_2026_09',
+        id: 'mock_2026_06',
         gradeLevel: 2,
-        examMonth: 9,
-        examName: '2026년 고2 9월 학력평가',
+        examMonth: 6,
+        examName: '2026년 고2 6월 모의고사',
         examDate: '2026-06-04',
         scores: {
           korean: { standardScore: 122, percentile: 75.86, grade: 4 },
@@ -53,6 +53,21 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
           koreanHistory: { grade: 2 },
           integratedSocial: { standardScore: 114, percentile: 62.92, grade: 4 },
           integratedScience: { standardScore: 124, percentile: 77.65, grade: 3 },
+        },
+      },
+      {
+        id: 'mock_2026_09',
+        gradeLevel: 2,
+        examMonth: 9,
+        examName: '2026년 고2 9월 학력평가',
+        examDate: '2026-09-09',
+        scores: {
+          korean: { standardScore: 132, percentile: 90.0, grade: 2 },
+          math: { standardScore: 135, percentile: 92.0, grade: 1 },
+          english: { grade: 1 },
+          koreanHistory: { grade: 1 },
+          integratedSocial: { standardScore: 130, percentile: 90.0, grade: 2 },
+          integratedScience: { standardScore: 131, percentile: 90.0, grade: 2 },
         },
       },
     ],

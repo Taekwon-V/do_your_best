@@ -38,17 +38,17 @@ export default function MockExamChart({
   // Chart dimensions
   const width = 640;
   const height = 280;
-  const padding = { top: 35, right: 40, bottom: 50, left: 45 };
+  const padding = { top: 38, right: 35, bottom: 50, left: 45 };
   const graphWidth = width - padding.left - padding.right;
   const graphHeight = height - padding.top - padding.bottom;
 
-  // X coordinate calculation with comfortable breathing room (양끝에 붙지 않도록 적절한 여백 부여)
+  // X coordinate calculation with generous breathing room (중앙에 여유롭게 배치)
   const getX = (index: number) => {
     const count = sortedExams.length;
     if (count <= 1) return padding.left + graphWidth / 2;
 
-    // 양쪽 끝에서 75px씩 안쪽으로 여유를 두어 차트가 중앙에 보기 좋게 배치되도록 함
-    const horizontalMargin = 75;
+    // 양쪽에서 95px씩 안쪽으로 여유를 두어 목표선 텍스트 및 경계와 겹치지 않음
+    const horizontalMargin = 95;
     const availableWidth = graphWidth - horizontalMargin * 2;
     return padding.left + horizontalMargin + (index / (count - 1)) * availableWidth;
   };
@@ -207,14 +207,9 @@ export default function MockExamChart({
           className="w-full h-auto min-w-[520px] select-none"
         >
           <defs>
-            {/* Soft glow for main trend line */}
-            <filter id="lineGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-            {/* Gradient fill under line */}
-            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.18" />
+            {/* Subtle area gradient under line */}
+            <linearGradient id="areaGradientClean" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.10" />
               <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
             </linearGradient>
           </defs>
@@ -254,38 +249,50 @@ export default function MockExamChart({
             x2={width - padding.right}
             y2={targetY}
             stroke="#d97706"
-            strokeWidth="2.5"
-            strokeDasharray="6 4"
+            strokeWidth="1.8"
+            strokeDasharray="5 4"
           />
-          <text
-            x={width - padding.right}
-            y={targetY - 8}
-            textAnchor="end"
-            fontSize="10.5"
-            fontWeight="bold"
-            fill="#b45309"
-          >
-            목표선 {targetPercentile}% ({targetUniversityName})
-          </text>
 
-          {/* Area gradient under main weighted line */}
+          {/* 🌟 Target Line Pill Badge at Top-Left (데이터 포인트와 절대 겹치지 않는 위치) */}
+          <g>
+            <rect
+              x={padding.left + 4}
+              y={targetY - 18}
+              width={210}
+              height={15}
+              rx={7.5}
+              fill="#fffbeb"
+              stroke="#f59e0b"
+              strokeWidth="0.9"
+            />
+            <text
+              x={padding.left + 12}
+              y={targetY - 7}
+              fontSize="9"
+              fontWeight="bold"
+              fill="#b45309"
+            >
+              목표선 {targetPercentile}% ({targetUniversityName})
+            </text>
+          </g>
+
+          {/* Soft area under main weighted line */}
           {activeFilter === 'all' && sortedExams.length >= 2 && (
             <path
               d={`${weightedPath} L ${getX(sortedExams.length - 1)},${height - padding.bottom} L ${getX(0)},${height - padding.bottom} Z`}
-              fill="url(#areaGradient)"
+              fill="url(#areaGradientClean)"
             />
           )}
 
-          {/* 🌟 🎯 MAIN SINGLE TREND LINE (전체 백분위 선만 깔끔하게 표시) */}
+          {/* 🌟 🎯 MAIN SINGLE TREND LINE (깔끔한 2.2px 두께) */}
           {activeFilter === 'all' && (
             <path
               d={weightedPath}
               fill="none"
               stroke="#6366f1"
-              strokeWidth="4"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              filter="url(#lineGlow)"
             />
           )}
 
@@ -295,7 +302,7 @@ export default function MockExamChart({
               d={mathPath}
               fill="none"
               stroke="#f43f5e"
-              strokeWidth="4"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -305,7 +312,7 @@ export default function MockExamChart({
               d={koreanPath}
               fill="none"
               stroke="#172c66"
-              strokeWidth="4"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -315,7 +322,7 @@ export default function MockExamChart({
               d={sciencePath}
               fill="none"
               stroke="#059669"
-              strokeWidth="4"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -325,7 +332,7 @@ export default function MockExamChart({
               d={socialPath}
               fill="none"
               stroke="#d97706"
-              strokeWidth="4"
+              strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -370,50 +377,50 @@ export default function MockExamChart({
                     x2={x}
                     y2={height - padding.bottom}
                     stroke="#cbd5e1"
-                    strokeWidth="1.5"
+                    strokeWidth="1.2"
                     strokeDasharray="3 3"
                   />
                 )}
 
-                {/* 🌟 🎯 Highlighted Main Score Node */}
+                {/* 🌟 🎯 Clean Score Node */}
                 <g>
-                  {/* Outer pulse ring */}
+                  {/* Subtle outer ring on hover */}
                   <circle
                     cx={x}
                     cy={currentY}
-                    r={isHovered ? 12 : 8}
+                    r={isHovered ? 8 : 6}
                     fill={activeFilter === 'math' ? '#f43f5e' : activeFilter === 'korean' ? '#172c66' : activeFilter === 'science' ? '#059669' : activeFilter === 'social' ? '#d97706' : '#6366f1'}
-                    fillOpacity="0.25"
+                    fillOpacity="0.2"
                     className="transition-all"
                   />
                   {/* Inner solid node */}
                   <circle
                     cx={x}
                     cy={currentY}
-                    r={isHovered ? 6.5 : 5}
+                    r={4.5}
                     fill={activeFilter === 'math' ? '#f43f5e' : activeFilter === 'korean' ? '#172c66' : activeFilter === 'science' ? '#059669' : activeFilter === 'social' ? '#d97706' : '#4f46e5'}
                     stroke="#ffffff"
-                    strokeWidth="2.5"
+                    strokeWidth="2"
                     className="transition-all"
                   />
 
                   {/* Floating score badge over node */}
                   <rect
-                    x={x - 24}
-                    y={currentY - 26}
-                    width={48}
-                    height={18}
-                    rx={9}
-                    fill={activeFilter === 'all' ? (isSafe ? '#065f46' : '#312e81') : '#0f172a'}
+                    x={x - 21}
+                    y={currentY - 22}
+                    width={42}
+                    height={16}
+                    rx={8}
+                    fill={activeFilter === 'all' ? (isSafe ? '#065f46' : '#1e1b4b') : '#0f172a'}
                     stroke={activeFilter === 'all' ? (isSafe ? '#34d399' : '#818cf8') : '#94a3b8'}
-                    strokeWidth="1.2"
+                    strokeWidth="1"
                   />
                   <text
                     x={x}
-                    y={currentY - 13.5}
+                    y={currentY - 11}
                     textAnchor="middle"
-                    fontSize="10"
-                    fontWeight="900"
+                    fontSize="9.5"
+                    fontWeight="800"
                     fill="#ffffff"
                   >
                     {currentScore}%
@@ -423,9 +430,9 @@ export default function MockExamChart({
                 {/* X-axis Label (Exam Name / Date) */}
                 <text
                   x={x}
-                  y={height - padding.bottom + 20}
+                  y={height - padding.bottom + 18}
                   textAnchor="middle"
-                  fontSize="11.5"
+                  fontSize="11"
                   fontWeight={isHovered ? '900' : '700'}
                   fill={isHovered ? '#001858' : '#334155'}
                 >
@@ -433,7 +440,7 @@ export default function MockExamChart({
                 </text>
                 <text
                   x={x}
-                  y={height - padding.bottom + 34}
+                  y={height - padding.bottom + 32}
                   textAnchor="middle"
                   fontSize="9.5"
                   fontWeight="600"
