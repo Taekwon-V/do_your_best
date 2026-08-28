@@ -67,10 +67,11 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
   });
 
   const [targetGPA, setTargetGPAState] = useState<number>(1.15);
+  // 모바일/PC 접속 시 항상 종합홈('home')으로 시작
   const [activeTab, setActiveTabState] = useState<MainTabKey>('home');
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // 1. 초기 로컬스토리지 복구 (타겟 GPA 및 액티브 탭)
+  // 1. 초기 로컬스토리지 복구 (타겟 GPA)
   useEffect(() => {
     try {
       const savedData = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
@@ -83,10 +84,6 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
       const savedTarget = localStorage.getItem(TARGET_GPA_STORAGE_KEY);
       if (savedTarget) {
         setTargetGPAState(parseFloat(savedTarget));
-      }
-      const savedTab = localStorage.getItem(ACTIVE_TAB_STORAGE_KEY) as MainTabKey;
-      if (savedTab && ['home', 'susi', 'jeongsi', 'targets', 'reports'].includes(savedTab)) {
-        setActiveTabState(savedTab);
       }
     } catch (e) {
       console.error('Failed to load admissions data from storage', e);
@@ -150,7 +147,6 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
 
   const setActiveTab = (tab: MainTabKey) => {
     setActiveTabState(tab);
-    localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tab);
   };
 
   // 로컬 & 클라우드 동시 영속화 함수 (타임스탬프 부여)
