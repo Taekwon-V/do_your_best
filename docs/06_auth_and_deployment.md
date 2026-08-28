@@ -32,12 +32,15 @@
 
 ### 3.1 인프라 구성
 * **인증 (Auth)**: Firebase Authentication (Google Sign-In)
+* **데이터베이스 (DB)**: Cloud Firestore (`families/our-happy-family` 실시간 리스너 `onSnapshot`)
 * **호스팅 (Hosting)**: Vercel (Next.js 14 App Router 최적화 배포)
 * **저장소 (VCS)**: GitHub [`Taekwon-V/do_your_best`](https://github.com/Taekwon-V/do_your_best) (main 브랜치 자동 배포)
 * **라이브 서비스 주소**: [`https://do-your-best.vercel.app`](https://do-your-best.vercel.app)
 
 ---
 
-## 4. 모바일 & 웹 반응형 디자인 (Happy Hues #17)
+## 4. 모바일 & 웹 반응형 디자인 (Happy Hues #17 & PWA)
 * **테마**: Happy Hues 17번 (웜 크림 `#fef6e4`, 딥 네이비 `#001858`, 코랄 핑크 `#f582ae`, 파스텔 스카이 `#8bd3dd`)
-* **적응형 레이아웃**: 모바일 세로 화면을 위한 상단 2단 헤더 및 3분할 D-Day 그리드 최적화 완료
+* **PWA (Progressive Web App)**: `manifest.json` 지원으로 아이폰 Safari "홈 화면에 추가", 갤럭시 Chrome "앱 설치" 지원 및 스탠드얼론 전체화면 모드 구동.
+* **적응형 레이아웃**: 모바일 세로 화면을 위한 하단 고정 탭바(`BottomNav.tsx`) 및 엄지손가락 원터치 5개 탭 전환 지원.
+

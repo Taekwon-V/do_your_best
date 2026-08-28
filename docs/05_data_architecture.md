@@ -9,104 +9,170 @@
 
 ---
 
-## 2. 데이터 엔티티 스키마 (TypeScript Interfaces)
+## 2. 데이터 엔티티 스키마 (TypeScript Interfaces - `src/types/admissions.ts`)
 
 ```typescript
-// 1. 전체 가족 데이터 컨테이너
-export interface FamilyAppData {
-  familyId: string;
-  activeChildId: string; // 현재 선택된 자녀 ID
-  allowedEmails: string[]; // 부모님 및 자녀 구글 이메일 화이트리스트
-  children: ChildProfile[];
-  updatedAt?: number; // 밀리초 타임스탬프 (클라우드 동기화 충돌 방지)
-}
+export type AdmissionYear = 2028 | 2029;
+export type GradeLevel = 1 | 2;
+export type SemesterKey = '1-1' | '1-2' | '2-1' | '2-2' | '3-1';
+export type MainTabKey = 'home' | 'susi' | 'jeongsi' | 'targets' | 'reports';
 
-// 2. 자녀 프로필 (고2: 2028 대입 / 고1: 2029 대입)
-export interface ChildProfile {
-  id: string; // e.g. "child_1_go2", "child_2_go1"
-  name: string; // 자녀 이름 (예: "첫째", "민우")
-  currentGrade: 1 | 2; // 1: 고1, 2: 고2
-  targetAdmissionYear: 2028 | 2029;
-  targetMajorField: 'engineering' | 'humanities' | 'natural_science' | 'medicine' | 'social_science';
-  
-  // 학기별 완료 상태
-  // 고2: ['1-1', '1-2', '2-1'] 완료 / 고1: ['1-1'] 완료
-  completedSemesters: ('1-1' | '1-2' | '2-1' | '2-2' | '3-1')[];
-  
-  courses: SemesterCourseGrade[];
-  mockExams: MockExamRecord[];
-  targetUniversities: TargetUniversity[];
-  
-  dDayMilestones: {
-    midtermDate?: string;
-    finalsDate?: string;
-    nextMockExamDate?: string;
-  };
-}
+export type SubjectCategory =
+  | '국어'
+  | '수학'
+  | '영어'
+  | '사회'
+  | '과학'
+  | '한국사'
+  | '기술가정/정보'
+  | '제2외국어/한문'
+  | '기타';
 
-// 3. 수시 내신 과목 성적 (2028/2029 공통 5등급제)
+export type RankGrade5 = 1 | 2 | 3 | 4 | 5;
+export type AchievementLevel = 'A' | 'B' | 'C' | 'D' | 'E';
+
+// 1. 수시 내신 과목 성적 (2028/2029 공통 5등급제)
 export interface SemesterCourseGrade {
   id: string;
-  semester: '1-1' | '1-2' | '2-1' | '2-2' | '3-1';
+  semester: SemesterKey;
   isSimulated?: boolean; // 가상 역산 성적인지 여부
-  category: '국어' | '수학' | '영어' | '사회' | '과학' | '한국사' | '기술가정' | '기타';
+  category: SubjectCategory;
   courseName: string;
-  unitCount: number; // 단위수 (예: 4)
+  unitCount: number; // 단위수 (e.g. 4)
   rankGrade: number; // 석차등급 (1 ~ 5)
-  achievement: 'A' | 'B' | 'C' | 'D' | 'E';
+  achievement: AchievementLevel;
   rawScore?: number;
   classAverage?: number;
 }
 
-// 4. 모의고사 성적 (통합형 수능 체계)
+// 2. 모의고사 성적 (2028 통합형 수능 체계)
+export interface MockExamScoreSubject {
+  standardScore?: number;
+  percentile?: number;
+  grade: number;
+}
+
 export interface MockExamRecord {
   id: string;
-  gradeLevel: 1 | 2 | 3; // 응시 당시 학년
+  gradeLevel: 1 | 2 | 3;
   examMonth: 3 | 5 | 6 | 7 | 9 | 10 | 11;
-  examName: string; // 예: "고2 6월 학력평가" / "고1 6월 학력평가"
+  examName: string;
   examDate: string;
   scores: {
-    korean: { standardScore?: number; percentile?: number; grade: number };
-    math: { standardScore?: number; percentile?: number; grade: number };
+    korean: MockExamScoreSubject;
+    math: MockExamScoreSubject;
     english: { rawScore?: number; grade: number };
     koreanHistory: { rawScore?: number; grade: number };
-    integratedSocial: { standardScore?: number; percentile?: number; grade: number };
-    integratedScience: { standardScore?: number; percentile?: number; grade: number };
+    integratedSocial: MockExamScoreSubject;
+    integratedScience: MockExamScoreSubject;
   };
 }
 
-// 5. 목표 대학 및 학과 전형
+// 3. 목표 대학 및 학과 포트폴리오
+export type SusiCategory = 'safe' | 'target' | 'reach'; // 안정, 적정, 소신
+export type JeongsiGroup = 'ga' | 'na' | 'da'; // 가군, 나군, 다군
+
 export interface TargetUniversity {
   id: string;
   type: 'susi' | 'jeongsi';
-  susiCategory?: 'safe' | 'target' | 'reach'; // 안정, 적정, 소신
-  jeongsiGroup?: 'ga' | 'na' | 'da'; // 가군, 나군, 다군
+  susiCategory?: SusiCategory;
+  jeongsiGroup?: JeongsiGroup;
   universityName: string;
   departmentName: string;
   admissionType: '교과' | '종합' | '논술' | '수능위주';
-  
-  // 수시 기준
   susiRequirements?: {
-    subjectWeight: { [category: string]: number };
-    gradeWeight: { [grade: string]: number }; // 학년별 비중
-    expectedCutoffGrade: number; // 5등급제 환산 예상 컷 (예: 1.25)
+    subjectWeight?: Record<string, number>;
+    gradeWeight?: { 1: number; 2: number; 3: number };
+    expectedCutoffGrade?: number; // 5등급제 환산 70% Cut
     minimumCsatRequirement?: {
-      description: string; // "3개 합 7"
+      description: string;
       requiredSubjectsCount: number;
       sumGradeLimit: number;
     };
   };
-
-  // 정시 기준
   jeongsiRequirements?: {
-    scoreWeights: {
+    convertedStandardScoreCutoff?: number;
+    percentileCutoff?: number; // 70% Cut 백분위
+    subjectWeights: {
       korean: number;
       math: number;
       english: number;
       inquiry: number;
-      koreanHistory: number;
+      history: number;
     };
-    expectedConvertedCutoff: number;
   };
+}
+
+// 4. D-Day 마일스톤
+export interface DDayMilestone {
+  title: string;
+  targetDate: string;
+  tag: '내신' | '모의고사' | '수능' | '수시원서';
+  isImportant?: boolean;
+}
+
+// 5. 자녀 프로필 (고2: 2028 대입 / 고1: 2029 대입)
+export interface ChildProfile {
+  id: string; // 'child-1-go2' | 'child-2-go1'
+  name: string; // '고2 아들' | '고1 딸'
+  currentGrade: GradeLevel;
+  targetAdmissionYear: AdmissionYear;
+  targetMajorField: string;
+  completedSemesters: SemesterKey[];
+  dDayMilestones: DDayMilestone[];
+  courses: SemesterCourseGrade[];
+  mockExams: MockExamRecord[];
+  targetUniversities: TargetUniversity[];
+}
+
+// 6. 전체 가족 데이터 컨테이너
+export interface FamilyAppData {
+  familyId: string;
+  activeChildId: string; // 현재 선택된 자녀 ID
+  allowedEmails: string[]; // 온 가족 구글 이메일 화이트리스트
+  children: ChildProfile[];
+  updatedAt?: number; // 밀리초 타임스탬프 (클라우드 동기화 충돌 방지)
+}
+```
+
+---
+
+## 3. AdmissionsContext API & 영속화 라이프사이클
+
+```typescript
+interface AdmissionsContextType {
+  childrenList: ChildProfile[];
+  activeChildId: string;
+  activeChild: ChildProfile;
+  activeTab: MainTabKey;
+  setActiveTab: (tab: MainTabKey) => void;
+  targetGPA: number;
+  setTargetGPA: (gpa: number) => void;
+  switchChild: (childId: string) => void;
+  updateChildName: (childId: string, name: string) => void;
+  updateTargetField: (childId: string, field: string) => void;
+  
+  // 과목 성적 CRUD
+  addCourse: (childId: string, course: SemesterCourseGrade) => void;
+  updateCourse: (childId: string, course: SemesterCourseGrade) => void;
+  updateMultipleCourses: (childId: string, courses: SemesterCourseGrade[]) => void;
+  deleteCourse: (childId: string, courseId: string) => void;
+  
+  // 모의고사 CRUD
+  addMockExam: (childId: string, exam: MockExamRecord) => void;
+  updateMockExam: (childId: string, exam: MockExamRecord) => void;
+  deleteMockExam: (childId: string, examId: string) => void;
+  
+  // 목표 대학 CRUD
+  addTargetUniversity: (childId: string, target: TargetUniversity) => void;
+  updateTargetUniversity: (childId: string, target: TargetUniversity) => void;
+  deleteTargetUniversity: (childId: string, targetId: string) => void;
+  
+  // 계산 & 영속화 유틸리티
+  calculateCumulativeGPA: (courses: SemesterCourseGrade[]) => number;
+  calculateDDay: (targetDateStr: string) => number;
+  exportDataAsJSON: () => void;
+  importDataFromJSON: (jsonString: string) => boolean;
+  resetToInitialData: () => void;
 }
 ```
