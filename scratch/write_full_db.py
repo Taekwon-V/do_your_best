@@ -1,4 +1,7 @@
-import { SusiCategory, JeongsiGroup } from '@/types/admissions';
+import json
+
+# Python script to assemble universityAdmissionsDB.ts
+ts_code = '''import { SusiCategory, JeongsiGroup } from '@/types/admissions';
 
 export interface DepartmentAdmissionData {
   deptName: string;
@@ -910,3 +913,9 @@ export const UNIVERSITY_ADMISSIONS_DB: UniversityData[] = [
     ],
   },
 ];
+'''
+
+with open(r"c:\work\do_your_best\src\data\universityAdmissionsDB.ts", "w", encoding="utf-8") as f:
+    f.write(ts_code)
+
+print("universityAdmissionsDB.ts written successfully with all 55 CAU departments!")
