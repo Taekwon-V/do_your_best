@@ -127,6 +127,9 @@ export default function MockExamTracker() {
       {/* Bottom: 2028 Integrated CSAT Mock Exam Gradebook Table */}
       <MockExamTable
         mockExams={mockExams}
+        targetPercentile={selectedTargetUniv.percentile}
+        targetUniversityName={selectedTargetUniv.name}
+        targetWeights={selectedTargetUniv.weights}
         onAddClick={handleOpenAddModal}
         onEditClick={handleOpenEditModal}
         onDeleteClick={handleDeleteExam}
