@@ -177,25 +177,27 @@ export default function ReportsTab() {
             </thead>
             <tbody className="divide-y divide-peach/30 text-midnight/80">
               {[
-                { g5: '1.0등급', topPct: '상위 0.89%', g9: '1.31등급', gyogwa: '서울대(지균), 메이저 의치약, 연세대', jonghap: '서울대(일반), 연고대 최상위 학종' },
-                { g5: '1.2등급', topPct: '상위 3.05%', g9: '1.85등급', gyogwa: '서강대, 성균관대, 한양대, 중앙대', jonghap: '연세대, 고려대, 서성한 인기과' },
-                { g5: '1.4등급', topPct: '상위 5.67%', g9: '2.27등급', gyogwa: '한국외대, 건동홍, 인하/인천 사범대', jonghap: '중앙대, 경희대, 인하/인천 사범대 안정' },
-                { g5: '1.6등급', topPct: '상위 8.90%', g9: '2.65등급', gyogwa: '국숭세단 교과, 인천대 일반 교과', jonghap: '건동홍 학종, 인하대/인천대 사범대(수학/국어) 적정' },
-                { g5: '1.8등급', topPct: '상위 12.87%', g9: '3.01등급', gyogwa: '인하대/인천대 일반학과, 광명상가', jonghap: '국숭세단 학종, 인하/인천 수학과·국문과(교직) 적정' },
-                { g5: '2.0등급', topPct: '상위 17.75%', g9: '3.37등급', gyogwa: '인천대(교과우수 최저충족 시)', jonghap: '인하대·인천대 일반 자연/인문 학종 적정' },
-                { g5: '2.2등급', topPct: '상위 23.22%', g9: '3.71등급', gyogwa: '가천대, 경기대, 거점국립대', jonghap: '인천대 일반학과 학종, 수도권 대학 학종' },
-                { g5: '2.5등급', topPct: '상위 33.30%', g9: '4.24등급', gyogwa: '수도권 외곽 대학, 지방 국립대', jonghap: '인천대 일반학과 학종(면접 역전 마지노선)' },
+                { g5: '1.00등급', topPct: '상위 0.51%', g9: '1.00등급', gyogwa: '서울대(지균), 메이저 의치약, 연세대', jonghap: '서울대(일반), 연고대 최상위 학종' },
+                { g5: '1.30등급', topPct: '상위 3.79%', g9: '1.95등급 (구1컷)', gyogwa: '서강대, 성균관대, 한양대, 중앙대 지균', jonghap: '서성한, 중앙대 CAU융합형 인기과' },
+                { g5: '1.50등급', topPct: '상위 6.53%', g9: '2.36등급', gyogwa: '한국외대, 건동홍, 인하/인천 사범대', jonghap: '중앙대, 경희대, 인하/인천 사범대 안정' },
+                { g5: '1.70등급', topPct: '상위 9.96%', g9: '2.73등급', gyogwa: '국숭세단 교과, 인천대 일반 교과', jonghap: '★ 2028 5등급제 1등급 마지노선(10%)' },
+                { g5: '1.75등급', topPct: '상위 10.94%', g9: '2.82등급 (구2컷)', gyogwa: '국숭세단 교과, 인하대 일반공학 교과', jonghap: '건동홍 학종, 인하/인천 사범대 적정' },
+                { g5: '2.00등급', topPct: '상위 16.55%', g9: '3.27등급', gyogwa: '인천대 교과우수, 광명상가', jonghap: '인하대·인천대 일반 자연/인문 학종 적정' },
+                { g5: '2.25등급', topPct: '상위 23.52%', g9: '3.71등급 (구3컷)', gyogwa: '가천대, 경기대, 거점국립대', jonghap: '인천대 일반학과 학종, 아주대 국문' },
+                { g5: '2.41등급', topPct: '상위 28.62%', g9: '3.99등급 (현재)', gyogwa: '수원대, 경기대 교과 적정선', jonghap: '👉 [우리 아들 현재 위치!] 2등급 안정권' },
+                { g5: '2.57등급', topPct: '상위 34.11%', g9: '4.26등급', gyogwa: '수원대, 경기대, 지방 거점국립대', jonghap: '★ 2028 5등급제 2등급 마지노선(34%)' },
+                { g5: '3.00등급', topPct: '상위 50.13%', g9: '5.00등급 (전국50%)', gyogwa: '수도권 외곽, 지방 4년제 대학', jonghap: '전국 고교생의 정중앙 (50.0%)' },
               ].map((row, idx) => {
-                const isCurrentRange = currentGPA >= parseFloat(row.g5) - 0.1 && currentGPA < parseFloat(row.g5) + 0.15;
+                const isCurrentRange = Math.abs(currentGPA - parseFloat(row.g5)) < 0.08;
                 return (
                   <tr
                     key={idx}
                     className={`transition-colors ${
-                      isCurrentRange ? 'bg-coral/15 font-black text-navy' : 'hover:bg-cream/40'
+                      isCurrentRange ? 'bg-coral/20 font-black text-navy ring-1 ring-coral/50' : 'hover:bg-cream/40'
                     }`}
                   >
                     <td className="py-2.5 px-3 font-bold text-midnight flex items-center gap-1.5">
-                      {isCurrentRange && <span className="w-2 h-2 rounded-full bg-coral shrink-0" />}
+                      {isCurrentRange && <span className="w-2 h-2 rounded-full bg-coral shrink-0 animate-pulse" />}
                       <span>{row.g5}</span>
                     </td>
                     <td className="py-2.5 px-3 text-center font-semibold text-coral">{row.topPct}</td>
