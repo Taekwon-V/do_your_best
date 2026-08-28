@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { ChildProfile, SemesterCourseGrade, FamilyAppData } from '@/types/admissions';
+import { ChildProfile, SemesterCourseGrade, FamilyAppData, MockExamRecord } from '@/types/admissions';
 import { INITIAL_FAMILY_DATA } from '@/data/initialData';
 import { calculateWeightedGPA } from '@/utils/gpaCalculator';
 
@@ -17,6 +17,9 @@ interface AdmissionsContextType {
   addCourse: (childId: string, course: SemesterCourseGrade) => void;
   updateCourse: (childId: string, course: SemesterCourseGrade) => void;
   deleteCourse: (childId: string, courseId: string) => void;
+  addMockExam: (childId: string, exam: MockExamRecord) => void;
+  updateMockExam: (childId: string, exam: MockExamRecord) => void;
+  deleteMockExam: (childId: string, examId: string) => void;
   calculateCumulativeGPA: (courses: SemesterCourseGrade[]) => number;
   calculateDDay: (targetDateStr: string) => number;
   resetToInitialData: () => void;
@@ -138,6 +141,53 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
+  // 모의고사 추가
+  const addMockExam = (childId: string, exam: MockExamRecord) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingExams = child.mockExams || [];
+        return {
+          ...child,
+          mockExams: [...existingExams, exam],
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
+  // 모의고사 수정
+  const updateMockExam = (childId: string, exam: MockExamRecord) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingExams = child.mockExams || [];
+        const updated = existingExams.map((e) => (e.id === exam.id ? exam : e));
+        return {
+          ...child,
+          mockExams: updated,
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
+  // 모의고사 삭제
+  const deleteMockExam = (childId: string, examId: string) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingExams = child.mockExams || [];
+        const updated = existingExams.filter((e) => e.id !== examId);
+        return {
+          ...child,
+          mockExams: updated,
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
   // 2028 5등급제 가중평균 환산
   const calculateCumulativeGPA = (courses: SemesterCourseGrade[]): number => {
     return calculateWeightedGPA(courses);
@@ -173,6 +223,9 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         addCourse,
         updateCourse,
         deleteCourse,
+        addMockExam,
+        updateMockExam,
+        deleteMockExam,
         calculateCumulativeGPA,
         calculateDDay,
         resetToInitialData,

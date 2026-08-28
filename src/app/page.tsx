@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar';
 import HeroBanner from '@/components/dashboard/HeroBanner';
 import GoalSeekSimulator from '@/components/simulator/GoalSeekSimulator';
 import GradebookTable from '@/components/simulator/GradebookTable';
+import MockExamTracker from '@/components/mockTracker/MockExamTracker';
 import OverviewGrid from '@/components/dashboard/OverviewGrid';
 import Footer from '@/components/layout/Footer';
 
@@ -19,6 +20,7 @@ export default function Home() {
             <HeroBanner />
             <GoalSeekSimulator />
             <GradebookTable />
+            <MockExamTracker />
             <OverviewGrid />
           </main>
         </div>

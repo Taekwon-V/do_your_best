@@ -37,6 +37,36 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
     ],
     mockExams: [
       {
+        id: 'm1-0',
+        gradeLevel: 1,
+        examMonth: 11,
+        examName: '2025년 고1 11월 학력평가',
+        examDate: '2025-11-20',
+        scores: {
+          korean: { standardScore: 125, percentile: 86, grade: 2 },
+          math: { standardScore: 130, percentile: 90, grade: 2 },
+          english: { rawScore: 84, grade: 2 },
+          koreanHistory: { rawScore: 42, grade: 1 },
+          integratedSocial: { standardScore: 60, percentile: 82, grade: 2 },
+          integratedScience: { standardScore: 62, percentile: 88, grade: 2 },
+        },
+      },
+      {
+        id: 'm1-1-pre',
+        gradeLevel: 2,
+        examMonth: 3,
+        examName: '2026년 고2 3월 학력평가',
+        examDate: '2026-03-26',
+        scores: {
+          korean: { standardScore: 128, percentile: 91, grade: 2 },
+          math: { standardScore: 134, percentile: 94, grade: 1 },
+          english: { rawScore: 89, grade: 2 },
+          koreanHistory: { rawScore: 40, grade: 2 },
+          integratedSocial: { standardScore: 64, percentile: 89, grade: 2 },
+          integratedScience: { standardScore: 65, percentile: 93, grade: 1 },
+        },
+      },
+      {
         id: 'm1-1',
         gradeLevel: 2,
         examMonth: 6,
@@ -131,6 +161,21 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
       { id: 'c2-6', semester: '1-1', category: '한국사', courseName: '한국사1', unitCount: 3, rankGrade: 2, achievement: 'A' },
     ],
     mockExams: [
+      {
+        id: 'm2-0',
+        gradeLevel: 1,
+        examMonth: 3,
+        examName: '2026년 고1 3월 학력평가',
+        examDate: '2026-03-26',
+        scores: {
+          korean: { standardScore: 126, percentile: 90, grade: 2 },
+          math: { standardScore: 132, percentile: 94, grade: 1 },
+          english: { rawScore: 82, grade: 2 },
+          koreanHistory: { rawScore: 38, grade: 2 },
+          integratedSocial: { standardScore: 65, percentile: 96, grade: 1 },
+          integratedScience: { standardScore: 59, percentile: 86, grade: 2 },
+        },
+      },
       {
         id: 'm2-1',
         gradeLevel: 1,
