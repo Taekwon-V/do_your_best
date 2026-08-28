@@ -1280,7 +1280,144 @@ export const UNIVERSITY_ADMISSIONS_DB: UniversityData[] = [
     ],
   },
   // ==========================================
-  // 4. 주요 상위 대학 (서울대 / 연세대 / 고려대) - 6개 학과
+  // 4. 수원대학교 (SUWON UNIVERSITY) - 18개 전 학과 수록
+  // ==========================================
+  {
+    univId: 'suwon',
+    univName: '수원대학교',
+    shortName: '수원대',
+    badge: '경기 남부 명문 🏛️',
+    departments: [
+      {
+        deptName: '컴퓨터공학부',
+        collegeName: '지능형SW융합대학',
+        susiGyogwa: { expectedCut5: 2.50, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 76.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: 'AI데이터과학부',
+        collegeName: '지능형SW융합대학',
+        susiGyogwa: { expectedCut5: 2.55, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 77.2, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '지능형보안학부',
+        collegeName: '지능형SW융합대학',
+        susiGyogwa: { expectedCut5: 2.65, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.80, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 75.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '전기전자공학부',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.45, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.58, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 77.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '반도체공학과',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.40, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.60, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 78.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '기계공학부',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.55, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.60, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 77.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '화학공학·신소재공학부',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.40, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.60, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 76.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '바이오공학과',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.30, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.38, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 77.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '간호학과',
+        collegeName: '라이프케어사이언스대학',
+        susiGyogwa: { expectedCut5: 1.85, minCsatDesc: '국수영탐(1) 중 2개 합 6 이내', requiredSubjectsCount: 2, sumGradeLimit: 6, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.70, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 83.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '경영공학대학',
+        collegeName: '경영공학대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 76.0, subjectWeights: { korean: 30, math: 30, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '인문사회융합대학',
+        collegeName: '인문사회융합대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.45, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 75.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '자유전공학부',
+        collegeName: '자유전공학부',
+        susiGyogwa: { expectedCut5: 2.50, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 75.0, subjectWeights: { korean: 30, math: 35, inquiry: 20, english: 15, history: 0 } },
+      },
+      {
+        deptName: '건설환경에너지공학부',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.50, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.75, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 74.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '건축도시부동산학부',
+        collegeName: '혁신공과대학',
+        susiGyogwa: { expectedCut5: 2.55, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.80, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 74.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '식품영양학과',
+        collegeName: '라이프케어사이언스대학',
+        susiGyogwa: { expectedCut5: 2.80, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.20, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 75.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '의류학과',
+        collegeName: '라이프케어사이언스대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 76.5, subjectWeights: { korean: 30, math: 30, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '아동가족복지학과',
+        collegeName: '라이프케어사이언스대학',
+        susiGyogwa: { expectedCut5: 2.75, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 74.2, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '디지털콘텐츠',
+        collegeName: '문화예술융합대학',
+        susiGyogwa: { expectedCut5: 2.65, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.60, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '면접위주교과', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 74.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+    ],
+  },
+  // ==========================================
+  // 5. 주요 상위 대학 (서울대 / 연세대 / 고려대) - 6개 학과
   // ==========================================
   {
     univId: 'sky',
