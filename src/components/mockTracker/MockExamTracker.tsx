@@ -21,8 +21,15 @@ export default function MockExamTracker() {
   const [selectedTargetUniv, setSelectedTargetUniv] = useState({
     name: firstJeongsiTarget
       ? `${firstJeongsiTarget.universityName} ${firstJeongsiTarget.departmentName}`
-      : '인하대 수학교육과',
+      : '인하대학교 수학교육과',
     percentile: firstJeongsiTarget?.jeongsiRequirements?.percentileCutoff ?? 85.0,
+    weights: firstJeongsiTarget?.jeongsiRequirements?.subjectWeights ?? {
+      korean: 25,
+      math: 40,
+      inquiry: 25,
+      english: 0,
+      history: 0,
+    },
   });
 
   const mockExams = activeChild.mockExams || [];
@@ -51,10 +58,24 @@ export default function MockExamTracker() {
     }
   };
 
-  const handleSelectTarget = (target: { univName: string; deptName: string; percentileCut: number }) => {
+  const handleSelectTarget = (target: {
+    univName: string;
+    deptName: string;
+    percentileCut: number;
+    koreanWeight?: number;
+    mathWeight?: number;
+    tamguWeight?: number;
+  }) => {
     setSelectedTargetUniv({
       name: `${target.univName} ${target.deptName}`,
       percentile: target.percentileCut,
+      weights: {
+        korean: target.koreanWeight ?? 25,
+        math: target.mathWeight ?? 40,
+        inquiry: target.tamguWeight ?? 25,
+        english: 0,
+        history: 0,
+      },
     });
   };
 
@@ -90,6 +111,7 @@ export default function MockExamTracker() {
             mockExams={mockExams}
             targetPercentile={selectedTargetUniv.percentile}
             targetUniversityName={selectedTargetUniv.name}
+            targetWeights={selectedTargetUniv.weights}
           />
         </div>
 
