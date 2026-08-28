@@ -63,6 +63,25 @@ export default function FamilyAccessGate({ children }: { children: React.ReactNo
               </svg>
               <span>Google 계정으로 로그인</span>
             </button>
+
+            {/* 개발 모드 전용 로컬 가족 프리뷰 버튼 (실제 Firebase 팝업 없이 로컬 UI 확인용) */}
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.setItem('admission_app_mock_user', JSON.stringify({
+                    id: 'dev-family-user',
+                    name: '가족(부모님)',
+                    email: 'parent@family.com',
+                    isAllowedFamily: true,
+                  }));
+                  window.location.reload();
+                }}
+                className="w-full py-2.5 px-3 bg-peach/40 hover:bg-peach/60 text-navy font-bold rounded-xl border border-navy/40 text-xs transition-all"
+              >
+                🛠️ 개발 모드: 가족 관리자 화면 프리뷰 입장
+              </button>
+            )}
           </div>
 
           <div className="p-3.5 bg-peach/30 rounded-2xl border border-navy/20 flex items-start gap-2.5 text-left">

@@ -79,20 +79,17 @@ export default function Navbar() {
                 <button
                   key={child.id}
                   onClick={() => switchChild(child.id)}
-                  className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-full font-black text-xs sm:text-sm transition-all duration-150 text-center ${
+                  className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-full font-black text-xs sm:text-sm transition-all duration-150 text-center min-h-[38px] sm:min-h-[40px] ${
                     isActive
                       ? 'bg-coral text-navy border-2 border-navy shadow-retro'
                       : 'text-navy-muted hover:text-navy hover:bg-white/40 border-2 border-transparent'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full shrink-0 ${isActive ? 'bg-navy' : 'bg-navy/30'}`} />
-                  <span className="truncate">{child.name}</span>
-                  <span className="text-[10px] opacity-75 hidden sm:inline">({child.targetAdmissionYear} 대입)</span>
-                  {isActive && (
-                    <span className="text-[10px] font-extrabold px-1.5 py-0.2 bg-white/80 rounded-full text-navy border border-navy/40 shrink-0 hidden xs:inline">
-                      {child.currentGrade === 2 ? '고2' : '고1'}
-                    </span>
-                  )}
+                  <span className="truncate max-w-[80px] sm:max-w-none">{child.name}</span>
+                  <span className="text-[10px] font-bold opacity-80 shrink-0">
+                    ({child.currentGrade === 2 ? '고2' : '고1'})
+                  </span>
                 </button>
               );
             })}

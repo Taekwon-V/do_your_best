@@ -60,19 +60,19 @@ export default function ReportsTab() {
       {/* 1. Header Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 shadow-sm">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 shadow-sm shrink-0">
             <FileText className="w-5 h-5 text-emerald-800" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-midnight tracking-tight">
-                [모듈 5] 입결 DB & 학부모 상담용 1장 리포트
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-2xl font-black text-midnight tracking-tight leading-tight">
+                입결 DB & 상담용 1장 리포트
               </h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                Phase 5 완결 💎
+              <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                A4 출력
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-midnight/70 mt-0.5">
+            <p className="text-[11px] sm:text-sm text-midnight/70 mt-0.5">
               상담용 A4 1장 출력, 대학별 5등급제 입결 조회 및 가족 클라우드 백업을 관리합니다.
             </p>
           </div>
@@ -80,7 +80,7 @@ export default function ReportsTab() {
 
         <button
           onClick={() => setIsReportModalOpen(true)}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-navy text-cream font-bold text-xs sm:text-sm shadow-retro hover:bg-navy-light active:translate-x-0.5 active:translate-y-0.5 transition-all self-start sm:self-auto"
+          className="flex items-center justify-center gap-2 px-4 py-2 sm:py-2.5 rounded-2xl bg-navy text-cream font-bold text-xs sm:text-sm shadow-retro hover:bg-navy-light active:translate-x-0.5 active:translate-y-0.5 transition-all self-start sm:self-auto"
         >
           <Printer className="w-4 h-4 text-coral" />
           <span>상담용 1장 리포트 인쇄 / PDF 출력</span>
@@ -146,29 +146,32 @@ export default function ReportsTab() {
 
       {/* 3. 124-Unit Master Grade Conversion Matrix Table */}
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-peach/50 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-peach/30">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-peach/30 gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-coral/20 flex items-center justify-center text-coral">
+            <div className="w-7 h-7 rounded-xl bg-coral/20 flex items-center justify-center text-coral shrink-0">
               <BookOpen className="w-4 h-4" />
             </div>
-            <h3 className="font-bold text-midnight text-base sm:text-lg">
+            <h3 className="font-black text-navy text-sm sm:text-lg break-keep">
               일반고 124단위 가중치 마스터 환산 조견표 (핵심 요약)
             </h3>
           </div>
-          <span className="text-xs font-bold text-navy px-2.5 py-0.5 bg-cream rounded-full border border-peach/40">
+          <span className="text-[11px] sm:text-xs font-bold text-navy px-2.5 py-0.5 bg-cream rounded-full border border-peach/40 self-start sm:self-auto shrink-0">
             현재 {activeChild.name} 내신: {currentGPA.toFixed(2)}등급
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs min-w-[650px]">
+        <div className="text-[10.5px] text-navy-muted sm:hidden pb-1 flex items-center justify-end">
+          <span>← 표를 좌우로 밀어서 전체 열 확인 →</span>
+        </div>
+        <div className="overflow-x-auto rounded-2xl border border-peach/50 scrollbar-thin">
+          <table className="w-full text-left text-xs min-w-[560px] sm:min-w-[650px]">
             <thead>
               <tr className="bg-cream/80 text-midnight font-bold border-b border-peach/40">
-                <th className="py-2.5 px-3">2028 5등급제 가중 내신</th>
-                <th className="py-2.5 px-3 text-center">전국 누적 상위 백분위</th>
-                <th className="py-2.5 px-3 text-center">기존 9등급제 환산</th>
-                <th className="py-2.5 px-3">학생부교과(지균) 지원선</th>
-                <th className="py-2.5 px-3">학생부종합(면접형) 지원선</th>
+                <th className="py-2.5 px-3">2028 5등급제</th>
+                <th className="py-2.5 px-2.5 text-center">전국 누적 백분위</th>
+                <th className="py-2.5 px-2.5 text-center">9등급제 환산</th>
+                <th className="py-2.5 px-3">교과(지균) 지원선</th>
+                <th className="py-2.5 px-3">학종(면접형) 지원선</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-peach/30 text-midnight/80">

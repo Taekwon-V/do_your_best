@@ -64,35 +64,37 @@ export default function HomeTab() {
           )}
         </div>
 
-        {/* 3 Key Stats Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5 pt-4 border-t border-cream/10">
-          <div className="bg-cream/5 p-3 rounded-2xl border border-cream/10">
-            <p className="text-[11px] text-cream/60">현재 확정 내신</p>
-            <p className="text-xl sm:text-2xl font-black text-pastel-sky mt-0.5">
-              {currentGPA.toFixed(2)}등급
+        {/* 3 Key Stats Row (모바일 3컬럼 미니 카드) */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4 pt-3.5 border-t border-cream/15 text-center">
+          <div className="bg-cream/10 p-2 sm:p-3 rounded-2xl border border-cream/15">
+            <p className="text-[10px] sm:text-[11px] text-cream/70 truncate">확정 내신</p>
+            <p className="text-base sm:text-2xl font-black text-sky-light mt-0.5">
+              {currentGPA.toFixed(2)}
+              <span className="text-[10px] sm:text-xs font-bold text-cream/70 ml-0.5">등급</span>
             </p>
-            <p className="text-[10px] text-cream/50 mt-0.5">
-              {activeChild.completedSemesters.length}개 학기 완료
+            <p className="text-[9px] sm:text-[10px] text-cream/60 mt-0.5 truncate">
+              {activeChild.completedSemesters.length}개 학기
             </p>
           </div>
 
-          <div className="bg-cream/5 p-3 rounded-2xl border border-cream/10">
-            <p className="text-[11px] text-cream/60">최근 모의고사</p>
-            <p className="text-xl sm:text-2xl font-black text-amber-300 mt-0.5">
-              {latestMock ? `${latestMock.scores.math.percentile}% (수학)` : '-'}
+          <div className="bg-cream/10 p-2 sm:p-3 rounded-2xl border border-cream/15">
+            <p className="text-[10px] sm:text-[11px] text-cream/70 truncate">최근 모의고사</p>
+            <p className="text-base sm:text-2xl font-black text-amber-300 mt-0.5">
+              {latestMock ? `${latestMock.scores.math.percentile}%` : '-'}
             </p>
-            <p className="text-[10px] text-cream/50 mt-0.5">
+            <p className="text-[9px] sm:text-[10px] text-cream/60 mt-0.5 truncate">
               {latestMock ? latestMock.examName.replace(/20\d\d년\s*/, '') : '기록 없음'}
             </p>
           </div>
 
-          <div className="col-span-2 sm:col-span-1 bg-cream/5 p-3 rounded-2xl border border-cream/10 flex flex-col justify-between">
-            <p className="text-[11px] text-cream/60">수시 6장 포트폴리오</p>
-            <p className="text-xl sm:text-2xl font-black text-coral mt-0.5">
-              {susiTargets.length}개 대학 등록
+          <div className="bg-cream/10 p-2 sm:p-3 rounded-2xl border border-cream/15">
+            <p className="text-[10px] sm:text-[11px] text-cream/70 truncate">수시 6장</p>
+            <p className="text-base sm:text-2xl font-black text-coral mt-0.5">
+              {susiTargets.length}
+              <span className="text-[10px] sm:text-xs font-bold text-cream/70 ml-0.5">/6</span>
             </p>
-            <p className="text-[10px] text-cream/50 mt-0.5">
-              소신 1 / 적정 1 / 안정 1
+            <p className="text-[9px] sm:text-[10px] text-cream/60 mt-0.5 truncate">
+              등록 완료
             </p>
           </div>
         </div>

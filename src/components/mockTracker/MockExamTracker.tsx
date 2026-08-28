@@ -58,20 +58,20 @@ export default function MockExamTracker() {
       {/* Section Title Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-2xl bg-pastel-sky flex items-center justify-center text-midnight shadow-sm">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-pastel-sky flex items-center justify-center text-midnight shadow-sm shrink-0">
             <LineChart className="w-5 h-5 text-midnight" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-midnight tracking-tight">
-                [모듈 3] 2028 통합수능 모의고사 트래커 & 정시 Gap 분석
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-2xl font-black text-midnight tracking-tight leading-tight">
+                2028 통합수능 모의고사 트래커 & Gap
               </h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-coral/20 text-coral">
-                Phase 3 ⭐
+              <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-coral/20 text-coral">
+                통합수능
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-midnight/70 mt-0.5">
-              {activeChild.name}의 회차별 수능 백분위 성장 궤적과 목표 대학 정시 컷(Gap)을 실시간 분석합니다.
+            <p className="text-[11px] sm:text-sm text-midnight/70 mt-0.5">
+              {activeChild.name}의 회차별 수능 백분위 성장 궤적과 목표 대학 정시 컷(Gap) 분석
             </p>
           </div>
         </div>

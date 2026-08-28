@@ -17,5 +17,9 @@ yarn-error.log*
 *.pem
 Thumbs.db
 
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
 # Antigravity & AI cache
 .kombai/

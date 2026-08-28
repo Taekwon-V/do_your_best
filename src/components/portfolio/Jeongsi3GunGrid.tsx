@@ -110,12 +110,12 @@ export default function Jeongsi3GunGrid({
                     </div>
 
                     <div className="flex items-center justify-between pt-1">
-                      <span className="text-midnight/60">모의고사 Gap:</span>
+                      <span className="text-navy-muted font-bold">모의고사 Gap:</span>
                       <span
-                        className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md ${
+                        className={`text-[10.5px] font-black px-2 py-0.5 rounded-md border ${
                           isSafe
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-coral/20 text-coral'
+                            ? 'bg-emerald-100 text-emerald-900 border-emerald-400'
+                            : 'bg-coral/25 text-navy border-coral'
                         }`}
                       >
                         {isSafe ? `+${gap}%p 안정권 ✅` : `${gap}%p 부족 ⚠️`}

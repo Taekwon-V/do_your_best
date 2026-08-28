@@ -74,20 +74,20 @@ export default function TargetsTab() {
       {/* 1. Section Title Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 shadow-sm">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 shadow-sm shrink-0">
             <Award className="w-5 h-5 text-amber-800" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-midnight tracking-tight">
-                [모듈 4] 목표 대학 포트폴리오 (수시 6장 + 정시 3군)
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-2xl font-black text-midnight tracking-tight leading-tight">
+                목표 대학 포트폴리오 (수시 6장 + 정시 3군)
               </h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-coral/20 text-coral">
-                Phase 4 ⭐
+              <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-coral/20 text-coral">
+                6+3 전략
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-midnight/70 mt-0.5">
-              {activeChild.name}의 내신 및 수능최저 충족 여부를 실시간 진단하고 최적의 지원 전략을 수립합니다.
+            <p className="text-[11px] sm:text-sm text-midnight/70 mt-0.5">
+              {activeChild.name}의 내신 및 수능최저 충족 여부를 진단하고 최적의 지원 전략을 수립합니다.
             </p>
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function TargetsTab() {
             setModalDefaultType('susi');
             setIsModalOpen(true);
           }}
-          className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-coral text-white font-bold text-xs sm:text-sm hover:opacity-90 shadow-sm transition-all self-start sm:self-auto"
+          className="flex items-center justify-center gap-1.5 px-4 py-2 sm:py-2.5 rounded-2xl bg-coral text-white font-bold text-xs sm:text-sm hover:opacity-90 shadow-sm transition-all self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>목표 대학 추가</span>

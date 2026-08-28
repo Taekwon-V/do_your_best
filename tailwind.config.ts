@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Happy Hues Palette 17
+        // Happy Hues Palette 17 + Legacy semantic aliases
         cream: {
           DEFAULT: "#fef6e4",
           subtle: "#fdf3dc",
@@ -18,6 +18,11 @@ const config: Config = {
           DEFAULT: "#001858",
           muted: "#172c66",
           dark: "#000f38",
+          light: "#233b82",
+        },
+        midnight: {
+          DEFAULT: "#001858",
+          light: "#172c66",
         },
         coral: {
           DEFAULT: "#f582ae",
@@ -25,6 +30,11 @@ const config: Config = {
           light: "#fedfe9",
         },
         sky: {
+          DEFAULT: "#8bd3dd",
+          hover: "#7ac8d3",
+          light: "#d5f1f5",
+        },
+        "pastel-sky": {
           DEFAULT: "#8bd3dd",
           hover: "#7ac8d3",
           light: "#d5f1f5",

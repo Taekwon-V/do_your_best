@@ -40,29 +40,29 @@ export default function OnePageConsultingReport({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-midnight/70 backdrop-blur-sm overflow-y-auto print:p-0 print:bg-white print:static print:overflow-visible">
       {/* Container - Styled as pristine A4 Page */}
-      <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl border border-peach/60 print:border-none print:shadow-none print:p-0 print:m-0 print:max-w-none text-midnight space-y-4">
+      <div className="bg-white rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl border border-peach/60 print:border-none print:shadow-none print:p-0 print:m-0 print:max-w-none text-midnight space-y-4 my-auto">
         
         {/* Modal Controls (Hidden in Print) */}
-        <div className="flex items-center justify-between pb-3 border-b border-peach/40 print:hidden">
+        <div className="flex items-center justify-between pb-3 border-b border-peach/40 print:hidden gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-navy text-cream flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-navy text-cream flex items-center justify-center font-bold shrink-0">
               <GraduationCap className="w-4 h-4 text-coral" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-navy">학부모·교사 상담용 1장 종합 리포트 미리보기</h3>
-              <p className="text-xs text-navy/60">A4 규격에 맞추어 페이지 넘어감 없이 1장에 인쇄됩니다.</p>
+              <h3 className="text-sm sm:text-base font-bold text-navy leading-tight">상담용 1장 종합 리포트</h3>
+              <p className="text-[10.5px] sm:text-xs text-navy/60">A4 규격 1장 맞춤 인쇄</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-navy text-cream text-xs sm:text-sm font-bold shadow-retro hover:bg-navy-light transition-all"
+              className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-navy text-cream text-xs sm:text-sm font-bold shadow-retro hover:bg-navy-light transition-all"
             >
               <Printer className="w-4 h-4 text-coral" />
-              <span>A4 1장 인쇄하기</span>
+              <span>A4 인쇄</span>
             </button>
-            <button onClick={onClose} className="p-2 rounded-xl hover:bg-peach/30 text-midnight/70">
+            <button onClick={onClose} className="p-1.5 sm:p-2 rounded-xl hover:bg-peach/30 text-midnight/70">
               <X className="w-5 h-5" />
             </button>
           </div>

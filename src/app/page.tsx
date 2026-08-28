@@ -36,10 +36,10 @@ function TabRouter() {
 export default function Home() {
   return (
     <FamilyAccessGate>
-      <div className="min-h-screen bg-cream flex flex-col justify-between">
-        <div>
+      <div className="min-h-screen bg-cream flex flex-col justify-between selection:bg-coral selection:text-navy">
+        <div className="w-full">
           <Navbar />
-          <main className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <main className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 pb-24 md:pb-8">
             <TabRouter />
           </main>
         </div>

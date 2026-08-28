@@ -216,200 +216,212 @@ export default function MockExamModal({
 
             <div className="space-y-2.5">
               {/* 국어 (공통) */}
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 items-center bg-white p-2.5 rounded-xl border border-peach/40">
-                <span className="font-bold text-midnight text-xs col-span-4 sm:col-span-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 sm:p-3 rounded-xl border border-peach/40">
+                <span className="font-bold text-midnight text-xs sm:w-28 shrink-0">
                   국어 (공통)
                 </span>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">표준점수</span>
-                  <input
-                    type="number"
-                    value={korean.standardScore}
-                    onChange={(e) => setKorean({ ...korean, standardScore: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
-                  <input
-                    type="number"
-                    value={korean.percentile}
-                    onChange={(e) => setKorean({ ...korean, percentile: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-coral"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">등급</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9}
-                    value={korean.grade}
-                    onChange={(e) => setKorean({ ...korean, grade: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
-                  />
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">표준점수</span>
+                    <input
+                      type="number"
+                      value={korean.standardScore}
+                      onChange={(e) => setKorean({ ...korean, standardScore: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
+                    <input
+                      type="number"
+                      value={korean.percentile}
+                      onChange={(e) => setKorean({ ...korean, percentile: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-coral"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">등급</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={9}
+                      value={korean.grade}
+                      onChange={(e) => setKorean({ ...korean, grade: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* 수학 (공통) */}
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 items-center bg-white p-2.5 rounded-xl border border-peach/40">
-                <span className="font-bold text-midnight text-xs col-span-4 sm:col-span-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 sm:p-3 rounded-xl border border-peach/40">
+                <span className="font-bold text-midnight text-xs sm:w-28 shrink-0">
                   수학 (공통)
                 </span>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">표준점수</span>
-                  <input
-                    type="number"
-                    value={math.standardScore}
-                    onChange={(e) => setMath({ ...math, standardScore: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
-                  <input
-                    type="number"
-                    value={math.percentile}
-                    onChange={(e) => setMath({ ...math, percentile: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-coral"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">등급</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9}
-                    value={math.grade}
-                    onChange={(e) => setMath({ ...math, grade: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
-                  />
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">표준점수</span>
+                    <input
+                      type="number"
+                      value={math.standardScore}
+                      onChange={(e) => setMath({ ...math, standardScore: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
+                    <input
+                      type="number"
+                      value={math.percentile}
+                      onChange={(e) => setMath({ ...math, percentile: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-coral"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">등급</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={9}
+                      value={math.grade}
+                      onChange={(e) => setMath({ ...math, grade: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* 영어 (절대평가) */}
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 items-center bg-white p-2.5 rounded-xl border border-peach/40">
-                <span className="font-bold text-midnight text-xs col-span-4 sm:col-span-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 sm:p-3 rounded-xl border border-peach/40">
+                <span className="font-bold text-midnight text-xs sm:w-28 shrink-0">
                   영어 (절대평가)
                 </span>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">원점수 (100만점)</span>
-                  <input
-                    type="number"
-                    value={english.rawScore}
-                    onChange={(e) => setEnglish({ ...english, rawScore: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">등급 (1~9)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9}
-                    value={english.grade}
-                    onChange={(e) => setEnglish({ ...english, grade: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
-                  />
+                <div className="grid grid-cols-2 gap-2 w-full">
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">원점수 (100만점)</span>
+                    <input
+                      type="number"
+                      value={english.rawScore}
+                      onChange={(e) => setEnglish({ ...english, rawScore: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">등급 (1~9)</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={9}
+                      value={english.grade}
+                      onChange={(e) => setEnglish({ ...english, grade: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* 한국사 (절대평가) */}
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 items-center bg-white p-2.5 rounded-xl border border-peach/40">
-                <span className="font-bold text-midnight text-xs col-span-4 sm:col-span-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 sm:p-3 rounded-xl border border-peach/40">
+                <span className="font-bold text-midnight text-xs sm:w-28 shrink-0">
                   한국사 (절대)
                 </span>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">원점수 (50만점)</span>
-                  <input
-                    type="number"
-                    value={koreanHistory.rawScore}
-                    onChange={(e) => setKoreanHistory({ ...koreanHistory, rawScore: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">등급 (1~9)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9}
-                    value={koreanHistory.grade}
-                    onChange={(e) => setKoreanHistory({ ...koreanHistory, grade: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
-                  />
+                <div className="grid grid-cols-2 gap-2 w-full">
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">원점수 (50만점)</span>
+                    <input
+                      type="number"
+                      value={koreanHistory.rawScore}
+                      onChange={(e) => setKoreanHistory({ ...koreanHistory, rawScore: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">등급 (1~9)</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={9}
+                      value={koreanHistory.grade}
+                      onChange={(e) => setKoreanHistory({ ...koreanHistory, grade: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* 통합사회 (공통) */}
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 items-center bg-white p-2.5 rounded-xl border border-peach/40">
-                <span className="font-bold text-midnight text-xs col-span-4 sm:col-span-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 sm:p-3 rounded-xl border border-peach/40">
+                <span className="font-bold text-midnight text-xs sm:w-28 shrink-0">
                   통합사회 (공통)
                 </span>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">표준점수</span>
-                  <input
-                    type="number"
-                    value={social.standardScore}
-                    onChange={(e) => setSocial({ ...social, standardScore: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
-                  <input
-                    type="number"
-                    value={social.percentile}
-                    onChange={(e) => setSocial({ ...social, percentile: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-amber-700"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">등급</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9}
-                    value={social.grade}
-                    onChange={(e) => setSocial({ ...social, grade: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
-                  />
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">표준점수</span>
+                    <input
+                      type="number"
+                      value={social.standardScore}
+                      onChange={(e) => setSocial({ ...social, standardScore: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
+                    <input
+                      type="number"
+                      value={social.percentile}
+                      onChange={(e) => setSocial({ ...social, percentile: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-amber-700"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">등급</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={9}
+                      value={social.grade}
+                      onChange={(e) => setSocial({ ...social, grade: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* 통합과학 (공통) */}
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 items-center bg-white p-2.5 rounded-xl border border-peach/40">
-                <span className="font-bold text-midnight text-xs col-span-4 sm:col-span-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 sm:p-3 rounded-xl border border-peach/40">
+                <span className="font-bold text-midnight text-xs sm:w-28 shrink-0">
                   통합과학 (공통)
                 </span>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">표준점수</span>
-                  <input
-                    type="number"
-                    value={science.standardScore}
-                    onChange={(e) => setScience({ ...science, standardScore: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
-                  <input
-                    type="number"
-                    value={science.percentile}
-                    onChange={(e) => setScience({ ...science, percentile: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-emerald-700"
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] text-midnight/60 block">등급</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9}
-                    value={science.grade}
-                    onChange={(e) => setScience({ ...science, grade: Number(e.target.value) })}
-                    className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
-                  />
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">표준점수</span>
+                    <input
+                      type="number"
+                      value={science.standardScore}
+                      onChange={(e) => setScience({ ...science, standardScore: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">백분위(%)</span>
+                    <input
+                      type="number"
+                      value={science.percentile}
+                      onChange={(e) => setScience({ ...science, percentile: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-emerald-700"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-midnight/60 block">등급</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={9}
+                      value={science.grade}
+                      onChange={(e) => setScience({ ...science, grade: Number(e.target.value) })}
+                      className="w-full border border-peach/60 rounded-lg px-2 py-1 text-center font-bold text-midnight"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

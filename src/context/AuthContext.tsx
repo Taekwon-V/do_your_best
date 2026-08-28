@@ -62,39 +62,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 2. Firebase Auth 인증 상태 실시간 리스너 (철저한 화이트리스트 대조 + Gmail 점 정규화)
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser && firebaseUser.email) {
-        const userEmail = firebaseUser.email.trim().toLowerCase();
-        
-        const currentAllowed = (() => {
-          try {
-            const saved = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
-            const list: string[] = saved ? JSON.parse(saved) : allowedEmails;
-            return Array.from(new Set([...INITIAL_FAMILY_DATA.allowedEmails, ...list]));
-          } catch {
-            return INITIAL_FAMILY_DATA.allowedEmails;
-          }
-        })();
-
-        // 엄격한 화이트리스트 검사 (Gmail 점 무시 정규화 적용)
-        const isAllowed = currentAllowed.some(
-          (email: string) => normalizeEmail(email) === normalizeEmail(userEmail)
-        );
-
-        setUser({
-          id: firebaseUser.uid,
-          name: firebaseUser.displayName || '가족 사용자',
-          email: userEmail,
-          avatarUrl: firebaseUser.photoURL || undefined,
-          isAllowedFamily: isAllowed,
-        });
-      } else {
-        setUser(null);
+    // 개발 모드 로컬 mock user 검사
+    if (process.env.NODE_ENV === 'development') {
+      try {
+        const mockUserStr = localStorage.getItem('admission_app_mock_user');
+        if (mockUserStr) {
+          const parsedUser = JSON.parse(mockUserStr);
+          setUser(parsedUser);
+          setIsLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to parse mock user', e);
       }
-      setIsLoading(false);
-    });
+    }
 
-    return () => unsubscribe();
+    try {
+      const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+        if (firebaseUser && firebaseUser.email) {
+          const userEmail = firebaseUser.email.trim().toLowerCase();
+          
+          const currentAllowed = (() => {
+            try {
+              const saved = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
+              const list: string[] = saved ? JSON.parse(saved) : allowedEmails;
+              return Array.from(new Set([...INITIAL_FAMILY_DATA.allowedEmails, ...list]));
+            } catch {
+              return INITIAL_FAMILY_DATA.allowedEmails;
+            }
+          })();
+
+          // 엄격한 화이트리스트 검사 (Gmail 점 무시 정규화 적용)
+          const isAllowed = currentAllowed.some(
+            (email: string) => normalizeEmail(email) === normalizeEmail(userEmail)
+          );
+
+          setUser({
+            id: firebaseUser.uid,
+            name: firebaseUser.displayName || '가족 사용자',
+            email: userEmail,
+            avatarUrl: firebaseUser.photoURL || undefined,
+            isAllowedFamily: isAllowed,
+          });
+        } else {
+          setUser(null);
+        }
+        setIsLoading(false);
+      });
+
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn('Firebase onAuthStateChanged error', e);
+      setIsLoading(false);
+    }
   }, [allowedEmails]);
 
   // 실제 Firebase Google 팝업 로그인
@@ -141,6 +161,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 로그아웃
   const logout = async () => {
     try {
+      if (process.env.NODE_ENV === 'development') {
+        localStorage.removeItem('admission_app_mock_user');
+      }
       await firebaseSignOut(auth);
     } catch (e) {
       console.error('Sign out error', e);

@@ -104,20 +104,20 @@ export default function GradebookTable() {
       {/* 1. 헤더 */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-navy/15">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-sky border-2 border-navy flex items-center justify-center shadow-retro shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-sky border-2 border-navy flex items-center justify-center shadow-retro shrink-0">
             <BookOpen className="w-5 h-5 text-navy" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-black text-navy tracking-tight">
-                학기별 5등급제 성적표 & 시뮬레이션 테이블
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-xl font-black text-navy tracking-tight leading-tight break-keep">
+                학기별 5등급제 성적표 & 시뮬레이션
               </h2>
-              <span className="text-[10.5px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+              <span className="text-[10px] sm:text-[10.5px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-400 flex items-center gap-1 shrink-0">
                 <Check className="w-3 h-3 text-emerald-700" />
-                <span>수정 시 실시간 자동 저장</span>
+                <span>실시간 자동 저장</span>
               </span>
             </div>
-            <p className="text-xs text-navy-muted font-medium">
+            <p className="text-[11px] sm:text-xs text-navy-muted font-medium mt-0.5 break-keep">
               과목별 단위수와 5등급제 석차등급을 실시간으로 입력하고 편집합니다.
             </p>
           </div>
@@ -145,8 +145,8 @@ export default function GradebookTable() {
         )}
       </div>
 
-      {/* 2. 학기 탭 스위처 */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+      {/* 2. 학기 탭 스위처 (모바일 부드러운 스크롤) */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-thin">
         {SEMESTER_TABS.map((tab) => {
           const isCompleted = activeChild.completedSemesters.includes(tab.key);
           const isSelected = selectedSemester === tab.key;
@@ -154,7 +154,7 @@ export default function GradebookTable() {
             <button
               key={tab.key}
               onClick={() => setSelectedSemester(tab.key)}
-              className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-2xl font-black text-xs sm:text-sm whitespace-nowrap transition-all border-2 ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-2xl font-black text-xs sm:text-sm whitespace-nowrap transition-all border-2 shrink-0 ${
                 isSelected
                   ? 'bg-navy text-cream border-navy shadow-retro'
                   : isCompleted
@@ -170,7 +170,7 @@ export default function GradebookTable() {
                     : 'bg-coral text-navy'
                 }`}
               >
-                {isCompleted ? '확정' : '역산 🔮'}
+                {isCompleted ? '확정' : '역산'}
               </span>
             </button>
           );
@@ -178,62 +178,60 @@ export default function GradebookTable() {
       </div>
 
       {/* 3. 학기 요약 인포 바 */}
-      <div className="p-3.5 bg-cream/70 rounded-2xl border border-navy/20 flex flex-wrap items-center justify-between gap-3 text-xs text-navy font-bold">
-        <div className="flex items-center gap-4">
+      <div className="p-3 sm:p-3.5 bg-cream/70 rounded-2xl border border-navy/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-navy font-bold">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div>
-            <span className="text-navy-muted">해당 학기 이수 단위: </span>
-            <span className="font-black text-sm text-navy">{semesterStats.units} 단위</span>
+            <span className="text-navy-muted">이수 단위: </span>
+            <span className="font-black text-xs sm:text-sm text-navy">{semesterStats.units} 단위</span>
           </div>
           <div>
-            <span className="text-navy-muted">해당 학기 가중평균: </span>
-            <span className="px-2 py-0.5 bg-white rounded-lg border border-navy font-black text-sm text-navy">
+            <span className="text-navy-muted">학기 평균: </span>
+            <span className="px-2 py-0.5 bg-white rounded-lg border border-navy font-black text-xs sm:text-sm text-navy">
               {semesterStats.gpa > 0 ? `${semesterStats.gpa} 등급` : '과목 없음'}
             </span>
           </div>
         </div>
 
-        <span className="text-[11px] text-navy-muted">
+        <span className="text-[10.5px] sm:text-[11px] text-navy-muted">
           {isCompletedSemester
             ? '✅ 학교생활기록부 확정 성적입니다.'
-            : '🔮 미래 목표 시뮬레이션용 가상 학기입니다. 언제든 자유롭게 수정해 보세요.'}
+            : '🔮 미래 목표 시뮬레이션용 가상 학기입니다.'}
         </span>
       </div>
 
-      {/* 4. 과목 성적표 테이블 */}
+      {/* 4. 과목 성적표 테이블 (모바일 가로 스크롤 가능 컨테이너) */}
       <div className="overflow-x-auto rounded-2xl border-2 border-navy">
-        <table className="w-full text-left text-xs sm:text-sm">
+        <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
           <thead className="bg-peach/60 border-b-2 border-navy text-navy font-black">
             <tr>
-              <th className="py-3 px-3 sm:px-4">교과 구분</th>
-              <th className="py-3 px-3 sm:px-4">과목명</th>
-              <th className="py-3 px-3 sm:px-4 text-center">단위수</th>
-              <th className="py-3 px-3 sm:px-4 text-center">2028 5등급제 석차등급</th>
-              <th className="py-3 px-3 sm:px-4 text-center">성취도</th>
-              <th className="py-3 px-3 sm:px-4 text-center">관리</th>
+              <th className="py-2.5 sm:py-3 px-2.5 sm:px-4">교과</th>
+              <th className="py-2.5 sm:py-3 px-2.5 sm:px-4">과목명</th>
+              <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">단위</th>
+              <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">2028 등급</th>
+              <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">성취도</th>
+              <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">삭제</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-navy/15 bg-white">
             {semesterCourses.length === 0 ? (
               <tr>
                 <td colSpan={6} className="py-8 text-center text-navy-muted">
-                  등록된 과목이 없습니다. 아래 <strong>[+ 과목 추가]</strong> 버튼으로 과목을 등록해 보세요.
+                  등록된 과목이 없습니다. 아래 <strong>[+ 과목 추가]</strong> 버튼으로 등록하세요.
                 </td>
               </tr>
             ) : (
               semesterCourses.map((course) => {
-                const gradeInfo = course.rankGrade ? GRADE_5_PERCENTILES[course.rankGrade] : null;
                 return (
                   <tr key={course.id} className="hover:bg-cream/40 transition-colors">
-                    <td className="py-3 px-3 sm:px-4 font-bold text-navy-muted">
-                      <span className="px-2 py-0.5 bg-cream rounded-md border border-navy/20 text-[11px]">
+                    <td className="py-2.5 sm:py-3 px-2.5 sm:px-4 font-bold text-navy-muted">
+                      <span className="px-2 py-0.5 bg-cream rounded-md border border-navy/20 text-[10px] sm:text-[11px]">
                         {course.category}
                       </span>
                     </td>
-                    <td className="py-3 px-3 sm:px-4 font-black text-navy">
+                    <td className="py-2.5 sm:py-3 px-2.5 sm:px-4 font-black text-navy">
                       {course.courseName}
                     </td>
-                    <td className="py-3 px-3 sm:px-4 text-center font-bold text-navy">
-                      {/* 단위수 인라인 수정 */}
+                    <td className="py-2.5 sm:py-3 px-2 sm:px-4 text-center font-bold text-navy">
                       <select
                         value={course.unitCount}
                         onChange={(e) =>
@@ -242,17 +240,17 @@ export default function GradebookTable() {
                             unitCount: parseInt(e.target.value) || 1,
                           })
                         }
+                        aria-label={`${course.courseName} 단위수`}
                         className="p-1 rounded-lg border border-navy/30 bg-white font-black text-xs text-navy focus:outline-none focus:border-navy"
                       >
                         {[1, 2, 3, 4, 5, 6].map((u) => (
                           <option key={u} value={u}>
-                            {u}단위
+                            {u}
                           </option>
                         ))}
                       </select>
                     </td>
-                    <td className="py-3 px-3 sm:px-4 text-center">
-                      {/* 5등급제 등급 셀렉터 */}
+                    <td className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">
                       <select
                         value={course.rankGrade || 1}
                         onChange={(e) =>
@@ -261,7 +259,8 @@ export default function GradebookTable() {
                             rankGrade: parseInt(e.target.value) as RankGrade5,
                           })
                         }
-                        className="p-1 px-2 rounded-lg border border-navy/30 bg-white font-black text-xs text-navy focus:outline-none focus:border-navy"
+                        aria-label={`${course.courseName} 석차등급`}
+                        className="p-1 px-1.5 sm:px-2 rounded-lg border border-navy/30 bg-white font-black text-xs text-navy focus:outline-none focus:border-navy"
                       >
                         {[1, 2, 3, 4, 5].map((g) => (
                           <option key={g} value={g}>
@@ -270,7 +269,7 @@ export default function GradebookTable() {
                         ))}
                       </select>
                     </td>
-                    <td className="py-3 px-3 sm:px-4 text-center">
+                    <td className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">
                       <select
                         value={course.achievement || 'A'}
                         onChange={(e) =>
@@ -279,7 +278,8 @@ export default function GradebookTable() {
                             achievement: e.target.value as AchievementLevel,
                           })
                         }
-                        className="p-1 px-2 rounded-lg border border-navy/30 bg-white font-black text-xs text-navy focus:outline-none focus:border-navy"
+                        aria-label={`${course.courseName} 성취도`}
+                        className="p-1 px-1.5 sm:px-2 rounded-lg border border-navy/30 bg-white font-black text-xs text-navy focus:outline-none focus:border-navy"
                       >
                         {['A', 'B', 'C', 'D', 'E'].map((ach) => (
                           <option key={ach} value={ach}>
@@ -288,7 +288,7 @@ export default function GradebookTable() {
                         ))}
                       </select>
                     </td>
-                    <td className="py-3 px-3 sm:px-4 text-center">
+                    <td className="py-2.5 sm:py-3 px-2 sm:px-4 text-center">
                       <button
                         onClick={() => deleteCourse(activeChild.id, course.id)}
                         className="p-1.5 rounded-lg text-navy-muted hover:text-red-600 hover:bg-red-50 transition-colors"

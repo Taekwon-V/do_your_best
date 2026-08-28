@@ -11,6 +11,12 @@
   --color-peach: #f3d2c1;
 }
 
+/* 모바일 뷰포트 오버스크롤 및 터치 최적화 */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   background-color: var(--color-cream);
   color: var(--color-navy);
@@ -19,6 +25,23 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* 제목 및 텍스트의 한글 단어 중간 줄바꿈 방지 */
+h1, h2, h3, h4, h5, h6, p, span, button, a, div {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* iOS Safe Area Utilities */
+.safe-area-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
 }
 
 /* 커스텀 스크롤바 */

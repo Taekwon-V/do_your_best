@@ -157,10 +157,10 @@ export default function TargetUniversityModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-peach/50 p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-midnight/60 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-peach/50 p-4 sm:p-6">
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-peach/30 mb-4">
+        <div className="flex items-center justify-between pb-3 border-b border-peach/30 mb-3.5">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-coral/20 flex items-center justify-center text-coral">
               <Building className="w-4 h-4" />

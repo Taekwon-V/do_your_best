@@ -123,10 +123,13 @@ export default function MockExamChart({
       </div>
 
       {/* SVG Interactive Chart Area */}
-      <div className="relative w-full overflow-x-auto pb-2">
+      <div className="relative w-full overflow-x-auto pb-2 scrollbar-thin">
+        <div className="text-[10.5px] text-navy-muted sm:hidden pb-1 flex items-center justify-end gap-1">
+          <span>← 좌우로 스크롤하여 전체 회차 보기 →</span>
+        </div>
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="w-full h-auto min-w-[520px] select-none"
+          className="w-full h-auto min-w-[480px] sm:min-w-[520px] select-none"
         >
           {/* Horizontal Grid lines (0, 25, 50, 75, 100) */}
           {[0, 25, 50, 75, 100].map((val) => {
@@ -323,29 +326,29 @@ export default function MockExamChart({
 
       {/* Dynamic Summary Strip at Bottom of Chart */}
       {activeExam && (
-        <div className="mt-2 bg-cream/70 rounded-2xl p-3 border border-peach/40 flex flex-wrap items-center justify-between gap-2 text-xs">
-          <div className="font-bold text-midnight flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5 text-coral" />
-            <span>{activeExam.examName}</span>
-            <span className="text-[11px] font-normal text-midnight/60">
+        <div className="mt-2 bg-cream/90 rounded-2xl p-3.5 border-2 border-navy/20 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="font-black text-navy flex items-center gap-1.5">
+            <Award className="w-4 h-4 text-coral shrink-0" />
+            <span className="break-keep">{activeExam.examName}</span>
+            <span className="text-[11px] font-bold text-navy-muted">
               ({activeExam.examDate})
             </span>
           </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-midnight font-medium">
-              국어: <strong className="text-midnight">{activeExam.scores.korean.percentile}%</strong> ({activeExam.scores.korean.grade}등급)
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+            <span className="text-navy font-bold">
+              국어: <strong className="text-navy font-black">{activeExam.scores.korean.percentile}%</strong> ({activeExam.scores.korean.grade}등급)
             </span>
-            <span className="text-coral font-bold">
+            <span className="text-coral-hover font-black">
               수학: <strong>{activeExam.scores.math.percentile}%</strong> ({activeExam.scores.math.grade}등급)
             </span>
-            <span className="text-midnight/80 font-medium">
-              영어: <strong>{activeExam.scores.english.grade}등급</strong>
+            <span className="text-navy font-bold">
+              영어: <strong className="font-black">{activeExam.scores.english.grade}등급</strong>
             </span>
-            <span className="text-emerald-700 font-medium">
-              통합과학: <strong>{activeExam.scores.integratedScience.percentile}%</strong>
+            <span className="text-emerald-800 font-bold">
+              통과: <strong>{activeExam.scores.integratedScience.percentile}%</strong>
             </span>
-            <span className="text-amber-700 font-medium">
-              통합사회: <strong>{activeExam.scores.integratedSocial.percentile}%</strong>
+            <span className="text-amber-800 font-bold">
+              통사: <strong>{activeExam.scores.integratedSocial.percentile}%</strong>
             </span>
           </div>
         </div>

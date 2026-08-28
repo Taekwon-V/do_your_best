@@ -55,18 +55,18 @@ export default function MockExamTable({
           등록된 모의고사 기록이 없습니다. 상단의 버튼을 눌러 성적을 등록해 주세요.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs min-w-[700px]">
+        <div className="overflow-x-auto rounded-2xl border border-peach/50 scrollbar-thin">
+          <table className="w-full text-left text-xs min-w-[580px] sm:min-w-[700px]">
             <thead>
               <tr className="bg-cream/80 text-midnight font-bold border-b border-peach/40">
-                <th className="py-2.5 px-3 rounded-l-xl">시험명 / 시행일자</th>
-                <th className="py-2.5 px-3 text-center">국어(공통)</th>
-                <th className="py-2.5 px-3 text-center">수학(공통)</th>
-                <th className="py-2.5 px-3 text-center">영어(절대)</th>
-                <th className="py-2.5 px-3 text-center">한국사</th>
-                <th className="py-2.5 px-3 text-center">통합사회</th>
-                <th className="py-2.5 px-3 text-center">통합과학</th>
-                <th className="py-2.5 px-3 rounded-r-xl text-center">관리</th>
+                <th className="py-2.5 px-3">시험명 / 일자</th>
+                <th className="py-2.5 px-2.5 text-center">국어(공통)</th>
+                <th className="py-2.5 px-2.5 text-center">수학(공통)</th>
+                <th className="py-2.5 px-2.5 text-center">영어(절대)</th>
+                <th className="py-2.5 px-2.5 text-center">한국사</th>
+                <th className="py-2.5 px-2.5 text-center">통합사회</th>
+                <th className="py-2.5 px-2.5 text-center">통합과학</th>
+                <th className="py-2.5 px-3 text-center">관리</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-peach/30">

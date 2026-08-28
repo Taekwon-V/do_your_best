@@ -48,26 +48,26 @@ export default function GoalSeekSimulator() {
       {/* 1. 헤더 */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-navy/15">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-peach border-2 border-navy flex items-center justify-center shadow-retro shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-peach border-2 border-navy flex items-center justify-center shadow-retro shrink-0">
             <Target className="w-5 h-5 text-navy" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-navy tracking-tight">
-              2028 5등급제 수시 목표 등급 역산 (Goal-Seek)
+            <h2 className="text-base sm:text-xl font-black text-navy tracking-tight leading-tight">
+              2028 5등급제 수시 목표 등급 역산
             </h2>
-            <p className="text-xs text-navy-muted font-medium">
-              {activeChild.name} (현재 {result.currentGPA}등급 / 잔여 {remainingSemestersCount}개 학기 역산)
+            <p className="text-[11px] sm:text-xs text-navy-muted font-medium mt-0.5">
+              {activeChild.name} (현재 {result.currentGPA}등급 / 잔여 {remainingSemestersCount}개 학기 대상)
             </p>
           </div>
         </div>
 
         {/* 빠른 프리셋 목표 버튼 */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="grid grid-cols-2 sm:flex items-center gap-1.5 w-full sm:w-auto">
           {PRESET_TARGETS.map((preset) => (
             <button
               key={preset.name}
               onClick={() => setTargetGPA(preset.gpa)}
-              className={`px-2.5 py-1 rounded-xl text-xs font-bold border transition-all ${
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all text-center ${
                 Math.abs(targetGPA - preset.gpa) < 0.01
                   ? 'bg-coral text-navy border-navy shadow-retro font-black'
                   : 'bg-cream text-navy-muted border-navy/30 hover:bg-peach/40'

@@ -23,7 +23,7 @@ export default function BottomNav() {
   const { activeTab, setActiveTab } = useAdmissions();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t-2 border-navy px-2 py-1.5 shadow-lg safe-area-bottom">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t-2 border-navy px-1.5 py-1 safe-area-bottom shadow-lg">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
@@ -33,7 +33,7 @@ export default function BottomNav() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all duration-150 relative ${
+              className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all duration-150 relative min-w-[56px] min-h-[48px] ${
                 isActive
                   ? 'text-navy font-black scale-105'
                   : 'text-navy-muted/70 font-semibold hover:text-navy'
@@ -41,15 +41,15 @@ export default function BottomNav() {
             >
               {/* Active Background Pill Indicator */}
               {isActive && (
-                <span className="absolute inset-0 bg-coral/25 rounded-xl -z-10 animate-scaleIn" />
+                <span className="absolute inset-0 bg-coral/25 rounded-xl -z-10 animate-scaleIn border border-coral/40" />
               )}
 
               <Icon
                 className={`w-5 h-5 mb-0.5 transition-transform ${
-                  isActive ? 'text-coral scale-110 stroke-[2.5]' : 'stroke-[1.8]'
+                  isActive ? 'text-navy scale-110 stroke-[2.5]' : 'stroke-[1.8]'
                 }`}
               />
-              <span className="text-[10px] tracking-tight whitespace-nowrap">
+              <span className="text-[10px] tracking-tight whitespace-nowrap leading-none">
                 {tab.label}
               </span>
             </button>

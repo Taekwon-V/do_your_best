@@ -90,84 +90,85 @@ export default function JeongsiGapCard({
   };
 
   return (
-    <div className="bg-midnight rounded-3xl p-5 sm:p-6 text-cream shadow-md flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-navy rounded-3xl p-5 sm:p-6 text-cream shadow-retro-lg border-2 border-navy flex flex-col justify-between relative overflow-hidden space-y-4">
       {/* Background Decorative Accent */}
-      <div className="absolute -top-12 -right-12 w-36 h-36 bg-coral/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -top-12 -right-12 w-36 h-36 bg-coral/20 rounded-full blur-2xl pointer-events-none" />
 
       {/* Top Header */}
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-coral/20 flex items-center justify-center text-coral">
-              <Target className="w-4 h-4 text-coral" />
+            <div className="w-8 h-8 rounded-xl bg-coral border border-navy flex items-center justify-center text-navy shadow-sm shrink-0">
+              <Target className="w-4 h-4 text-navy" />
             </div>
-            <h3 className="font-bold text-cream text-base sm:text-lg">
+            <h3 className="font-black text-cream text-base sm:text-lg tracking-tight">
               정시 목표 대학 Gap 분석
             </h3>
           </div>
-          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-cream/10 text-cream/70 font-medium">
+          <span className="text-[10.5px] sm:text-[11px] px-2.5 py-0.5 rounded-full bg-white/15 text-cream border border-white/20 font-bold shrink-0">
             2026 수능 실측 입결 기준
           </span>
         </div>
 
         {/* Target University Dropdown Selector */}
-        <div className="relative mb-4">
+        <div className="relative mb-3.5">
           <select
             value={selectedTargetId}
             onChange={handleTargetChange}
-            className="w-full appearance-none bg-cream/10 border border-cream/20 rounded-2xl px-3.5 py-2.5 pr-9 text-xs sm:text-sm font-semibold text-cream focus:outline-none focus:ring-2 focus:ring-coral transition-all cursor-pointer"
+            aria-label="정시 목표 대학 선택"
+            className="w-full appearance-none bg-white/10 border-2 border-white/25 rounded-2xl px-3.5 py-2.5 pr-9 text-xs sm:text-sm font-bold text-cream focus:outline-none focus:ring-2 focus:ring-coral transition-all cursor-pointer"
           >
             {DEFAULT_TARGETS.map((t) => (
-              <option key={t.id} value={t.id} className="text-midnight bg-white">
+              <option key={t.id} value={t.id} className="text-navy bg-white font-bold">
                 [{t.group}] {t.univName} {t.deptName} (70% 컷: {t.percentileCut}%)
               </option>
             ))}
           </select>
-          <ChevronDown className="w-4 h-4 text-cream/60 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <ChevronDown className="w-4 h-4 text-cream/80 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
         {/* Comparison Scores Box */}
-        <div className="bg-cream/5 rounded-2xl p-4 border border-cream/10 mb-4">
-          <div className="flex items-center justify-between text-center divide-x divide-cream/10">
+        <div className="bg-white/10 rounded-2xl p-4 border border-white/15 mb-3">
+          <div className="flex items-center justify-between text-center divide-x divide-white/15">
             <div className="flex-1 px-2">
-              <p className="text-[11px] text-cream/60 mb-0.5">목표 대학 70% Cut</p>
+              <p className="text-[11px] text-cream/80 font-bold mb-0.5">목표 대학 70% Cut</p>
               <p className="text-xl sm:text-2xl font-black text-amber-300">
                 {selectedTarget.percentileCut}%
               </p>
-              <p className="text-[10px] text-cream/50 mt-0.5">
+              <p className="text-[10.5px] text-cream/80 font-semibold mt-0.5 truncate">
                 {selectedTarget.univName}
               </p>
             </div>
 
             <div className="flex-1 px-2">
-              <p className="text-[11px] text-cream/60 mb-0.5">최근 모의고사 환산</p>
-              <p className="text-xl sm:text-2xl font-black text-pastel-sky">
+              <p className="text-[11px] text-cream/80 font-bold mb-0.5">최근 모의고사 환산</p>
+              <p className="text-xl sm:text-2xl font-black text-sky">
                 {latestExam ? `${studentMetrics.weightedPercentile}%` : '-'}
               </p>
-              <p className="text-[10px] text-cream/50 mt-0.5">
+              <p className="text-[10.5px] text-cream/80 font-semibold mt-0.5 truncate">
                 {latestExam ? latestExam.examName.replace(/20\d\d년\s*/, '') : '시험 미등록'}
               </p>
             </div>
           </div>
 
           {/* Gap Status Pill */}
-          <div className="mt-3.5 pt-3 border-t border-cream/10 flex items-center justify-between">
-            <span className="text-xs text-cream/70 font-medium">목표 격차(Gap):</span>
+          <div className="mt-3 pt-3 border-t border-white/15 flex items-center justify-between flex-wrap gap-2">
+            <span className="text-xs text-cream/90 font-bold">목표 격차(Gap):</span>
             <div
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black shadow-sm ${
                 isSafe
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  : 'bg-coral/20 text-coral border border-coral/30'
+                  ? 'bg-emerald-400 text-navy border border-emerald-300'
+                  : 'bg-coral text-navy border border-coral-hover'
               }`}
             >
               {isSafe ? (
                 <>
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-navy" />
                   <span>+{Math.abs(gap)}%p 안정권 도달 ✅</span>
                 </>
               ) : (
                 <>
-                  <AlertCircle className="w-3.5 h-3.5" />
+                  <AlertCircle className="w-3.5 h-3.5 text-navy" />
                   <span>{Math.abs(gap)}%p 점수 부족 ⚠️</span>
                 </>
               )}
@@ -177,19 +178,19 @@ export default function JeongsiGapCard({
       </div>
 
       {/* Actionable Strategy Coaching Box */}
-      <div className="bg-coral/10 rounded-2xl p-3.5 border border-coral/20">
-        <div className="flex items-center gap-1.5 mb-1.5 text-coral text-xs font-bold">
-          <Zap className="w-3.5 h-3.5" />
+      <div className="bg-coral/20 rounded-2xl p-3.5 border-2 border-coral/40">
+        <div className="flex items-center gap-1.5 mb-1.5 text-coral text-xs font-black">
+          <Zap className="w-4 h-4 text-coral" />
           <span>점수 도약을 위한 우선순위 처방전</span>
         </div>
-        <p className="text-[11.5px] text-cream/80 leading-relaxed">
+        <p className="text-xs text-cream font-medium leading-relaxed break-keep">
           {isSafe ? (
             <>
-              현재 모의고사 성적이 <strong className="text-cream">{selectedTarget.deptName}</strong> 안정권입니다! 수능 당일까지 수학 고난도 킬러 문제 풀이 감각을 유지하세요.
+              현재 모의고사 성적이 <strong className="text-white underline decoration-sky decoration-2 font-black">{selectedTarget.deptName}</strong> 안정권입니다! 수능 당일까지 수학 고난도 킬러 문제 풀이 감각을 유지하세요.
             </>
           ) : (
             <>
-              가장 반영비가 높은 <strong className="text-coral">수학(40%)</strong>에서 4점짜리 1문제를 더 맞히면 백분위가 약 <strong className="text-cream">+3~5%p 상승</strong>하여 목표 컷에 즉시 도달할 수 있습니다.
+              가장 반영비가 높은 <strong className="text-amber-300 font-black">수학(40%)</strong>에서 4점짜리 1문제를 더 맞히면 백분위가 약 <strong className="text-white font-black">+3~5%p 상승</strong>하여 목표 컷에 즉시 도달할 수 있습니다.
             </>
           )}
         </p>

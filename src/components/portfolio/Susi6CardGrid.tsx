@@ -40,11 +40,11 @@ export default function Susi6CardGrid({
   const evaluateCsatRequirement = (target: TargetUniversity) => {
     const req = target.susiRequirements?.minimumCsatRequirement;
     if (!req || !req.requiredSubjectsCount || req.requiredSubjectsCount === 0) {
-      return { status: 'none', label: '수능최저 없음 ✨', color: 'text-midnight/60 bg-cream' };
+      return { status: 'none', label: '수능최저 없음 ✨', color: 'text-navy font-bold bg-cream border border-navy/20' };
     }
 
     if (!latestMock) {
-      return { status: 'unknown', label: '모의고사 기록 필요', color: 'text-midnight/50 bg-cream/50' };
+      return { status: 'unknown', label: '모의고사 기록 필요', color: 'text-navy-muted font-bold bg-cream/70 border border-navy/20' };
     }
 
     const s = latestMock.scores;
@@ -59,11 +59,11 @@ export default function Susi6CardGrid({
     const bestSum = grades.slice(0, req.requiredSubjectsCount).reduce((acc, g) => acc + g, 0);
 
     if (bestSum <= req.sumGradeLimit) {
-      return { status: 'pass', label: `최저 충족 (${bestSum} <= ${req.sumGradeLimit}) ✅`, color: 'text-emerald-700 bg-emerald-100 border border-emerald-300' };
+      return { status: 'pass', label: `최저 충족 (${bestSum} <= ${req.sumGradeLimit}) ✅`, color: 'text-emerald-900 font-black bg-emerald-100 border border-emerald-400' };
     } else if (bestSum === req.sumGradeLimit + 1) {
-      return { status: 'warning', label: `최저 위험 (+1등급 필요) ⚠️`, color: 'text-amber-800 bg-amber-100 border border-amber-300' };
+      return { status: 'warning', label: `최저 위험 (+1등급 필요) ⚠️`, color: 'text-amber-950 font-black bg-amber-100 border border-amber-400' };
     } else {
-      return { status: 'fail', label: `최저 미달 (${bestSum} > ${req.sumGradeLimit}) ❌`, color: 'text-red-700 bg-red-100 border border-red-300' };
+      return { status: 'fail', label: `최저 미달 (${bestSum} > ${req.sumGradeLimit}) ❌`, color: 'text-red-950 font-black bg-red-100 border border-red-400' };
     }
   };
 
@@ -71,13 +71,13 @@ export default function Susi6CardGrid({
   const evaluateGpaStatus = (expectedCut: number = 1.5) => {
     const diff = currentGPA - expectedCut;
     if (diff <= -0.15) {
-      return { label: '안정권 🟢', color: 'bg-emerald-100 text-emerald-800 border-emerald-300' };
+      return { label: '안정권 🟢', color: 'bg-emerald-100 text-emerald-900 border-emerald-400 font-bold' };
     } else if (diff <= 0.10) {
-      return { label: '적정권 🟡', color: 'bg-amber-100 text-amber-800 border-amber-300' };
+      return { label: '적정권 🟡', color: 'bg-amber-100 text-amber-950 border-amber-400 font-bold' };
     } else if (diff <= 0.35) {
-      return { label: '소신권 🟠', color: 'bg-orange-100 text-orange-800 border-orange-300' };
+      return { label: '소신권 🟠', color: 'bg-orange-100 text-orange-950 border-orange-400 font-bold' };
     } else {
-      return { label: '상향도전 🔴', color: 'bg-red-100 text-red-700 border-red-300' };
+      return { label: '상향도전 🔴', color: 'bg-red-100 text-red-950 border-red-400 font-bold' };
     }
   };
 
