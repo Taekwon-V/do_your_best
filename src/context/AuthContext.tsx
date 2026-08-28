@@ -25,24 +25,42 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const ALLOWED_EMAILS_STORAGE_KEY = 'admission_app_allowed_emails';
 
+// Gmail 점(dot) 무시 및 도메인 정규화 헬퍼 함수
+function normalizeEmail(email: string): string {
+  const trimmed = email.trim().toLowerCase();
+  const parts = trimmed.split('@');
+  if (parts.length !== 2) return trimmed;
+  const [localPart, domain] = parts;
+  if (domain === 'gmail.com' || domain === 'googlemail.com') {
+    return `${localPart.replace(/\./g, '')}@gmail.com`;
+  }
+  return trimmed;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [allowedEmails, setAllowedEmails] = useState<string[]>(INITIAL_FAMILY_DATA.allowedEmails);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 1. 로컬 저장된 허용 이메일 목록 불러오기
+  // 1. 로컬 저장된 허용 이메일 목록 불러오기 & 최신 목록과 병합
   useEffect(() => {
     try {
       const savedEmails = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
       if (savedEmails) {
-        setAllowedEmails(JSON.parse(savedEmails));
+        const parsed: string[] = JSON.parse(savedEmails);
+        // 최신 초기 목록과 합쳐서 누락 방지
+        const merged = Array.from(new Set([...INITIAL_FAMILY_DATA.allowedEmails, ...parsed]));
+        setAllowedEmails(merged);
+        localStorage.setItem(ALLOWED_EMAILS_STORAGE_KEY, JSON.stringify(merged));
+      } else {
+        localStorage.setItem(ALLOWED_EMAILS_STORAGE_KEY, JSON.stringify(INITIAL_FAMILY_DATA.allowedEmails));
       }
     } catch (e) {
       console.error('Failed to load allowed emails', e);
     }
   }, []);
 
-  // 2. Firebase Auth 인증 상태 실시간 리스너 (철저한 화이트리스트 대조)
+  // 2. Firebase Auth 인증 상태 실시간 리스너 (철저한 화이트리스트 대조 + Gmail 점 정규화)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser && firebaseUser.email) {
@@ -51,15 +69,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const currentAllowed = (() => {
           try {
             const saved = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
-            return saved ? JSON.parse(saved) : allowedEmails;
+            const list: string[] = saved ? JSON.parse(saved) : allowedEmails;
+            return Array.from(new Set([...INITIAL_FAMILY_DATA.allowedEmails, ...list]));
           } catch {
-            return allowedEmails;
+            return INITIAL_FAMILY_DATA.allowedEmails;
           }
         })();
 
-        // 엄격한 화이트리스트 검사
+        // 엄격한 화이트리스트 검사 (Gmail 점 무시 정규화 적용)
         const isAllowed = currentAllowed.some(
-          (email: string) => email.trim().toLowerCase() === userEmail
+          (email: string) => normalizeEmail(email) === normalizeEmail(userEmail)
         );
 
         setUser({
@@ -88,15 +107,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const currentAllowed = (() => {
         try {
           const saved = localStorage.getItem(ALLOWED_EMAILS_STORAGE_KEY);
-          return saved ? JSON.parse(saved) : allowedEmails;
+          const list: string[] = saved ? JSON.parse(saved) : allowedEmails;
+          return Array.from(new Set([...INITIAL_FAMILY_DATA.allowedEmails, ...list]));
         } catch {
-          return allowedEmails;
+          return INITIAL_FAMILY_DATA.allowedEmails;
         }
       })();
 
-      // 철저한 화이트리스트 검증 (자가 등록 불가)
+      // 철저한 화이트리스트 검증 (Gmail 점 무시 정규화 적용)
       const isAllowed = currentAllowed.some(
-        (e: string) => e.trim().toLowerCase() === email
+        (e: string) => normalizeEmail(e) === normalizeEmail(email)
       );
 
       setUser({

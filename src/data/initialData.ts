@@ -237,6 +237,7 @@ export const INITIAL_FAMILY_DATA: FamilyAppData = {
   familyId: 'our-happy-family',
   activeChildId: 'child-1-go2',
   allowedEmails: [
+    'inchul17.kim@gmail.com',
     'inchul17kim@gmail.com',
     'mybest1725@gmail.com',
     'dreamingjacob4628@gmail.com',

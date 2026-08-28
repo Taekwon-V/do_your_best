@@ -13,9 +13,14 @@
 - 자동 세션 유지 및 모바일/PC 실시간 연동
 
 ### 2.2 가족 이메일 화이트리스트 게이트 (`FamilyAccessGate`)
+* **등록된 가족 구성원 화이트리스트**:
+  * 👨 **아빠**: `inchul17.kim@gmail.com` (또는 `inchul17kim@gmail.com`)
+  * 👩 **엄마**: `mybest1725@gmail.com`
+  * 👦 **아들**: `dreamingjacob4628@gmail.com`
+  * 👧 **딸**: `happydana4628@gmail.com`
 * **보안 작동 방식**:
   1. 관리자(학부모) 및 가족의 구글 이메일이 화이트리스트(`allowedEmails`)에 등록됨
-  2. 로그인한 사용자의 이메일이 등록 목록에 존재할 때만 ➔ **대시보드 전체 접근 허용**
+  2. Gmail의 고유 정책인 **점(dot) 무시 정규화(`normalizeEmail`)**를 적용하여 `inchul17.kim`과 `inchul17kim` 모두 100% 동일 계정으로 자동 매칭 및 승인.
   3. 등록되지 않은 외부 계정 접근 시 ➔ **접근 제한 화면 노출 및 데이터 차단**
 
 ### 2.3 카카오톡 인앱 브라우저 탈출 (`InAppBrowserHandler`)
