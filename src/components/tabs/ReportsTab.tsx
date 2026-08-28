@@ -230,6 +230,7 @@ export default function ReportsTab() {
               { key: 'incheon', label: '국립인천대학교' },
               { key: 'cau', label: '중앙대학교' },
               { key: 'suwon', label: '수원대학교' },
+              { key: 'kyonggi', label: '경기대학교' },
             ].map((f) => (
               <button
                 key={f.key}

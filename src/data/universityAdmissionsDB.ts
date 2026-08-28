@@ -1635,7 +1635,320 @@ export const UNIVERSITY_ADMISSIONS_DB: UniversityData[] = [
     ],
   },
   // ==========================================
-  // 5. 주요 상위 대학 (서울대 / 연세대 / 고려대) - 6개 학과
+  // 5. 경기대학교 (KYONGGI UNIVERSITY) - 38개 전 학과 수록
+  // ==========================================
+  {
+    univId: 'kyonggi',
+    univName: '경기대학교',
+    shortName: '경기대',
+    badge: '수원·서울 수도권 명문 🏛️',
+    departments: [
+      // 1. 소프트웨어경영대학 (SW / AI / 경영 / 경제)
+      {
+        deptName: 'AI컴퓨터공학부 (컴퓨터공학전공)',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.25, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.45, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU종합/SW우수자', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 82.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: 'AI컴퓨터공학부 (인공지능전공)',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.28, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.48, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU종합/SW우수자', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 82.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: 'AI컴퓨터공학부 (SW안전보안전공)',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.32, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU종합/SW우수자', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.2, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '소프트웨어경영학부 (광역선발)',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.30, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 81.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '경영학부',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.28, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.45, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '경제학부',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.38, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.55, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '무역학과',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.52, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '산업경영공학과',
+        collegeName: '소프트웨어경영대학',
+        susiGyogwa: { expectedCut5: 2.42, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.58, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.2, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 2. 창의공과대학 (전자 / 기계 / 신소재 / 건축 / 스마트시티)
+      {
+        deptName: '전자공학부',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.28, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.48, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '기계시스템공학과',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.40, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.55, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '나노신소재공학과',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.40, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.55, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '건축학과 (5년제)',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.32, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '스마트시티공학부 (도시교통/건축공학)',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.45, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.60, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.2, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '사회에너지시스템공학과 (토목/환경)',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.48, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 79.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '창의공학부 (광역선발)',
+        collegeName: '창의공과대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.52, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'ga', percentileCut: 82.1, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 3. 사회과학대학 (공공안전 / 미디어 / 공공인재 / 법학)
+      {
+        deptName: '공공안전학부 (경찰행정학)',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 2.10, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.25, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'target', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 83.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '미디어영상학과',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 2.20, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.35, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 82.2, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '공공인재학부 (행정학)',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 2.32, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.48, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.2, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '법학과',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 2.30, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.48, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.2, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '휴먼서비스학부 (사회복지/청소년/상담심리)',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 2.32, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '사회과학부 (광역선발)',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 2.30, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.48, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'ga', percentileCut: 81.3, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 4. 관광문화대학 (서울캠퍼스)
+      {
+        deptName: '호텔외식경영학과',
+        collegeName: '관광문화대학 (서울)',
+        susiGyogwa: { expectedCut5: 2.22, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.38, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '관광개발경영학과',
+        collegeName: '관광문화대학 (서울)',
+        susiGyogwa: { expectedCut5: 2.30, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.45, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.0, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '관광문화콘텐츠학과',
+        collegeName: '관광문화대학 (서울)',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 5. 융합과학대학 (바이오 / 화학 / 수학)
+      {
+        deptName: '바이오융합학부',
+        collegeName: '융합과학대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.52, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '화학과',
+        collegeName: '융합과학대학',
+        susiGyogwa: { expectedCut5: 2.42, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.58, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.0, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '수학과',
+        collegeName: '융합과학대학',
+        susiGyogwa: { expectedCut5: 2.48, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.62, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 79.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '융합과학부 (광역선발)',
+        collegeName: '융합과학대학',
+        susiGyogwa: { expectedCut5: 2.40, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.55, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 80.5, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 6. 인문대학 (국문 / 영문 / 사학 / 문헌정보 / 글로벌어문 / 유아교육)
+      {
+        deptName: '유아교육과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.20, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.35, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '영어영문학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.32, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '국어국문학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.52, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '문헌정보학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '사학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.38, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.55, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 80.0, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '글로벌어문학부 (독/불/일/중/러)',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.45, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 79.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '인문학부 (광역선발)',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 2.35, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.52, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 80.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 7. 자유전공학부 (수원 / 서울)
+      {
+        deptName: '자유전공학부 (수원)',
+        collegeName: '자유전공학부',
+        susiGyogwa: { expectedCut5: 2.28, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.45, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 83.2, subjectWeights: { korean: 30, math: 35, inquiry: 20, english: 15, history: 0 } },
+      },
+      {
+        deptName: '자유전공학부 (서울)',
+        collegeName: '자유전공학부',
+        susiGyogwa: { expectedCut5: 2.32, minCsatDesc: '국수영탐(1) 중 2개 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.50, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 82.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 8. 예술체육대학 (디자인 / 미술 / 애니 / 체육)
+      {
+        deptName: '애니메이션학과 (웹툰/상상과표현)',
+        collegeName: '예술체육대학 (서울)',
+        susiGyogwa: { expectedCut5: 2.20, minCsatDesc: '수능최저 없음 (실기 70%)', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'target', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.40, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '실기우수자', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 84.0, subjectWeights: { korean: 40, math: 20, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '디자인비즈학부 (시각/산업/장신구)',
+        collegeName: '예술체육대학',
+        susiGyogwa: { expectedCut5: 2.65, minCsatDesc: '수능최저 없음 (실기 70%)', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 76.0, subjectWeights: { korean: 40, math: 20, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: 'Fine Arts 학부 (서양화/한국화/입체조형)',
+        collegeName: '예술체육대학',
+        susiGyogwa: { expectedCut5: 2.70, minCsatDesc: '수능최저 없음 (실기 70%)', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 2.90, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: 'KGU학생부종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 75.0, subjectWeights: { korean: 40, math: 20, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '체육학과 / 경호보안학과 / 스포츠과학부',
+        collegeName: '예술체육대학',
+        susiGyogwa: { expectedCut5: 2.80, minCsatDesc: '수능최저 없음 (실기 70%)', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 3.00, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'safe', typeName: '실기/종합', admissionType: '종합' },
+        jeongsi: { group: 'na', percentileCut: 79.5, subjectWeights: { korean: 35, math: 20, inquiry: 25, english: 20, history: 0 } },
+      },
+    ],
+  },
+  // ==========================================
+  // 6. 주요 상위 대학 (서울대 / 연세대 / 고려대) - 6개 학과
   // ==========================================
   {
     univId: 'sky',
