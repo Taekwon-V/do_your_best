@@ -50,14 +50,14 @@ export default function Jeongsi3GunGrid({
     const wInq = weights.inquiry || 25;
     const totalW = wKor + wMat + wInq || 100;
 
-    if (!latestMock) {
+    if (!latestMock || !latestMock.scores) {
       return { score: 0, gap: 0, isSafe: false, targetCut, wKor, wMat, wInq };
     }
 
-    const math = latestMock.scores.math.percentile ?? 0;
-    const korean = latestMock.scores.korean.percentile ?? 0;
-    const soc = latestMock.scores.integratedSocial.percentile ?? 0;
-    const sci = latestMock.scores.integratedScience.percentile ?? 0;
+    const math = latestMock.scores.math?.percentile ?? 0;
+    const korean = latestMock.scores.korean?.percentile ?? 0;
+    const soc = latestMock.scores.integratedSocial?.percentile ?? 0;
+    const sci = latestMock.scores.integratedScience?.percentile ?? 0;
     const tamgu = (soc + sci) / 2;
 
     const weightedScore = Number(((korean * wKor + math * wMat + tamgu * wInq) / totalW).toFixed(1));

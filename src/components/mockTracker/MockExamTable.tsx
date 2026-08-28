@@ -5,7 +5,7 @@ import { MockExamRecord } from '@/types/admissions';
 import { Plus, Edit2, Trash2, Calendar, FileText, Target, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface MockExamTableProps {
-  mockExams: MockExamRecord[];
+  mockExams?: MockExamRecord[];
   targetPercentile?: number;
   targetUniversityName?: string;
   targetWeights?: {
@@ -35,25 +35,27 @@ export default function MockExamTable({
   );
 
   // Helper to compute university weighted percentile
-  const computeWeightedScore = (exam: MockExamRecord) => {
-    const mathPct = exam.scores.math.percentile ?? 0;
-    const koreanPct = exam.scores.korean.percentile ?? 0;
-    const socPct = exam.scores.integratedSocial.percentile ?? 0;
-    const sciPct = exam.scores.integratedScience.percentile ?? 0;
+  const computeWeightedScore = (exam?: MockExamRecord | null) => {
+    if (!exam || !exam.scores) return 0;
+
+    const mathPct = exam.scores.math?.percentile ?? 0;
+    const koreanPct = exam.scores.korean?.percentile ?? 0;
+    const socPct = exam.scores.integratedSocial?.percentile ?? 0;
+    const sciPct = exam.scores.integratedScience?.percentile ?? 0;
     const tamguPct = (socPct + sciPct) / 2;
 
-    const wKor = targetWeights.korean || 25;
-    const wMat = targetWeights.math || 40;
-    const wInq = targetWeights.inquiry || 25;
+    const wKor = targetWeights?.korean || 25;
+    const wMat = targetWeights?.math || 40;
+    const wInq = targetWeights?.inquiry || 25;
     const totalW = wKor + wMat + wInq || 100;
 
     const weighted = (koreanPct * wKor + mathPct * wMat + tamguPct * wInq) / totalW;
     return Number(weighted.toFixed(1));
   };
 
-  const wKor = targetWeights.korean || 25;
-  const wMat = targetWeights.math || 40;
-  const wInq = targetWeights.inquiry || 25;
+  const wKor = targetWeights?.korean || 25;
+  const wMat = targetWeights?.math || 40;
+  const wInq = targetWeights?.inquiry || 25;
 
   return (
     <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-peach/50">
@@ -131,107 +133,117 @@ export default function MockExamTable({
                       </p>
                     </td>
 
-                    {/* 국어 */}
-                    <td className="py-3 px-3 text-center">
-                      <span className="font-bold text-midnight text-xs block">
-                        {exam.scores.korean.percentile ?? '-'}%
+                    {/* Korean */}
+                    <td className="py-3 px-2.5 text-center">
+                      <span className="font-bold text-midnight block">
+                        {exam.scores?.korean?.percentile !== undefined ? `${exam.scores.korean.percentile}%` : '-'}
                       </span>
-                      <span className="inline-block text-[10px] px-1.5 py-0.2 rounded bg-midnight/10 text-midnight font-bold">
-                        {exam.scores.korean.grade}등급
-                      </span>
-                    </td>
-
-                    {/* 수학 */}
-                    <td className="py-3 px-3 text-center">
-                      <span className="font-bold text-coral text-xs block">
-                        {exam.scores.math.percentile ?? '-'}%
-                      </span>
-                      <span className="inline-block text-[10px] px-1.5 py-0.2 rounded bg-coral/20 text-coral font-bold">
-                        {exam.scores.math.grade}등급
-                      </span>
-                    </td>
-
-                    {/* 영어 */}
-                    <td className="py-3 px-3 text-center">
-                      <span className="inline-block text-xs px-2 py-0.5 rounded-lg bg-cream font-bold text-midnight border border-peach/50">
-                        {exam.scores.english.grade}등급
-                      </span>
-                    </td>
-
-                    {/* 한국사 */}
-                    <td className="py-3 px-3 text-center">
-                      <span className="inline-block text-xs px-2 py-0.5 rounded-lg bg-cream font-bold text-midnight/80 border border-peach/50">
-                        {exam.scores.koreanHistory.grade}등급
-                      </span>
-                    </td>
-
-                    {/* 통합사회 */}
-                    <td className="py-3 px-3 text-center">
-                      <span className="font-bold text-amber-700 text-xs block">
-                        {exam.scores.integratedSocial.percentile ?? '-'}%
-                      </span>
-                      <span className="inline-block text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold">
-                        {exam.scores.integratedSocial.grade}등급
-                      </span>
-                    </td>
-
-                    {/* 통합과학 */}
-                    <td className="py-3 px-3 text-center">
-                      <span className="font-bold text-emerald-700 text-xs block">
-                        {exam.scores.integratedScience.percentile ?? '-'}%
-                      </span>
-                      <span className="inline-block text-[10px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold">
-                        {exam.scores.integratedScience.grade}등급
-                      </span>
-                    </td>
-
-                    {/* 🌟 🎯 Target-Weighted Score Column */}
-                    <td className="py-3 px-3 text-center bg-indigo-50/40 border-x border-indigo-100">
-                      <div className="space-y-1">
-                        <span className="text-sm sm:text-base font-black text-indigo-900 block leading-tight">
-                          {weightedScore}%
+                      {exam.scores?.korean?.grade && (
+                        <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 rounded font-bold bg-navy/10 text-navy">
+                          {exam.scores.korean.grade}등급
                         </span>
-                        <div className="flex items-center justify-center">
-                          <span
-                            className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-black ${
-                              isPass
-                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                                : 'bg-rose-100 text-rose-800 border border-rose-300'
-                            }`}
-                          >
-                            {isPass ? (
-                              <>
-                                <CheckCircle2 className="w-3 h-3" />
-                                <span>+{Math.abs(gap)}%p 도달</span>
-                              </>
-                            ) : (
-                              <>
-                                <AlertCircle className="w-3 h-3" />
-                                <span>{Math.abs(gap)}%p 부족</span>
-                              </>
-                            )}
-                          </span>
-                        </div>
-                        <span className="text-[9.5px] text-indigo-600 block">
-                          국{wKor}·수{wMat}·탐{wInq}
+                      )}
+                    </td>
+
+                    {/* Math */}
+                    <td className="py-3 px-2.5 text-center">
+                      <span className="font-bold text-coral block">
+                        {exam.scores?.math?.percentile !== undefined ? `${exam.scores.math.percentile}%` : '-'}
+                      </span>
+                      {exam.scores?.math?.grade && (
+                        <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 rounded font-bold bg-coral/15 text-coral">
+                          {exam.scores.math.grade}등급
+                        </span>
+                      )}
+                    </td>
+
+                    {/* English */}
+                    <td className="py-3 px-2.5 text-center">
+                      {exam.scores?.english?.grade ? (
+                        <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-pastel-yellow text-midnight border border-peach/50">
+                          {exam.scores.english.grade}등급
+                        </span>
+                      ) : '-'}
+                    </td>
+
+                    {/* Korean History */}
+                    <td className="py-3 px-2.5 text-center">
+                      {exam.scores?.koreanHistory?.grade ? (
+                        <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-pastel-yellow text-midnight border border-peach/50">
+                          {exam.scores.koreanHistory.grade}등급
+                        </span>
+                      ) : '-'}
+                    </td>
+
+                    {/* Integrated Social */}
+                    <td className="py-3 px-2.5 text-center">
+                      <span className="font-semibold text-midnight block">
+                        {exam.scores?.integratedSocial?.percentile !== undefined ? `${exam.scores.integratedSocial.percentile}%` : '-'}
+                      </span>
+                      {exam.scores?.integratedSocial?.grade && (
+                        <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 rounded font-bold bg-amber-100 text-amber-900">
+                          {exam.scores.integratedSocial.grade}등급
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Integrated Science */}
+                    <td className="py-3 px-2.5 text-center">
+                      <span className="font-semibold text-midnight block">
+                        {exam.scores?.integratedScience?.percentile !== undefined ? `${exam.scores.integratedScience.percentile}%` : '-'}
+                      </span>
+                      {exam.scores?.integratedScience?.grade && (
+                        <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 rounded font-bold bg-emerald-100 text-emerald-900">
+                          {exam.scores.integratedScience.grade}등급
+                        </span>
+                      )}
+                    </td>
+
+                    {/* 🎯 Target University Specific Weighted Score Cell */}
+                    <td className="py-3 px-3 text-center bg-indigo-50/40 border-x border-indigo-100">
+                      <div className="font-black text-sm text-indigo-950">
+                        {weightedScore}%
+                      </div>
+                      <div className="mt-1 flex items-center justify-center gap-1">
+                        <span
+                          className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10.5px] font-bold ${
+                            isPass
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                              : 'bg-rose-100 text-rose-800 border border-rose-300'
+                          }`}
+                        >
+                          {isPass ? (
+                            <>
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>+{Math.abs(gap)}%p 도달</span>
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="w-3 h-3 text-rose-600" />
+                              <span>{Math.abs(gap)}%p 부족</span>
+                            </>
+                          )}
                         </span>
                       </div>
+                      <span className="text-[9.5px] text-indigo-700 font-semibold block mt-0.5">
+                        국{wKor}·수{wMat}·탐{wInq}
+                      </span>
                     </td>
 
-                    {/* Edit / Delete Actions */}
+                    {/* Action buttons */}
                     <td className="py-3 px-3 text-center">
-                      <div className="flex items-center justify-center gap-1">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => onEditClick(exam)}
-                          className="p-1 rounded-lg text-midnight/50 hover:text-midnight hover:bg-peach/30 transition-colors"
                           title="수정"
+                          className="p-1.5 rounded-lg hover:bg-peach/40 text-midnight/70 hover:text-midnight transition-all"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => onDeleteClick(exam.id)}
-                          className="p-1 rounded-lg text-midnight/40 hover:text-coral hover:bg-coral/10 transition-colors"
                           title="삭제"
+                          className="p-1.5 rounded-lg hover:bg-red-50 text-midnight/50 hover:text-red-600 transition-all"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

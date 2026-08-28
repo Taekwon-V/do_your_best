@@ -5,7 +5,7 @@ import { MockExamRecord } from '@/types/admissions';
 import { TrendingUp, Award, Filter, Info, Target, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface MockExamChartProps {
-  mockExams: MockExamRecord[];
+  mockExams?: MockExamRecord[];
   targetPercentile?: number;
   targetUniversityName?: string;
   targetWeights?: {
@@ -30,6 +30,7 @@ export default function MockExamChart({
 
   // Sort exams chronologically by date
   const sortedExams = useMemo(() => {
+    if (!mockExams || mockExams.length === 0) return [];
     return [...mockExams].sort(
       (a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime()
     );
@@ -47,7 +48,6 @@ export default function MockExamChart({
     const count = sortedExams.length;
     if (count <= 1) return padding.left + graphWidth / 2;
 
-    // 양쪽에서 95px씩 안쪽으로 여유를 두어 목표선 텍스트 및 경계와 겹치지 않음
     const horizontalMargin = 95;
     const availableWidth = graphWidth - horizontalMargin * 2;
     return padding.left + horizontalMargin + (index / (count - 1)) * availableWidth;
@@ -55,21 +55,23 @@ export default function MockExamChart({
 
   // Y coordinate calculation for percentile (0 ~ 100)
   const getY = (percentile: number = 0) => {
-    const clamped = Math.max(0, Math.min(100, percentile));
+    const clamped = Math.max(0, Math.min(100, Number.isFinite(percentile) ? percentile : 0));
     return padding.top + graphHeight - (clamped / 100) * graphHeight;
   };
 
-  // Compute university-weighted percentile for an exam
-  const getWeightedPercentile = (exam: MockExamRecord) => {
-    const mathPct = exam.scores.math.percentile ?? 0;
-    const koreanPct = exam.scores.korean.percentile ?? 0;
-    const socPct = exam.scores.integratedSocial.percentile ?? 0;
-    const sciPct = exam.scores.integratedScience.percentile ?? 0;
+  // Compute university-weighted percentile for an exam (with safe null-checks)
+  const getWeightedPercentile = (exam?: MockExamRecord | null) => {
+    if (!exam || !exam.scores) return 0;
+
+    const mathPct = exam.scores.math?.percentile ?? 0;
+    const koreanPct = exam.scores.korean?.percentile ?? 0;
+    const socPct = exam.scores.integratedSocial?.percentile ?? 0;
+    const sciPct = exam.scores.integratedScience?.percentile ?? 0;
     const tamguPct = (socPct + sciPct) / 2;
 
-    const wKor = targetWeights.korean || 25;
-    const wMat = targetWeights.math || 40;
-    const wInq = targetWeights.inquiry || 25;
+    const wKor = targetWeights?.korean || 25;
+    const wMat = targetWeights?.math || 40;
+    const wInq = targetWeights?.inquiry || 25;
     const totalW = wKor + wMat + wInq || 100;
 
     const weighted = (koreanPct * wKor + mathPct * wMat + tamguPct * wInq) / totalW;
@@ -90,10 +92,10 @@ export default function MockExamChart({
   };
 
   const weightedPath = generatePath((e) => getWeightedPercentile(e));
-  const mathPath = generatePath((e) => e.scores.math.percentile);
-  const koreanPath = generatePath((e) => e.scores.korean.percentile);
-  const sciencePath = generatePath((e) => e.scores.integratedScience.percentile);
-  const socialPath = generatePath((e) => e.scores.integratedSocial.percentile);
+  const mathPath = generatePath((e) => e.scores?.math?.percentile);
+  const koreanPath = generatePath((e) => e.scores?.korean?.percentile);
+  const sciencePath = generatePath((e) => e.scores?.integratedScience?.percentile);
+  const socialPath = generatePath((e) => e.scores?.integratedSocial?.percentile);
 
   const targetY = getY(targetPercentile);
 
@@ -109,14 +111,21 @@ export default function MockExamChart({
     );
   }
 
-  const activeExam = hoveredIndex !== null ? sortedExams[hoveredIndex] : sortedExams[sortedExams.length - 1];
+  // Safe active exam selection
+  const safeHoveredIndex =
+    hoveredIndex !== null && hoveredIndex >= 0 && hoveredIndex < sortedExams.length
+      ? hoveredIndex
+      : null;
+  const activeExam =
+    safeHoveredIndex !== null ? sortedExams[safeHoveredIndex] : sortedExams[sortedExams.length - 1];
+
   const activeWeightedPct = getWeightedPercentile(activeExam);
   const activeGap = Number((activeWeightedPct - targetPercentile).toFixed(1));
   const isActiveSafe = activeGap >= 0;
 
-  const wKor = targetWeights.korean || 25;
-  const wMat = targetWeights.math || 40;
-  const wInq = targetWeights.inquiry || 25;
+  const wKor = targetWeights?.korean || 25;
+  const wMat = targetWeights?.math || 40;
+  const wInq = targetWeights?.inquiry || 25;
 
   return (
     <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-peach/50 flex flex-col justify-between space-y-3.5">
@@ -253,7 +262,7 @@ export default function MockExamChart({
             strokeDasharray="5 4"
           />
 
-          {/* 🌟 Target Line Pill Badge at Top-Left (데이터 포인트와 절대 겹치지 않는 위치) */}
+          {/* 🌟 Target Line Pill Badge at Top-Left */}
           <g>
             <rect
               x={padding.left + 4}
@@ -341,13 +350,13 @@ export default function MockExamChart({
           {/* Interactive Data Points & Centered Nodes */}
           {sortedExams.map((exam, idx) => {
             const x = getX(idx);
-            const isHovered = hoveredIndex === idx;
+            const isHovered = safeHoveredIndex === idx;
 
             const weightedScore = getWeightedPercentile(exam);
-            const mathScore = exam.scores.math.percentile ?? 0;
-            const koreanScore = exam.scores.korean.percentile ?? 0;
-            const sciScore = exam.scores.integratedScience.percentile ?? 0;
-            const socScore = exam.scores.integratedSocial.percentile ?? 0;
+            const mathScore = exam.scores?.math?.percentile ?? 0;
+            const koreanScore = exam.scores?.korean?.percentile ?? 0;
+            const sciScore = exam.scores?.integratedScience?.percentile ?? 0;
+            const socScore = exam.scores?.integratedSocial?.percentile ?? 0;
 
             const currentScore =
               activeFilter === 'all'
@@ -365,7 +374,7 @@ export default function MockExamChart({
 
             return (
               <g
-                key={exam.id}
+                key={exam.id || `exam-${idx}`}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 className="cursor-pointer"
               >
@@ -436,7 +445,7 @@ export default function MockExamChart({
                   fontWeight={isHovered ? '900' : '700'}
                   fill={isHovered ? '#001858' : '#334155'}
                 >
-                  {exam.examName.replace(/20\d\d년\s*/, '')}
+                  {(exam.examName || '').replace(/20\d\d년\s*/, '')}
                 </text>
                 <text
                   x={x}
@@ -455,7 +464,7 @@ export default function MockExamChart({
       </div>
 
       {/* 🎯 Target-Weighted Score & Breakdown Summary Bar */}
-      {activeExam && (
+      {activeExam && activeExam.scores && (
         <div className="bg-gradient-to-r from-indigo-900 to-navy text-cream rounded-2xl p-3.5 border-2 border-indigo-500/40 shadow-sm space-y-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -504,19 +513,19 @@ export default function MockExamChart({
           {/* Subject breakdown pill strip */}
           <div className="pt-2 border-t border-white/15 flex items-center gap-3 text-[11px] text-cream/80 flex-wrap">
             <span>
-              국어({wKor}%): <strong className="text-white font-bold">{activeExam.scores.korean.percentile}%</strong> ({activeExam.scores.korean.grade}등급)
+              국어({wKor}%): <strong className="text-white font-bold">{activeExam.scores.korean?.percentile ?? '-'}%</strong> ({activeExam.scores.korean?.grade ?? '-'}등급)
             </span>
             <span>•</span>
             <span className="text-amber-200">
-              수학({wMat}%): <strong className="text-amber-300 font-bold">{activeExam.scores.math.percentile}%</strong> ({activeExam.scores.math.grade}등급)
+              수학({wMat}%): <strong className="text-amber-300 font-bold">{activeExam.scores.math?.percentile ?? '-'}%</strong> ({activeExam.scores.math?.grade ?? '-'}등급)
             </span>
             <span>•</span>
             <span>
-              탐구({wInq}%): <strong className="text-white font-bold">{((activeExam.scores.integratedScience.percentile ?? 0) + (activeExam.scores.integratedSocial.percentile ?? 0)) / 2}%</strong>
+              탐구({wInq}%): <strong className="text-white font-bold">{(((activeExam.scores.integratedScience?.percentile ?? 0) + (activeExam.scores.integratedSocial?.percentile ?? 0)) / 2).toFixed(1)}%</strong>
             </span>
             <span>•</span>
             <span>
-              영어: <strong className="text-white font-bold">{activeExam.scores.english.grade}등급</strong>
+              영어: <strong className="text-white font-bold">{activeExam.scores.english?.grade ?? '-'}등급</strong>
             </span>
           </div>
         </div>

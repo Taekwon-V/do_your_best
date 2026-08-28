@@ -50,50 +50,6 @@ const AdmissionsContext = createContext<AdmissionsContextType | undefined>(undef
 
 const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data';
 const TARGET_GPA_STORAGE_KEY = 'admission_app_target_gpa';
-const ACTIVE_TAB_STORAGE_KEY = 'admission_app_active_tab';
-
-// Helper to ensure data contains actual baseline data if empty or outdated
-function ensureCompleteFamilyData(data: FamilyAppData | null): FamilyAppData {
-  if (!data || !data.children || data.children.length === 0) {
-    return INITIAL_FAMILY_DATA;
-  }
-  const child1 = data.children.find((c) => c.id === 'child-1-go2');
-  if (!child1) return INITIAL_FAMILY_DATA;
-
-  const defaultChild1 = INITIAL_FAMILY_DATA.children[0];
-
-  const mergedCourses =
-    child1.courses && child1.courses.length >= defaultChild1.courses.length
-      ? child1.courses
-      : defaultChild1.courses;
-
-  const mergedMockExams =
-    child1.mockExams && child1.mockExams.length >= defaultChild1.mockExams.length
-      ? child1.mockExams
-      : defaultChild1.mockExams;
-
-  const mergedTargetUniversities =
-    child1.targetUniversities && child1.targetUniversities.length >= defaultChild1.targetUniversities.length
-      ? child1.targetUniversities
-      : defaultChild1.targetUniversities;
-
-  const updatedChildren = data.children.map((c) => {
-    if (c.id === 'child-1-go2') {
-      return {
-        ...c,
-        courses: mergedCourses,
-        mockExams: mergedMockExams,
-        targetUniversities: mergedTargetUniversities,
-      };
-    }
-    return c;
-  });
-
-  return {
-    ...data,
-    children: updatedChildren,
-  };
-}
 
 export function AdmissionsProvider({ children }: { children: React.ReactNode }) {
   const [familyData, setFamilyData] = useState<FamilyAppData>(() => {
@@ -102,7 +58,9 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         const saved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
-          return ensureCompleteFamilyData(parsed);
+          if (parsed && Array.isArray(parsed.children) && parsed.children.length > 0) {
+            return parsed;
+          }
         }
       } catch (e) {
         console.error('Initial storage parse error:', e);
@@ -113,20 +71,23 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
 
   const [targetGPA, setTargetGPAState] = useState<number>(1.15);
   const [activeTab, setActiveTabState] = useState<MainTabKey>('home');
-  const [isLoaded, setIsLoaded] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>('synced');
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
-  // 1. 초기 로컬스토리지 복구 및 검증
+  // 1. 초기 로컬스토리지 복구
   useEffect(() => {
     try {
       const savedData = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
       if (savedData) {
         const parsed = JSON.parse(savedData);
-        const validData = ensureCompleteFamilyData(parsed);
-        setFamilyData(validData);
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(validData));
+        if (parsed && Array.isArray(parsed.children) && parsed.children.length > 0) {
+          setFamilyData(parsed);
+        } else {
+          setFamilyData(INITIAL_FAMILY_DATA);
+          localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(INITIAL_FAMILY_DATA));
+        }
       } else {
+        setFamilyData(INITIAL_FAMILY_DATA);
         localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(INITIAL_FAMILY_DATA));
       }
       const savedTarget = localStorage.getItem(TARGET_GPA_STORAGE_KEY);
@@ -135,12 +96,10 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
       }
     } catch (e) {
       console.error('Failed to load admissions data from storage', e);
-    } finally {
-      setIsLoaded(true);
     }
   }, []);
 
-  // 클라우드 백업 전송 헬퍼 (무소음 백그라운드)
+  // 클라우드 백업 전송 헬퍼
   const syncToCloud = useCallback(async (data: FamilyAppData) => {
     if (!db) return;
     try {
@@ -149,12 +108,11 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
       setSyncStatus('synced');
       setLastSyncedAt(new Date());
     } catch (err: any) {
-      // Background sync notice
       console.warn('Cloud sync notice:', err?.message || err);
     }
   }, []);
 
-  // 2. Cloud Firestore 실시간 리스너 및 로그인 시 안전 연동
+  // 2. Cloud Firestore 실시간 리스너
   useEffect(() => {
     if (!db) return;
 
@@ -165,43 +123,39 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         try {
           const familyDocRef = doc(db, 'families', 'our-happy-family');
           
-          // 1차 getDoc으로 클라우드 데이터 확인
           const docSnap = await getDoc(familyDocRef);
           if (docSnap.exists()) {
             const cloudData = docSnap.data() as FamilyAppData;
-            if (cloudData && cloudData.children && cloudData.children.length > 0) {
-              const validCloudData = ensureCompleteFamilyData(cloudData);
-              setFamilyData(validCloudData);
-              localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(validCloudData));
+            if (cloudData && Array.isArray(cloudData.children) && cloudData.children.length > 0) {
+              setFamilyData(cloudData);
+              localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
             }
           } else {
-            // 클라우드에 아직 없으면 현재 데이터 전송
+            // 클라우드에 아직 없으면 로컬 데이터 최초 업로드
             const localSaved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
             const currentData = localSaved ? JSON.parse(localSaved) : INITIAL_FAMILY_DATA;
-            await syncToCloud(ensureCompleteFamilyData(currentData));
+            await syncToCloud(currentData);
           }
 
           setSyncStatus('synced');
           setLastSyncedAt(new Date());
 
-          // 2차 onSnapshot 실시간 동기화 연결
           if (unsubscribeSnapshot) unsubscribeSnapshot();
           unsubscribeSnapshot = onSnapshot(
             familyDocRef,
             (snapshot) => {
               if (snapshot.exists()) {
                 const updatedCloudData = snapshot.data() as FamilyAppData;
-                if (updatedCloudData && updatedCloudData.children && updatedCloudData.children.length > 0) {
-                  const validData = ensureCompleteFamilyData(updatedCloudData);
-                  setFamilyData(validData);
-                  localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(validData));
+                if (updatedCloudData && Array.isArray(updatedCloudData.children) && updatedCloudData.children.length > 0) {
+                  setFamilyData(updatedCloudData);
+                  localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(updatedCloudData));
                   setSyncStatus('synced');
                   setLastSyncedAt(new Date());
                 }
               }
             },
             (error) => {
-              console.warn('Firestore snapshot listener notice:', error.message);
+              console.warn('Firestore listener notice:', error.message);
             }
           );
         } catch (e: any) {
@@ -230,10 +184,9 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         const docSnap = await getDoc(familyDocRef);
         if (docSnap.exists()) {
           const cloudData = docSnap.data() as FamilyAppData;
-          if (cloudData && cloudData.children) {
-            const valid = ensureCompleteFamilyData(cloudData);
-            setFamilyData(valid);
-            localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(valid));
+          if (cloudData && Array.isArray(cloudData.children)) {
+            setFamilyData(cloudData);
+            localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
             setSyncStatus('synced');
             setLastSyncedAt(new Date());
             return;
@@ -273,13 +226,23 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     localStorage.setItem(TARGET_GPA_STORAGE_KEY, rounded.toString());
   };
 
-  // 활성 자녀 객체
+  // 활성 자녀 객체 (안전한 기본값 보장)
   const activeChild = useMemo(() => {
-    return (
-      familyData.children.find((c) => c.id === familyData.activeChildId) ||
-      familyData.children[0] ||
-      INITIAL_FAMILY_DATA.children[0]
-    );
+    const found = familyData?.children?.find((c) => c.id === familyData.activeChildId);
+    if (found) {
+      return {
+        ...found,
+        courses: found.courses || [],
+        mockExams: found.mockExams || [],
+        targetUniversities: found.targetUniversities || [],
+      };
+    }
+    return {
+      ...INITIAL_FAMILY_DATA.children[0],
+      courses: INITIAL_FAMILY_DATA.children[0].courses || [],
+      mockExams: INITIAL_FAMILY_DATA.children[0].mockExams || [],
+      targetUniversities: INITIAL_FAMILY_DATA.children[0].targetUniversities || [],
+    };
   }, [familyData]);
 
   // 자녀 전환
@@ -310,233 +273,164 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
 
   // 단일 과목 추가
   const addCourse = (childId: string, course: SemesterCourseGrade) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const existingCourses = child.courses.filter((c) => c.id !== course.id);
-          return {
-            ...child,
-            courses: [...existingCourses, course],
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingCourses = (child.courses || []).filter((c) => c.id !== course.id);
+        return {
+          ...child,
+          courses: [...existingCourses, course],
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 단일 과목 수정
   const updateCourse = (childId: string, course: SemesterCourseGrade) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const updatedCourses = child.courses.map((c) => (c.id === course.id ? course : c));
-          return {
-            ...child,
-            courses: updatedCourses,
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const updatedCourses = (child.courses || []).map((c) => (c.id === course.id ? course : c));
+        return {
+          ...child,
+          courses: updatedCourses,
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 여러 과목 일괄 수정/추가
   const updateMultipleCourses = (childId: string, newCourses: SemesterCourseGrade[]) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const courseMap = new Map(child.courses.map((c) => [c.id, c]));
-          newCourses.forEach((nc) => {
-            courseMap.set(nc.id, nc);
-          });
-          return {
-            ...child,
-            courses: Array.from(courseMap.values()),
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const courseMap = new Map((child.courses || []).map((c) => [c.id, c]));
+        newCourses.forEach((nc) => {
+          courseMap.set(nc.id, nc);
+        });
+        return {
+          ...child,
+          courses: Array.from(courseMap.values()),
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 과목 삭제
   const deleteCourse = (childId: string, courseId: string) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          return {
-            ...child,
-            courses: child.courses.filter((c) => c.id !== courseId),
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        return {
+          ...child,
+          courses: (child.courses || []).filter((c) => c.id !== courseId),
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 모의고사 추가
   const addMockExam = (childId: string, exam: MockExamRecord) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const existingExams = child.mockExams ? child.mockExams.filter((e) => e.id !== exam.id) : [];
-          return {
-            ...child,
-            mockExams: [...existingExams, exam],
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingExams = (child.mockExams || []).filter((e) => e.id !== exam.id);
+        return {
+          ...child,
+          mockExams: [...existingExams, exam],
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 모의고사 수정
   const updateMockExam = (childId: string, exam: MockExamRecord) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const existingExams = child.mockExams || [];
-          const updated = existingExams.map((e) => (e.id === exam.id ? exam : e));
-          return {
-            ...child,
-            mockExams: updated,
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingExams = child.mockExams || [];
+        const updated = existingExams.map((e) => (e.id === exam.id ? exam : e));
+        return {
+          ...child,
+          mockExams: updated,
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
-  // 모의고사 삭제
+  // 모의고사 삭제 (안전하게 100% 영속화)
   const deleteMockExam = (childId: string, examId: string) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          return {
-            ...child,
-            mockExams: (child.mockExams || []).filter((e) => e.id !== examId),
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        return {
+          ...child,
+          mockExams: (child.mockExams || []).filter((e) => e.id !== examId),
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 목표 대학 추가
   const addTargetUniversity = (childId: string, target: TargetUniversity) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const existingTargets = (child.targetUniversities || []).filter((t) => t.id !== target.id);
-          return {
-            ...child,
-            targetUniversities: [...existingTargets, target],
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingTargets = (child.targetUniversities || []).filter((t) => t.id !== target.id);
+        return {
+          ...child,
+          targetUniversities: [...existingTargets, target],
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 목표 대학 수정
   const updateTargetUniversity = (childId: string, target: TargetUniversity) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          const existingTargets = child.targetUniversities || [];
-          const updated = existingTargets.map((t) => (t.id === target.id ? target : t));
-          return {
-            ...child,
-            targetUniversities: updated,
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingTargets = child.targetUniversities || [];
+        const updated = existingTargets.map((t) => (t.id === target.id ? target : t));
+        return {
+          ...child,
+          targetUniversities: updated,
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
-  // 목표 대학 삭제
+  // 목표 대학 삭제 (안전하게 100% 영속화)
   const deleteTargetUniversity = (childId: string, targetId: string) => {
-    setFamilyData((prev) => {
-      const updatedChildren = prev.children.map((child) => {
-        if (child.id === childId) {
-          return {
-            ...child,
-            targetUniversities: (child.targetUniversities || []).filter((t) => t.id !== targetId),
-          };
-        }
-        return child;
-      });
-      const nextData: FamilyAppData = { ...prev, children: updatedChildren, updatedAt: Date.now() };
-      try {
-        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) { console.error(e); }
-      syncToCloud(nextData);
-      return nextData;
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        return {
+          ...child,
+          targetUniversities: (child.targetUniversities || []).filter((t) => t.id !== targetId),
+        };
+      }
+      return child;
     });
+    saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
   // 2028 5등급제 가중평균 환산
   const calculateCumulativeGPA = (courses: SemesterCourseGrade[]): number => {
-    return calculateWeightedGPA(courses);
+    return calculateWeightedGPA(courses || []);
   };
 
   // D-Day 계산 유틸리티
   const calculateDDay = (targetDateStr: string): number => {
+    if (!targetDateStr) return 0;
     const target = new Date(targetDateStr);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -546,7 +440,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  // JSON 백업 파일 다운로드 (내보내기)
+  // JSON 백업 파일 다운로드
   const exportDataAsJSON = () => {
     try {
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(familyData, null, 2));
@@ -562,7 +456,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
-  // JSON 백업 파일 복원 (가져오기)
+  // JSON 백업 파일 복원
   const importDataFromJSON = (jsonString: string): boolean => {
     try {
       const parsed = JSON.parse(jsonString);
@@ -583,14 +477,12 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
 
   // 초기화 함수
   const resetToInitialData = () => {
-    if (confirm('모든 성적과 목표 대학 데이터를 초기화하시겠습니까?')) {
-      saveFamilyData(INITIAL_FAMILY_DATA);
-    }
+    saveFamilyData(INITIAL_FAMILY_DATA);
   };
 
   const contextValue: AdmissionsContextType = {
-    childrenList: familyData.children,
-    activeChildId: familyData.activeChildId,
+    childrenList: familyData.children || [],
+    activeChildId: familyData.activeChildId || INITIAL_FAMILY_DATA.activeChildId,
     activeChild,
     activeTab,
     setActiveTab,

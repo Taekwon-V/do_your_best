@@ -13,7 +13,10 @@ const CATEGORY_BADGES: Record<SusiCategory, { label: string; bg: string; text: s
 
 export default function OverviewGrid() {
   const { activeChild, calculateCumulativeGPA } = useAdmissions();
-  const currentGPA = calculateCumulativeGPA(activeChild.courses);
+  const currentGPA = calculateCumulativeGPA(activeChild.courses || []);
+  const susiTargets = (activeChild.targetUniversities || []).filter((t) => t.type === 'susi');
+  const mockExams = activeChild.mockExams || [];
+  const latestMock = mockExams.length > 0 ? mockExams[0] : null;
 
   return (
     <div className="space-y-8">
@@ -26,7 +29,7 @@ export default function OverviewGrid() {
               수시 6장 지원 포트폴리오
             </h2>
             <span className="text-xs font-extrabold px-2.5 py-0.5 bg-coral text-navy rounded-full border border-navy shadow-sm">
-              {activeChild.targetUniversities.length} / 6 카드 설정됨
+              {susiTargets.length} / 6 카드 설정됨
             </span>
           </div>
           <span className="text-xs text-navy-muted font-medium hidden sm:inline">
@@ -36,7 +39,7 @@ export default function OverviewGrid() {
 
         {/* 6개 카드 그리드 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {activeChild.targetUniversities.map((target, idx) => {
+          {susiTargets.map((target, idx) => {
             const badge = target.susiCategory ? CATEGORY_BADGES[target.susiCategory] : null;
             return (
               <div
@@ -86,16 +89,16 @@ export default function OverviewGrid() {
           })}
 
           {/* 빈 슬롯 카드 (6장 중 남은 슬롯) */}
-          {Array.from({ length: Math.max(0, 6 - activeChild.targetUniversities.length) }).map((_, idx) => (
+          {Array.from({ length: Math.max(0, 6 - susiTargets.length) }).map((_, idx) => (
             <div
               key={`empty-${idx}`}
               className="bg-white/40 border-2 border-dashed border-navy/30 rounded-2xl p-5 flex flex-col items-center justify-center text-center text-navy-muted min-h-[160px] space-y-2 hover:bg-white/60 transition-colors"
             >
               <span className="text-xs font-bold px-2 py-0.5 bg-cream/70 rounded border border-navy/20">
-                수시 카드 #{activeChild.targetUniversities.length + idx + 1}
+                수시 카드 #{susiTargets.length + idx + 1}
               </span>
               <p className="text-xs font-medium text-navy-muted">
-                Phase 4에서 목표 대학 검색 & 추가 가능
+                목표 대학 탭에서 수시 카드 추가 가능
               </p>
             </div>
           ))}
@@ -117,7 +120,7 @@ export default function OverviewGrid() {
               </h3>
             </div>
             <span className="text-xs font-bold text-navy-muted">
-              {activeChild.courses.length}개 이수 과목
+              {(activeChild.courses || []).length}개 이수 과목
             </span>
           </div>
 
@@ -149,7 +152,7 @@ export default function OverviewGrid() {
           <div className="p-3.5 bg-cream rounded-2xl border border-navy/20 flex items-start gap-2.5 text-xs text-navy leading-relaxed">
             <TrendingUp className="w-4 h-4 text-coral shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold">Phase 2 준비 완료:</span> 다음 단계에서 <strong>남은 학기 등급별 역산 슬라이더</strong>와 <strong>과목별 단위수 입력 테이블</strong>이 활성화됩니다.
+              <span className="font-bold">내신 역산 시뮬레이터:</span> 수시 내신 탭에서 <strong>목표 등급 역산 슬라이더</strong>와 <strong>학기별 내신 성적 관리</strong>를 이용하실 수 있습니다.
             </div>
           </div>
         </div>
@@ -166,34 +169,42 @@ export default function OverviewGrid() {
               </h3>
             </div>
             <span className="text-xs font-bold text-navy-muted">
-              최근: {activeChild.mockExams[0]?.examName || '미입력'}
+              최근: {latestMock?.examName || '미입력'}
             </span>
           </div>
 
           {/* 최근 모의고사 백분위 미니 카드 */}
-          {activeChild.mockExams[0] ? (
+          {latestMock && latestMock.scores ? (
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="p-2.5 bg-cream rounded-xl border border-navy/20">
                 <span className="text-[10px] font-bold text-navy-muted block">국어 (공통)</span>
-                <span className="text-sm font-black text-navy">{activeChild.mockExams[0].scores.korean.percentile}% (1등급)</span>
+                <span className="text-sm font-black text-navy">
+                  {latestMock.scores.korean?.percentile !== undefined ? `${latestMock.scores.korean.percentile}%` : '-'}
+                  {latestMock.scores.korean?.grade ? ` (${latestMock.scores.korean.grade}등급)` : ''}
+                </span>
               </div>
               <div className="p-2.5 bg-cream rounded-xl border border-navy/20">
                 <span className="text-[10px] font-bold text-navy-muted block">수학 (공통)</span>
-                <span className="text-sm font-black text-navy">{activeChild.mockExams[0].scores.math.percentile}% (1등급)</span>
+                <span className="text-sm font-black text-coral">
+                  {latestMock.scores.math?.percentile !== undefined ? `${latestMock.scores.math.percentile}%` : '-'}
+                  {latestMock.scores.math?.grade ? ` (${latestMock.scores.math.grade}등급)` : ''}
+                </span>
               </div>
               <div className="p-2.5 bg-cream rounded-xl border border-navy/20">
                 <span className="text-[10px] font-bold text-navy-muted block">통합사회·과학</span>
-                <span className="text-sm font-black text-navy">상위 4%</span>
+                <span className="text-sm font-black text-navy">
+                  {(((latestMock.scores.integratedScience?.percentile ?? 0) + (latestMock.scores.integratedSocial?.percentile ?? 0)) / 2).toFixed(1)}%
+                </span>
               </div>
             </div>
           ) : (
-            <p className="text-xs text-navy-muted">등록된 모의고사 데이터가 없습니다.</p>
+            <p className="text-xs text-navy-muted py-4 text-center">등록된 모의고사 데이터가 없습니다.</p>
           )}
 
           <div className="p-3.5 bg-sky/30 rounded-2xl border border-navy/20 flex items-start gap-2.5 text-xs text-navy leading-relaxed">
             <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold">Phase 3 준비 완료:</span> 3/6/9/11월 모의고사 시계열 꺾은선 차트와 대학별 정시 환산 Gap 분석 엔진이 탑재됩니다.
+              <span className="font-bold">정시 모의고사 탭:</span> 시계열 백분위 성장 궤적 차트와 대학별 가중치를 반영한 <strong>정시 맞춤 환산선 & Gap 분석</strong>을 확인하세요.
             </div>
           </div>
         </div>

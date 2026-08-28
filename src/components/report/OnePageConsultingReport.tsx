@@ -104,7 +104,9 @@ export default function OnePageConsultingReport({
             <div className="bg-cream/70 p-2.5 rounded-xl border border-peach/60 print:border-gray-300">
               <p className="text-[10.5px] text-navy/70">최근 모의고사 (2028 통합수능)</p>
               <p className="text-lg font-black text-coral mt-0.5">
-                {latestMock ? `수학 ${latestMock.scores.math.percentile}% (1등급)` : '-'}
+                {latestMock && latestMock.scores?.math?.percentile !== undefined
+                  ? `수학 ${latestMock.scores.math.percentile}% (${latestMock.scores.math.grade || 1}등급)`
+                  : '-'}
               </p>
               <p className="text-[9.5px] text-navy/50">
                 {latestMock ? latestMock.examName : '기록 없음'}

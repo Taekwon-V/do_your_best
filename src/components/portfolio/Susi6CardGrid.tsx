@@ -47,13 +47,16 @@ export default function Susi6CardGrid({
       return { status: 'unknown', label: '모의고사 기록 필요', color: 'text-navy-muted font-bold bg-cream/70 border border-navy/20' };
     }
 
-    const s = latestMock.scores;
+    const s = latestMock?.scores;
+    if (!s) {
+      return { status: 'unknown', label: '모의고사 기록 필요', color: 'text-navy-muted font-bold bg-cream/70 border border-navy/20' };
+    }
     const grades = [
-      s.korean.grade ?? 5,
-      s.math.grade ?? 5,
-      s.english.grade ?? 5,
-      s.integratedScience.grade ?? 5,
-      s.integratedSocial.grade ?? 5,
+      s.korean?.grade ?? 5,
+      s.math?.grade ?? 5,
+      s.english?.grade ?? 5,
+      s.integratedScience?.grade ?? 5,
+      s.integratedSocial?.grade ?? 5,
     ].sort((a, b) => a - b);
 
     const bestSum = grades.slice(0, req.requiredSubjectsCount).reduce((acc, g) => acc + g, 0);
