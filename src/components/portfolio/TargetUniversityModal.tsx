@@ -282,7 +282,7 @@ export default function TargetUniversityModal({
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black text-navy bg-peach px-1.5 py-0.5 rounded">
-                        정시 {currentDept.jeongsi.group.toUpperCase()}군
+                        정시 {currentDept.jeongsi.group === 'ga' ? '가군' : currentDept.jeongsi.group === 'na' ? '나군' : '다군'}
                       </span>
                       <span className="text-xs font-black text-coral">{currentDept.jeongsi.percentileCut}%</span>
                     </div>

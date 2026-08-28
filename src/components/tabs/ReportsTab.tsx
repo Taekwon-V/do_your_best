@@ -300,7 +300,7 @@ export default function ReportsTab() {
                         <td className="py-2 px-3 text-center">
                           {dept.jeongsi ? (
                             <span className="font-black text-coral bg-coral/15 px-2 py-0.5 rounded text-[11px]">
-                              {dept.jeongsi.group}군 {dept.jeongsi.percentileCut}%
+                              {dept.jeongsi.group === 'ga' ? '가군' : dept.jeongsi.group === 'na' ? '나군' : '다군'} {dept.jeongsi.percentileCut}%
                             </span>
                           ) : (
                             <span className="text-navy/40 text-[11px]">-</span>
