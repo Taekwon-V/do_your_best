@@ -3,11 +3,11 @@
 import React, { useMemo } from 'react';
 import { useAdmissions } from '@/context/AdmissionsContext';
 import { calculateGoalSeek } from '@/utils/gpaCalculator';
-import { Target, Sparkles, AlertTriangle, CheckCircle2, Flame, GraduationCap, ArrowRight } from 'lucide-react';
+import { Target, Sparkles, AlertTriangle, CheckCircle2, Flame, GraduationCap, ArrowRight, Plus } from 'lucide-react';
 import { TargetUniversity } from '@/types/admissions';
 
 export default function GoalSeekSimulator() {
-  const { activeChild, targetGPA, setTargetGPA } = useAdmissions();
+  const { activeChild, targetGPA, setTargetGPA, setActiveTab } = useAdmissions();
 
   // 확정 이수 과목과 남은 학기 수 계산
   const completedCourses = useMemo(() => {
@@ -67,52 +67,48 @@ export default function GoalSeekSimulator() {
           </div>
         </div>
 
-        {/* 수시 목표 대학 빠른 선택 칩 버튼 */}
+        {/* 수시 목표 대학 빠른 선택 칩 버튼 또는 등록 버튼 */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] font-bold text-navy-muted mr-1 hidden sm:inline">목표 대학:</span>
           {susiTargets.length > 0 ? (
-            susiTargets.map((t) => {
-              const cutoff = t.susiRequirements?.expectedCutoffGrade || 1.5;
-              const isSelected = Math.abs(targetGPA - cutoff) < 0.015;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setTargetGPA(cutoff)}
-                  className={`px-2.5 py-1 rounded-xl text-xs font-bold border transition-all text-center flex items-center gap-1 ${
-                    isSelected
-                      ? 'bg-coral text-navy border-navy shadow-retro font-black ring-2 ring-navy/20'
-                      : 'bg-cream text-navy-muted border-navy/30 hover:bg-peach/40'
-                  }`}
-                  title={`${t.universityName} ${t.departmentName} (${cutoff}등급)`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${
-                    t.susiCategory === 'reach' ? 'bg-red-500' :
-                    t.susiCategory === 'target' ? 'bg-amber-500' : 'bg-emerald-500'
-                  }`} />
-                  <span>{t.universityName.replace('국립', '')} {cutoff}</span>
-                </button>
-              );
-            })
+            <>
+              <span className="text-[11px] font-bold text-navy-muted mr-1 hidden sm:inline">목표 대학:</span>
+              {susiTargets.map((t) => {
+                const cutoff = t.susiRequirements?.expectedCutoffGrade || 1.5;
+                const isSelected = Math.abs(targetGPA - cutoff) < 0.015;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setTargetGPA(cutoff)}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-bold border transition-all text-center flex items-center gap-1 ${
+                      isSelected
+                        ? 'bg-coral text-navy border-navy shadow-retro font-black ring-2 ring-navy/20'
+                        : 'bg-cream text-navy-muted border-navy/30 hover:bg-peach/40'
+                    }`}
+                    title={`${t.universityName} ${t.departmentName} (${cutoff}등급)`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      t.susiCategory === 'reach' ? 'bg-red-500' :
+                      t.susiCategory === 'target' ? 'bg-amber-500' : 'bg-emerald-500'
+                    }`} />
+                    <span>{t.universityName.replace('국립', '')} {cutoff}</span>
+                  </button>
+                );
+              })}
+            </>
           ) : (
-            [
-              { name: '인하대 (1.33)', gpa: 1.33 },
-              { name: '인천대 (1.48)', gpa: 1.48 },
-              { name: '중앙대 (1.28)', gpa: 1.28 },
-            ].map((preset) => (
-              <button
-                key={preset.name}
-                onClick={() => setTargetGPA(preset.gpa)}
-                className="px-2.5 py-1 rounded-xl text-xs font-bold border bg-cream text-navy-muted border-navy/30 hover:bg-peach/40"
-              >
-                {preset.name}
-              </button>
-            ))
+            <button
+              onClick={() => setActiveTab('targets')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-coral/20 hover:bg-coral text-navy border-2 border-navy shadow-retro transition-all active:translate-x-0.5 active:translate-y-0.5"
+            >
+              <Plus className="w-3.5 h-3.5 text-navy" />
+              <span>+ 목표 대학 등록하기</span>
+            </button>
           )}
         </div>
       </div>
 
-      {/* 2. 등록된 수시 6장 목표 대학 원클릭 카드 슬롯 */}
-      {susiTargets.length > 0 && (
+      {/* 2. 등록된 수시 6장 목표 대학 슬롯 또는 안내 카드 */}
+      {susiTargets.length > 0 ? (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-navy flex items-center gap-1.5">
@@ -176,6 +172,27 @@ export default function GoalSeekSimulator() {
               );
             })}
           </div>
+        </div>
+      ) : (
+        <div className="p-4 rounded-2xl border-2 border-dashed border-navy/25 bg-cream/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-peach border border-navy/20 flex items-center justify-center text-navy font-bold shrink-0">
+              <GraduationCap className="w-4 h-4 text-coral" />
+            </div>
+            <div>
+              <p className="text-xs font-black text-navy">아직 등록된 수시 목표 대학이 없습니다.</p>
+              <p className="text-[11px] text-navy-muted">
+                <strong>[목표 대학 포트폴리오]</strong> 탭에서 목표 대학(수시 6장)을 등록하시면, 대학별 필요 등급이 이곳에 자동 계산됩니다.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveTab('targets')}
+            className="px-3.5 py-2 rounded-xl bg-navy text-cream text-xs font-bold shadow-retro hover:bg-navy-light shrink-0 flex items-center gap-1.5 transition-all"
+          >
+            <span>목표 대학 등록하러 가기</span>
+            <ArrowRight className="w-3.5 h-3.5 text-coral" />
+          </button>
         </div>
       )}
 
