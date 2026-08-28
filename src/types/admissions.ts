@@ -119,4 +119,5 @@ export interface FamilyAppData {
   activeChildId: string;
   allowedEmails: string[];
   children: ChildProfile[];
+  updatedAt?: number;
 }

@@ -17,7 +17,7 @@ const SEMESTER_TABS: { key: SemesterKey; label: string }[] = [
 const CATEGORIES: SubjectCategory[] = ['국어', '수학', '영어', '사회', '과학', '한국사', '기술가정/정보', '제2외국어/한문', '기타'];
 
 export default function GradebookTable() {
-  const { activeChild, addCourse, updateCourse, deleteCourse, calculateCumulativeGPA } = useAdmissions();
+  const { activeChild, addCourse, updateCourse, updateMultipleCourses, deleteCourse, calculateCumulativeGPA } = useAdmissions();
   
   // 기본 선택 탭: 현재 학년 기준 다음 학기 또는 최근 학기
   const [selectedSemester, setSelectedSemester] = useState<SemesterKey>(
@@ -67,37 +67,34 @@ export default function GradebookTable() {
     setIsAddingCourse(false);
   };
 
-  // 1초 만에 전과목 일괄 설정 (시뮬레이션 마법봉 기능)
+  // 1초 만에 전과목 일괄 설정 (시뮬레이션 마법봉 기능 - 일괄 안전 저장)
   const handleQuickFill = (targetGrade: RankGrade5) => {
-    // 기존 과목이 있으면 등급만 변경, 없으면 표준 기본 과목 자동 생성
     if (semesterCourses.length > 0) {
-      semesterCourses.forEach((c) => {
-        updateCourse(activeChild.id, {
-          ...c,
-          rankGrade: targetGrade,
-          achievement: targetGrade === 1 ? 'A' : targetGrade === 2 ? 'A' : 'B',
-          isSimulated: !isCompletedSemester,
-        });
-      });
+      const updatedList = semesterCourses.map((c) => ({
+        ...c,
+        rankGrade: targetGrade,
+        achievement: (targetGrade === 1 ? 'A' : targetGrade === 2 ? 'A' : 'B') as AchievementLevel,
+        isSimulated: !isCompletedSemester,
+      }));
+      updateMultipleCourses(activeChild.id, updatedList);
     } else {
       const defaultSubjects: { name: string; cat: SubjectCategory; units: number }[] = [
         { name: `${selectedSemester} 국어`, cat: '국어', units: 4 },
         { name: `${selectedSemester} 수학`, cat: '수학', units: 4 },
         { name: `${selectedSemester} 영어`, cat: '영어', units: 4 },
-        { name: `${selectedSemester} 탐구1`, cat: '과학', units: 4 },
+        { name: `${selectedSemester} 과학/사회`, cat: '과학', units: 4 },
       ];
-      defaultSubjects.forEach((sub, idx) => {
-        addCourse(activeChild.id, {
-          id: `c-quick-${Date.now()}-${idx}`,
-          semester: selectedSemester,
-          category: sub.cat,
-          courseName: sub.name,
-          unitCount: sub.units,
-          rankGrade: targetGrade,
-          achievement: targetGrade <= 2 ? 'A' : 'B',
-          isSimulated: !isCompletedSemester,
-        });
-      });
+      const newCourses: SemesterCourseGrade[] = defaultSubjects.map((sub, idx) => ({
+        id: `c-quick-${Date.now()}-${idx}`,
+        semester: selectedSemester,
+        category: sub.cat,
+        courseName: sub.name,
+        unitCount: sub.units,
+        rankGrade: targetGrade,
+        achievement: (targetGrade <= 2 ? 'A' : 'B') as AchievementLevel,
+        isSimulated: !isCompletedSemester,
+      }));
+      updateMultipleCourses(activeChild.id, newCourses);
     }
   };
 
@@ -111,9 +108,15 @@ export default function GradebookTable() {
             <BookOpen className="w-5 h-5 text-navy" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-navy tracking-tight">
-              학기별 5등급제 성적표 & 시뮬레이션 테이블
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-black text-navy tracking-tight">
+                학기별 5등급제 성적표 & 시뮬레이션 테이블
+              </h2>
+              <span className="text-[10.5px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                <Check className="w-3 h-3 text-emerald-700" />
+                <span>수정 시 실시간 자동 저장</span>
+              </span>
+            </div>
             <p className="text-xs text-navy-muted font-medium">
               과목별 단위수와 5등급제 석차등급을 실시간으로 입력하고 편집합니다.
             </p>
