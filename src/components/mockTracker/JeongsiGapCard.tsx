@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { MockExamRecord } from '@/types/admissions';
-import { Target, Zap, CheckCircle2, AlertCircle, ArrowUpRight, ChevronDown } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useAdmissions } from '@/context/AdmissionsContext';
+import { MockExamRecord, TargetUniversity } from '@/types/admissions';
+import { UNIVERSITY_ADMISSIONS_DB } from '@/data/universityAdmissionsDB';
+import { Target, Zap, CheckCircle2, AlertCircle, PlusCircle, ChevronDown } from 'lucide-react';
 
-interface TargetOption {
+export interface TargetOption {
   id: string;
   univName: string;
   deptName: string;
@@ -13,22 +15,11 @@ interface TargetOption {
   koreanWeight: number;
   mathWeight: number;
   tamguWeight: number;
+  isUserTarget: boolean;
 }
 
-const DEFAULT_TARGETS: TargetOption[] = [
-  { id: 't1', univName: '인하대학교', deptName: '수학교육과', percentileCut: 85.0, group: '나군', koreanWeight: 20, mathWeight: 40, tamguWeight: 30 },
-  { id: 't2', univName: '인하대학교', deptName: '컴퓨터공학과', percentileCut: 84.5, group: '가군', koreanWeight: 25, mathWeight: 35, tamguWeight: 30 },
-  { id: 't3', univName: '인하대학교', deptName: '전기전자공학부', percentileCut: 83.5, group: '나군', koreanWeight: 25, mathWeight: 35, tamguWeight: 30 },
-  { id: 't4', univName: '국립인천대학교', deptName: '수학교육과', percentileCut: 80.3, group: '나군', koreanWeight: 25, mathWeight: 40, tamguWeight: 25 },
-  { id: 't5', univName: '국립인천대학교', deptName: '컴퓨터공학부', percentileCut: 79.5, group: '가군', koreanWeight: 25, mathWeight: 35, tamguWeight: 30 },
-  { id: 't6', univName: '국립인천대학교', deptName: '영어교육과', percentileCut: 84.6, group: '나군', koreanWeight: 35, mathWeight: 25, tamguWeight: 30 },
-  { id: 't7', univName: '국립인천대학교', deptName: '경영학부', percentileCut: 78.5, group: '다군', koreanWeight: 35, mathWeight: 30, tamguWeight: 25 },
-  { id: 't8', univName: '중앙대학교', deptName: '소프트웨어학부', percentileCut: 91.5, group: '다군', koreanWeight: 25, mathWeight: 40, tamguWeight: 35 },
-  { id: 't9', univName: '중앙대학교', deptName: '경영학부', percentileCut: 90.0, group: '다군', koreanWeight: 35, mathWeight: 40, tamguWeight: 25 },
-];
-
 interface JeongsiGapCardProps {
-  mockExams: MockExamRecord[];
+  mockExams?: MockExamRecord[];
   onSelectTarget?: (target: TargetOption) => void;
 }
 
@@ -36,19 +27,105 @@ export default function JeongsiGapCard({
   mockExams = [],
   onSelectTarget,
 }: JeongsiGapCardProps) {
-  const [selectedTargetId, setSelectedTargetId] = useState<string>('t1');
+  const { activeChild, setActiveTab } = useAdmissions();
+
+  // 1. Convert user's registered Jeongsi targets into TargetOptions
+  const userTargets: TargetOption[] = useMemo(() => {
+    const jeongsiList = (activeChild?.targetUniversities || []).filter(
+      (t) => t.type === 'jeongsi'
+    );
+
+    return jeongsiList.map((t) => {
+      const grp = (t.jeongsiGroup === 'ga' ? '가군' : t.jeongsiGroup === 'na' ? '나군' : '다군') as '가군' | '나군' | '다군';
+      const weights = t.jeongsiRequirements?.subjectWeights || { korean: 25, math: 35, inquiry: 30, english: 0, history: 0 };
+      return {
+        id: t.id,
+        univName: t.universityName,
+        deptName: t.departmentName,
+        percentileCut: t.jeongsiRequirements?.percentileCutoff ?? 85.0,
+        group: grp,
+        koreanWeight: weights.korean || 25,
+        mathWeight: weights.math || 35,
+        tamguWeight: weights.inquiry || 30,
+        isUserTarget: true,
+      };
+    });
+  }, [activeChild?.targetUniversities]);
+
+  // 2. Fallback / Additional DB Targets
+  const dbTargets: TargetOption[] = useMemo(() => {
+    const list: TargetOption[] = [];
+    UNIVERSITY_ADMISSIONS_DB.forEach((univ) => {
+      univ.departments.forEach((dept) => {
+        if (dept.jeongsi) {
+          const grp = (dept.jeongsi.group === 'ga' ? '가군' : dept.jeongsi.group === 'na' ? '나군' : '다군') as '가군' | '나군' | '다군';
+          list.push({
+            id: `db_${univ.univId}_${dept.deptName}`,
+            univName: univ.univName,
+            deptName: dept.deptName,
+            percentileCut: dept.jeongsi.percentileCut,
+            group: grp,
+            koreanWeight: dept.jeongsi.subjectWeights.korean || 25,
+            mathWeight: dept.jeongsi.subjectWeights.math || 35,
+            tamguWeight: dept.jeongsi.subjectWeights.inquiry || 30,
+            isUserTarget: false,
+          });
+        }
+      });
+    });
+    return list;
+  }, []);
+
+  // Combined all available options
+  const allTargetOptions = useMemo(() => {
+    return [...userTargets, ...dbTargets];
+  }, [userTargets, dbTargets]);
+
+  // Active selected target ID
+  const [selectedTargetId, setSelectedTargetId] = useState<string>('');
+
+  // Sync selection when user targets change
+  useEffect(() => {
+    if (userTargets.length > 0) {
+      // If current selection is not one of userTargets, select the first user target
+      if (!userTargets.some((t) => t.id === selectedTargetId)) {
+        const first = userTargets[0];
+        setSelectedTargetId(first.id);
+        if (onSelectTarget) onSelectTarget(first);
+      }
+    } else if (dbTargets.length > 0 && !selectedTargetId) {
+      const first = dbTargets[0];
+      setSelectedTargetId(first.id);
+      if (onSelectTarget) onSelectTarget(first);
+    }
+  }, [userTargets, dbTargets, selectedTargetId, onSelectTarget]);
 
   const selectedTarget = useMemo(() => {
-    return DEFAULT_TARGETS.find((t) => t.id === selectedTargetId) || DEFAULT_TARGETS[0];
-  }, [selectedTargetId]);
+    return (
+      allTargetOptions.find((t) => t.id === selectedTargetId) ||
+      userTargets[0] ||
+      dbTargets[0] || {
+        id: 'default',
+        univName: '목표 대학 미등록',
+        deptName: '학과 선택 필요',
+        percentileCut: 85.0,
+        group: '가군' as const,
+        koreanWeight: 25,
+        mathWeight: 35,
+        tamguWeight: 30,
+        isUserTarget: false,
+      }
+    );
+  }, [allTargetOptions, selectedTargetId, userTargets, dbTargets]);
 
   // Latest mock exam
   const latestExam = useMemo(() => {
-    if (mockExams.length === 0) return null;
-    return [...mockExams].sort(
+    const exams = mockExams.length > 0 ? mockExams : activeChild?.mockExams || [];
+    if (exams.length === 0) return null;
+    return [...exams].sort(
       (a, b) => new Date(b.examDate).getTime() - new Date(a.examDate).getTime()
     )[0];
-  }, [mockExams]);
+  }, [mockExams, activeChild?.mockExams]);
 
   // Calculate student's weighted percentile based on the university's formula
   const studentMetrics = useMemo(() => {
@@ -61,7 +138,7 @@ export default function JeongsiGapCard({
     const tamguPct = (socPct + sciPct) / 2;
     const engGrade = latestExam.scores.english.grade ?? 2;
 
-    const totalWeight = selectedTarget.koreanWeight + selectedTarget.mathWeight + selectedTarget.tamguWeight;
+    const totalWeight = selectedTarget.koreanWeight + selectedTarget.mathWeight + selectedTarget.tamguWeight || 100;
     const weighted = (
       koreanPct * (selectedTarget.koreanWeight / totalWeight) +
       mathPct * (selectedTarget.mathWeight / totalWeight) +
@@ -83,7 +160,7 @@ export default function JeongsiGapCard({
   const handleTargetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newId = e.target.value;
     setSelectedTargetId(newId);
-    const target = DEFAULT_TARGETS.find((t) => t.id === newId);
+    const target = allTargetOptions.find((t) => t.id === newId);
     if (target && onSelectTarget) {
       onSelectTarget(target);
     }
@@ -106,9 +183,26 @@ export default function JeongsiGapCard({
             </h3>
           </div>
           <span className="text-[10.5px] sm:text-[11px] px-2.5 py-0.5 rounded-full bg-white/15 text-cream border border-white/20 font-bold shrink-0">
-            2026 수능 실측 입결 기준
+            2026/2027 실측 입결
           </span>
         </div>
+
+        {/* Empty state prompt if user hasn't registered any Jeongsi targets */}
+        {userTargets.length === 0 && (
+          <div className="bg-white/10 rounded-2xl p-3 border border-white/20 flex items-center justify-between gap-2 mb-3">
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-amber-300">🎯 내 정시 목표 대학이 없습니다</p>
+              <p className="text-[10.5px] text-cream/70 truncate">포트폴리오에 가/나/다군을 등록해보세요!</p>
+            </div>
+            <button
+              onClick={() => setActiveTab('targets')}
+              className="px-2.5 py-1.5 bg-coral text-navy font-black text-xs rounded-xl shadow-sm hover:scale-105 transition-all shrink-0 flex items-center gap-1"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>등록하기</span>
+            </button>
+          </div>
+        )}
 
         {/* Target University Dropdown Selector */}
         <div className="relative mb-3.5">
@@ -118,11 +212,23 @@ export default function JeongsiGapCard({
             aria-label="정시 목표 대학 선택"
             className="w-full appearance-none bg-white/10 border-2 border-white/25 rounded-2xl px-3.5 py-2.5 pr-9 text-xs sm:text-sm font-bold text-cream focus:outline-none focus:ring-2 focus:ring-coral transition-all cursor-pointer"
           >
-            {DEFAULT_TARGETS.map((t) => (
-              <option key={t.id} value={t.id} className="text-navy bg-white font-bold">
-                [{t.group}] {t.univName} {t.deptName} (70% 컷: {t.percentileCut}%)
-              </option>
-            ))}
+            {userTargets.length > 0 && (
+              <optgroup label={`⭐ 내가 등록한 정시 목표 대학 (${userTargets.length}개)`} className="text-navy bg-peach/30 font-black">
+                {userTargets.map((t) => (
+                  <option key={t.id} value={t.id} className="text-navy bg-white font-bold">
+                    [{t.group}] {t.univName} {t.deptName} (70% 컷: {t.percentileCut}%)
+                  </option>
+                ))}
+              </optgroup>
+            )}
+
+            <optgroup label={`📚 전체 대학 입결 DB (${dbTargets.length}개 학과)`} className="text-navy bg-cream font-black">
+              {dbTargets.map((t) => (
+                <option key={t.id} value={t.id} className="text-navy bg-white font-medium">
+                  [{t.group}] {t.univName} {t.deptName} (70% 컷: {t.percentileCut}%)
+                </option>
+              ))}
+            </optgroup>
           </select>
           <ChevronDown className="w-4 h-4 text-cream/80 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
@@ -131,12 +237,14 @@ export default function JeongsiGapCard({
         <div className="bg-white/10 rounded-2xl p-4 border border-white/15 mb-3">
           <div className="flex items-center justify-between text-center divide-x divide-white/15">
             <div className="flex-1 px-2">
-              <p className="text-[11px] text-cream/80 font-bold mb-0.5">목표 대학 70% Cut</p>
+              <p className="text-[11px] text-cream/80 font-bold mb-0.5">
+                {selectedTarget.isUserTarget ? '⭐ 내 목표 70% Cut' : '목표 대학 70% Cut'}
+              </p>
               <p className="text-xl sm:text-2xl font-black text-amber-300">
                 {selectedTarget.percentileCut}%
               </p>
               <p className="text-[10.5px] text-cream/80 font-semibold mt-0.5 truncate">
-                {selectedTarget.univName}
+                [{selectedTarget.group}] {selectedTarget.univName}
               </p>
             </div>
 
@@ -146,7 +254,7 @@ export default function JeongsiGapCard({
                 {latestExam ? `${studentMetrics.weightedPercentile}%` : '-'}
               </p>
               <p className="text-[10.5px] text-cream/80 font-semibold mt-0.5 truncate">
-                {latestExam ? latestExam.examName.replace(/20\d\d년\s*/, '') : '시험 미등록'}
+                {latestExam ? latestExam.examName.replace(/20\d\d년\s*/, '') : '성적 미등록'}
               </p>
             </div>
           </div>
@@ -190,7 +298,7 @@ export default function JeongsiGapCard({
             </>
           ) : (
             <>
-              가장 반영비가 높은 <strong className="text-amber-300 font-black">수학(40%)</strong>에서 4점짜리 1문제를 더 맞히면 백분위가 약 <strong className="text-white font-black">+3~5%p 상승</strong>하여 목표 컷에 즉시 도달할 수 있습니다.
+              가장 반영비가 높은 <strong className="text-amber-300 font-black">수학({selectedTarget.mathWeight}%)</strong>에서 4점짜리 1문제를 더 맞히면 백분위가 약 <strong className="text-white font-black">+3~5%p 상승</strong>하여 목표 컷에 즉시 도달할 수 있습니다.
             </>
           )}
         </p>

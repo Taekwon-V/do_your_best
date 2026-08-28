@@ -15,9 +15,14 @@ export default function MockExamTracker() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExam, setEditingExam] = useState<MockExamRecord | null>(null);
 
+  // Initialize selected target from user's registered Jeongsi target universities
+  const firstJeongsiTarget = (activeChild.targetUniversities || []).find((t) => t.type === 'jeongsi');
+
   const [selectedTargetUniv, setSelectedTargetUniv] = useState({
-    name: '인하대 수학교육과',
-    percentile: 85.0,
+    name: firstJeongsiTarget
+      ? `${firstJeongsiTarget.universityName} ${firstJeongsiTarget.departmentName}`
+      : '인하대 수학교육과',
+    percentile: firstJeongsiTarget?.jeongsiRequirements?.percentileCutoff ?? 85.0,
   });
 
   const mockExams = activeChild.mockExams || [];
