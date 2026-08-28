@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
+import { UNIVERSITY_ADMISSIONS_DB } from '@/data/universityAdmissionsDB';
 
 export default function ReportsTab() {
   const {
@@ -244,46 +245,74 @@ export default function ReportsTab() {
           </div>
         </div>
 
-        {/* University Quick DB Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* 인하대 */}
-          {(selectedUnivFilter === 'all' || selectedUnivFilter === 'inha') && (
-            <div className="bg-cream/40 p-4 rounded-2xl border border-peach/50 space-y-2 text-xs">
+        {/* University Full DB Table View */}
+        <div className="space-y-4">
+          {UNIVERSITY_ADMISSIONS_DB.filter(
+            (u) => selectedUnivFilter === 'all' || selectedUnivFilter === u.univId
+          ).map((univ) => (
+            <div key={univ.univId} className="bg-cream/40 p-4 rounded-2xl border border-peach/50 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-black text-navy text-sm">인하대학교</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-peach/50 text-navy">2026 실측</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-navy text-sm sm:text-base">{univ.univName}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-peach/70 text-navy border border-navy/20">
+                    {univ.badge}
+                  </span>
+                </div>
+                <span className="text-[11px] text-navy/60 font-bold">
+                  총 {univ.departments.length}개 모집단위
+                </span>
               </div>
-              <p className="text-midnight/70">• 수학교육과: 5등급제 교과 <strong>1.33</strong> / 학종 <strong>1.54</strong> / 정시 <strong>85.0%</strong></p>
-              <p className="text-midnight/70">• 컴퓨터공학과: 5등급제 교과 <strong>1.47</strong> / 학종 <strong>1.63</strong> / 정시 <strong>84.5%</strong></p>
-              <p className="text-midnight/70">• 수학과(교직): 5등급제 교과 <strong>1.42</strong> / 학종 <strong>1.91</strong> / 정시 <strong>84.0%</strong></p>
-            </div>
-          )}
 
-          {/* 인천대 */}
-          {(selectedUnivFilter === 'all' || selectedUnivFilter === 'incheon') && (
-            <div className="bg-cream/40 p-4 rounded-2xl border border-peach/50 space-y-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="font-black text-navy text-sm">국립인천대학교</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-pastel-sky/40 text-navy">2026 실측</span>
+              <div className="overflow-x-auto rounded-xl border border-peach/50 scrollbar-thin">
+                <table className="w-full text-left text-xs min-w-[620px]">
+                  <thead>
+                    <tr className="bg-white text-midnight font-bold border-b border-peach/40">
+                      <th className="py-2 px-3">단과대</th>
+                      <th className="py-2 px-3">모집단위 (학과)</th>
+                      <th className="py-2 px-3 text-center">수시 교과 (5등급제 컷)</th>
+                      <th className="py-2 px-3 text-center">수시 학종 (5등급제 컷)</th>
+                      <th className="py-2 px-3 text-center">정시 70% 백분위</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-peach/30 text-midnight/80 bg-white/60">
+                    {univ.departments.map((dept, dIdx) => (
+                      <tr key={dIdx} className="hover:bg-cream/50 transition-colors">
+                        <td className="py-2 px-3 text-navy/70 text-[11px]">{dept.collegeName}</td>
+                        <td className="py-2 px-3 font-bold text-navy">{dept.deptName}</td>
+                        <td className="py-2 px-3 text-center">
+                          {dept.susiGyogwa ? (
+                            <span className="font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded text-[11px]">
+                              {dept.susiGyogwa.expectedCut5}등급
+                            </span>
+                          ) : (
+                            <span className="text-navy/40 text-[11px]">-</span>
+                          )}
+                        </td>
+                        <td className="py-2 px-3 text-center">
+                          {dept.susiJonghap ? (
+                            <span className="font-black text-sky-900 bg-sky-100 px-2 py-0.5 rounded text-[11px]">
+                              {dept.susiJonghap.expectedCut5}등급
+                            </span>
+                          ) : (
+                            <span className="text-navy/40 text-[11px]">-</span>
+                          )}
+                        </td>
+                        <td className="py-2 px-3 text-center">
+                          {dept.jeongsi ? (
+                            <span className="font-black text-coral bg-coral/15 px-2 py-0.5 rounded text-[11px]">
+                              {dept.jeongsi.group}군 {dept.jeongsi.percentileCut}%
+                            </span>
+                          ) : (
+                            <span className="text-navy/40 text-[11px]">-</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <p className="text-midnight/70">• 수학교육과: 5등급제 교과 <strong>1.48</strong> / 학종 <strong>1.64</strong> / 정시 <strong>80.3%</strong></p>
-              <p className="text-midnight/70">• 컴퓨터공학부: 5등급제 교과 <strong>1.76</strong> / 학종 <strong>1.86</strong> / 정시 <strong>79.5%</strong></p>
-              <p className="text-midnight/70">• 유아/일어교육과: 5등급제 교과 <strong>1.67~1.83</strong> / 학종 <strong>1.90~1.91</strong></p>
             </div>
-          )}
-
-          {/* 중앙대 */}
-          {(selectedUnivFilter === 'all' || selectedUnivFilter === 'cau') && (
-            <div className="bg-cream/40 p-4 rounded-2xl border border-peach/50 space-y-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="font-black text-navy text-sm">중앙대학교 (서울)</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-coral/20 text-coral">2026 실측</span>
-              </div>
-              <p className="text-midnight/70">• 소프트웨어학부: 5등급제 지균 <strong>1.25</strong> / 융합형 <strong>1.28</strong> / 정시 <strong>91.5%</strong></p>
-              <p className="text-midnight/70">• 전자전기공학부: 5등급제 지균 <strong>1.21</strong> / 융합형 <strong>1.29</strong> / 정시 <strong>91.0%</strong></p>
-              <p className="text-midnight/70">• 경영학부: 5등급제 지균 <strong>1.29</strong> / 융합형 <strong>1.35</strong> / 정시 <strong>90.0%</strong></p>
-            </div>
-          )}
+          ))}
         </div>
       </div>
 
