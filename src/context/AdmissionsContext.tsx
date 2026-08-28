@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { ChildProfile, SemesterCourseGrade, FamilyAppData, MockExamRecord, MainTabKey } from '@/types/admissions';
+import { ChildProfile, SemesterCourseGrade, FamilyAppData, MockExamRecord, MainTabKey, TargetUniversity } from '@/types/admissions';
 import { INITIAL_FAMILY_DATA } from '@/data/initialData';
 import { calculateWeightedGPA } from '@/utils/gpaCalculator';
 
@@ -22,6 +22,9 @@ interface AdmissionsContextType {
   addMockExam: (childId: string, exam: MockExamRecord) => void;
   updateMockExam: (childId: string, exam: MockExamRecord) => void;
   deleteMockExam: (childId: string, examId: string) => void;
+  addTargetUniversity: (childId: string, target: TargetUniversity) => void;
+  updateTargetUniversity: (childId: string, target: TargetUniversity) => void;
+  deleteTargetUniversity: (childId: string, targetId: string) => void;
   calculateCumulativeGPA: (courses: SemesterCourseGrade[]) => number;
   calculateDDay: (targetDateStr: string) => number;
   resetToInitialData: () => void;
@@ -201,6 +204,53 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     saveFamilyData({ ...familyData, children: updatedChildren });
   };
 
+  // 목표 대학 추가
+  const addTargetUniversity = (childId: string, target: TargetUniversity) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingTargets = child.targetUniversities || [];
+        return {
+          ...child,
+          targetUniversities: [...existingTargets, target],
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
+  // 목표 대학 수정
+  const updateTargetUniversity = (childId: string, target: TargetUniversity) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingTargets = child.targetUniversities || [];
+        const updated = existingTargets.map((t) => (t.id === target.id ? target : t));
+        return {
+          ...child,
+          targetUniversities: updated,
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
+  // 목표 대학 삭제
+  const deleteTargetUniversity = (childId: string, targetId: string) => {
+    const updatedChildren = familyData.children.map((child) => {
+      if (child.id === childId) {
+        const existingTargets = child.targetUniversities || [];
+        const updated = existingTargets.filter((t) => t.id !== targetId);
+        return {
+          ...child,
+          targetUniversities: updated,
+        };
+      }
+      return child;
+    });
+    saveFamilyData({ ...familyData, children: updatedChildren });
+  };
+
   // 2028 5등급제 가중평균 환산
   const calculateCumulativeGPA = (courses: SemesterCourseGrade[]): number => {
     return calculateWeightedGPA(courses);
@@ -241,6 +291,9 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         addMockExam,
         updateMockExam,
         deleteMockExam,
+        addTargetUniversity,
+        updateTargetUniversity,
+        deleteTargetUniversity,
         calculateCumulativeGPA,
         calculateDDay,
         resetToInitialData,
