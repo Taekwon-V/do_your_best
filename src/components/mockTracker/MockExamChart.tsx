@@ -17,7 +17,7 @@ interface MockExamChartProps {
   };
 }
 
-type SubjectFilter = 'all' | 'weighted' | 'korean' | 'math' | 'social' | 'science';
+type SubjectFilter = 'all' | 'math' | 'korean' | 'science' | 'social';
 
 export default function MockExamChart({
   mockExams = [],
@@ -31,21 +31,26 @@ export default function MockExamChart({
   // Sort exams chronologically by date
   const sortedExams = useMemo(() => {
     return [...mockExams].sort(
-      (a, b) => new Date(a.examDate).getTime() - new Date(a.examDate).getTime()
+      (a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime()
     );
   }, [mockExams]);
 
   // Chart dimensions
   const width = 640;
   const height = 280;
-  const padding = { top: 35, right: 45, bottom: 50, left: 45 };
+  const padding = { top: 35, right: 40, bottom: 50, left: 45 };
   const graphWidth = width - padding.left - padding.right;
   const graphHeight = height - padding.top - padding.bottom;
 
-  // X coordinate calculation
+  // X coordinate calculation with comfortable breathing room (양끝에 붙지 않도록 적절한 여백 부여)
   const getX = (index: number) => {
-    if (sortedExams.length <= 1) return padding.left + graphWidth / 2;
-    return padding.left + (index / (sortedExams.length - 1)) * graphWidth;
+    const count = sortedExams.length;
+    if (count <= 1) return padding.left + graphWidth / 2;
+
+    // 양쪽 끝에서 75px씩 안쪽으로 여유를 두어 차트가 중앙에 보기 좋게 배치되도록 함
+    const horizontalMargin = 75;
+    const availableWidth = graphWidth - horizontalMargin * 2;
+    return padding.left + horizontalMargin + (index / (count - 1)) * availableWidth;
   };
 
   // Y coordinate calculation for percentile (0 ~ 100)
@@ -71,7 +76,7 @@ export default function MockExamChart({
     return Number(weighted.toFixed(1));
   };
 
-  // Generate SVG path for a given subject metric
+  // Generate SVG path for a given metric
   const generatePath = (getVal: (exam: MockExamRecord) => number | undefined) => {
     if (sortedExams.length === 0) return '';
     const points = sortedExams.map((exam, idx) => ({
@@ -84,11 +89,11 @@ export default function MockExamChart({
     }, '');
   };
 
-  const koreanPath = generatePath((e) => e.scores.korean.percentile);
-  const mathPath = generatePath((e) => e.scores.math.percentile);
-  const socialPath = generatePath((e) => e.scores.integratedSocial.percentile);
-  const sciencePath = generatePath((e) => e.scores.integratedScience.percentile);
   const weightedPath = generatePath((e) => getWeightedPercentile(e));
+  const mathPath = generatePath((e) => e.scores.math.percentile);
+  const koreanPath = generatePath((e) => e.scores.korean.percentile);
+  const sciencePath = generatePath((e) => e.scores.integratedScience.percentile);
+  const socialPath = generatePath((e) => e.scores.integratedSocial.percentile);
 
   const targetY = getY(targetPercentile);
 
@@ -127,41 +132,30 @@ export default function MockExamChart({
             </h3>
           </div>
           <p className="text-xs text-midnight/60 mt-0.5">
-            과목별 성적과 <strong className="text-navy font-black">[{targetUniversityName}]</strong> 정시 반영비 반영 맞춤 환산선
+            <strong className="text-navy font-black">[{targetUniversityName}]</strong> 정시 반영비율(국{wKor}·수{wMat}·탐{wInq}) 맞춤 전체 백분위 성장 궤적
           </p>
         </div>
 
-        {/* Subject Filter Pills */}
+        {/* Filter Pills */}
         <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Main Target-Weighted Overall Button */}
           <button
             onClick={() => setActiveFilter('all')}
-            className={`text-xs px-2.5 py-1 rounded-full font-bold transition-all ${
-              activeFilter === 'all'
-                ? 'bg-midnight text-cream shadow-sm scale-105'
-                : 'bg-cream text-midnight/70 hover:bg-peach/40'
-            }`}
-          >
-            전체
-          </button>
-
-          {/* 🌟 Special Target-Weighted Filter Button */}
-          <button
-            onClick={() => setActiveFilter('weighted')}
             className={`text-xs px-3 py-1 rounded-full font-black flex items-center gap-1 transition-all ${
-              activeFilter === 'weighted'
+              activeFilter === 'all'
                 ? 'bg-indigo-600 text-white shadow-retro-sm scale-105 ring-2 ring-indigo-400'
                 : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
             }`}
           >
             <Target className="w-3.5 h-3.5" />
-            <span>🎯 대학 환산 ({activeWeightedPct}%)</span>
+            <span>🎯 전체 환산 ({activeWeightedPct}%)</span>
           </button>
 
           <button
             onClick={() => setActiveFilter('math')}
-            className={`text-xs px-2.5 py-1 rounded-full font-semibold transition-all ${
+            className={`text-xs px-2.5 py-1 rounded-full font-bold transition-all ${
               activeFilter === 'math'
-                ? 'bg-midnight text-cream shadow-sm scale-105'
+                ? 'bg-rose-500 text-white shadow-sm scale-105'
                 : 'bg-cream text-midnight/70 hover:bg-peach/40'
             }`}
           >
@@ -170,9 +164,9 @@ export default function MockExamChart({
 
           <button
             onClick={() => setActiveFilter('korean')}
-            className={`text-xs px-2.5 py-1 rounded-full font-semibold transition-all ${
+            className={`text-xs px-2.5 py-1 rounded-full font-bold transition-all ${
               activeFilter === 'korean'
-                ? 'bg-midnight text-cream shadow-sm scale-105'
+                ? 'bg-navy text-cream shadow-sm scale-105'
                 : 'bg-cream text-midnight/70 hover:bg-peach/40'
             }`}
           >
@@ -181,9 +175,9 @@ export default function MockExamChart({
 
           <button
             onClick={() => setActiveFilter('science')}
-            className={`text-xs px-2.5 py-1 rounded-full font-semibold transition-all ${
+            className={`text-xs px-2.5 py-1 rounded-full font-bold transition-all ${
               activeFilter === 'science'
-                ? 'bg-midnight text-cream shadow-sm scale-105'
+                ? 'bg-emerald-600 text-white shadow-sm scale-105'
                 : 'bg-cream text-midnight/70 hover:bg-peach/40'
             }`}
           >
@@ -192,9 +186,9 @@ export default function MockExamChart({
 
           <button
             onClick={() => setActiveFilter('social')}
-            className={`text-xs px-2.5 py-1 rounded-full font-semibold transition-all ${
+            className={`text-xs px-2.5 py-1 rounded-full font-bold transition-all ${
               activeFilter === 'social'
-                ? 'bg-midnight text-cream shadow-sm scale-105'
+                ? 'bg-amber-600 text-white shadow-sm scale-105'
                 : 'bg-cream text-midnight/70 hover:bg-peach/40'
             }`}
           >
@@ -213,11 +207,16 @@ export default function MockExamChart({
           className="w-full h-auto min-w-[520px] select-none"
         >
           <defs>
-            {/* Glow filter for university weighted line */}
-            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
+            {/* Soft glow for main trend line */}
+            <filter id="lineGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
+            {/* Gradient fill under line */}
+            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+            </linearGradient>
           </defs>
 
           {/* Horizontal Grid lines (0, 25, 50, 75, 100) */}
@@ -269,76 +268,93 @@ export default function MockExamChart({
             목표선 {targetPercentile}% ({targetUniversityName})
           </text>
 
-          {/* Lines by subject */}
-          {(activeFilter === 'all' || activeFilter === 'social') && (
+          {/* Area gradient under main weighted line */}
+          {activeFilter === 'all' && sortedExams.length >= 2 && (
             <path
-              d={socialPath}
-              fill="none"
-              stroke="#d97706"
-              strokeWidth={activeFilter === 'social' ? '3.5' : '1.5'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={activeFilter === 'all' ? '0.45' : '1'}
+              d={`${weightedPath} L ${getX(sortedExams.length - 1)},${height - padding.bottom} L ${getX(0)},${height - padding.bottom} Z`}
+              fill="url(#areaGradient)"
             />
           )}
 
-          {(activeFilter === 'all' || activeFilter === 'science') && (
-            <path
-              d={sciencePath}
-              fill="none"
-              stroke="#059669"
-              strokeWidth={activeFilter === 'science' ? '3.5' : '1.5'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={activeFilter === 'all' ? '0.45' : '1'}
-            />
-          )}
-
-          {(activeFilter === 'all' || activeFilter === 'korean') && (
-            <path
-              d={koreanPath}
-              fill="none"
-              stroke="#172c66"
-              strokeWidth={activeFilter === 'korean' ? '3.5' : '2'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={activeFilter === 'all' ? '0.6' : '1'}
-            />
-          )}
-
-          {(activeFilter === 'all' || activeFilter === 'math') && (
-            <path
-              d={mathPath}
-              fill="none"
-              stroke="#f582ae"
-              strokeWidth={activeFilter === 'math' ? '4' : '2'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={activeFilter === 'all' ? '0.65' : '1'}
-            />
-          )}
-
-          {/* 🌟 🎯 SPECIAL HIGHLIGHTED: Target-Weighted Line (Indigo/Violet) */}
-          {(activeFilter === 'all' || activeFilter === 'weighted') && (
+          {/* 🌟 🎯 MAIN SINGLE TREND LINE (전체 백분위 선만 깔끔하게 표시) */}
+          {activeFilter === 'all' && (
             <path
               d={weightedPath}
               fill="none"
               stroke="#6366f1"
-              strokeWidth={activeFilter === 'weighted' ? '4.5' : '3.5'}
+              strokeWidth="4"
               strokeLinecap="round"
               strokeLinejoin="round"
-              filter="url(#glow)"
+              filter="url(#lineGlow)"
             />
           )}
 
-          {/* Interactive Data Points & Hover Triggers */}
+          {/* Individual Subject Lines (선택 시에만 단독 표시) */}
+          {activeFilter === 'math' && (
+            <path
+              d={mathPath}
+              fill="none"
+              stroke="#f43f5e"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+          {activeFilter === 'korean' && (
+            <path
+              d={koreanPath}
+              fill="none"
+              stroke="#172c66"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+          {activeFilter === 'science' && (
+            <path
+              d={sciencePath}
+              fill="none"
+              stroke="#059669"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+          {activeFilter === 'social' && (
+            <path
+              d={socialPath}
+              fill="none"
+              stroke="#d97706"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+
+          {/* Interactive Data Points & Centered Nodes */}
           {sortedExams.map((exam, idx) => {
             const x = getX(idx);
             const isHovered = hoveredIndex === idx;
+
             const weightedScore = getWeightedPercentile(exam);
-            const weightedY = getY(weightedScore);
-            const examGap = Number((weightedScore - targetPercentile).toFixed(1));
-            const isExamSafe = examGap >= 0;
+            const mathScore = exam.scores.math.percentile ?? 0;
+            const koreanScore = exam.scores.korean.percentile ?? 0;
+            const sciScore = exam.scores.integratedScience.percentile ?? 0;
+            const socScore = exam.scores.integratedSocial.percentile ?? 0;
+
+            const currentScore =
+              activeFilter === 'all'
+                ? weightedScore
+                : activeFilter === 'math'
+                ? mathScore
+                : activeFilter === 'korean'
+                ? koreanScore
+                : activeFilter === 'science'
+                ? sciScore
+                : socScore;
+
+            const currentY = getY(currentScore);
+            const isSafe = currentScore >= targetPercentile;
 
             return (
               <g
@@ -359,121 +375,71 @@ export default function MockExamChart({
                   />
                 )}
 
-                {/* Subject Dots (Subtle in 'all' view) */}
-                {(activeFilter === 'all' || activeFilter === 'math') && (
+                {/* 🌟 🎯 Highlighted Main Score Node */}
+                <g>
+                  {/* Outer pulse ring */}
                   <circle
                     cx={x}
-                    cy={getY(exam.scores.math.percentile)}
-                    r={isHovered ? 5 : 3.5}
-                    fill="#f582ae"
-                    stroke="#ffffff"
-                    strokeWidth="1.5"
-                    opacity={activeFilter === 'all' ? '0.7' : '1'}
+                    cy={currentY}
+                    r={isHovered ? 12 : 8}
+                    fill={activeFilter === 'math' ? '#f43f5e' : activeFilter === 'korean' ? '#172c66' : activeFilter === 'science' ? '#059669' : activeFilter === 'social' ? '#d97706' : '#6366f1'}
+                    fillOpacity="0.25"
                     className="transition-all"
                   />
-                )}
-                {(activeFilter === 'all' || activeFilter === 'korean') && (
+                  {/* Inner solid node */}
                   <circle
                     cx={x}
-                    cy={getY(exam.scores.korean.percentile)}
-                    r={isHovered ? 4.5 : 3}
-                    fill="#172c66"
+                    cy={currentY}
+                    r={isHovered ? 6.5 : 5}
+                    fill={activeFilter === 'math' ? '#f43f5e' : activeFilter === 'korean' ? '#172c66' : activeFilter === 'science' ? '#059669' : activeFilter === 'social' ? '#d97706' : '#4f46e5'}
                     stroke="#ffffff"
-                    strokeWidth="1.5"
-                    opacity={activeFilter === 'all' ? '0.7' : '1'}
+                    strokeWidth="2.5"
                     className="transition-all"
                   />
-                )}
-                {(activeFilter === 'all' || activeFilter === 'science') && (
-                  <circle
-                    cx={x}
-                    cy={getY(exam.scores.integratedScience.percentile)}
-                    r={3}
-                    fill="#059669"
-                    stroke="#ffffff"
-                    strokeWidth="1"
-                    opacity="0.6"
-                    className="transition-all"
-                  />
-                )}
-                {(activeFilter === 'all' || activeFilter === 'social') && (
-                  <circle
-                    cx={x}
-                    cy={getY(exam.scores.integratedSocial.percentile)}
-                    r={3}
-                    fill="#d97706"
-                    stroke="#ffffff"
-                    strokeWidth="1"
-                    opacity="0.6"
-                    className="transition-all"
-                  />
-                )}
 
-                {/* 🌟 🎯 SPECIAL HIGHLIGHTED: Target-Weighted Point (Large Pulsing Diamond/Circle) */}
-                {(activeFilter === 'all' || activeFilter === 'weighted') && (
-                  <g>
-                    {/* Outer glow ring */}
-                    <circle
-                      cx={x}
-                      cy={weightedY}
-                      r={isHovered ? 10 : 7.5}
-                      fill="#6366f1"
-                      fillOpacity="0.25"
-                    />
-                    {/* Inner core node */}
-                    <circle
-                      cx={x}
-                      cy={weightedY}
-                      r={isHovered ? 6 : 4.5}
-                      fill="#4f46e5"
-                      stroke="#ffffff"
-                      strokeWidth="2.5"
-                      className="transition-all"
-                    />
-
-                    {/* Floating score badge over node */}
-                    <rect
-                      x={x - 22}
-                      y={weightedY - 24}
-                      width={44}
-                      height={16}
-                      rx={8}
-                      fill="#312e81"
-                      stroke="#818cf8"
-                      strokeWidth="1"
-                    />
-                    <text
-                      x={x}
-                      y={weightedY - 12.5}
-                      textAnchor="middle"
-                      fontSize="9.5"
-                      fontWeight="900"
-                      fill="#ffffff"
-                    >
-                      {weightedScore}%
-                    </text>
-                  </g>
-                )}
+                  {/* Floating score badge over node */}
+                  <rect
+                    x={x - 24}
+                    y={currentY - 26}
+                    width={48}
+                    height={18}
+                    rx={9}
+                    fill={activeFilter === 'all' ? (isSafe ? '#065f46' : '#312e81') : '#0f172a'}
+                    stroke={activeFilter === 'all' ? (isSafe ? '#34d399' : '#818cf8') : '#94a3b8'}
+                    strokeWidth="1.2"
+                  />
+                  <text
+                    x={x}
+                    y={currentY - 13.5}
+                    textAnchor="middle"
+                    fontSize="10"
+                    fontWeight="900"
+                    fill="#ffffff"
+                  >
+                    {currentScore}%
+                  </text>
+                </g>
 
                 {/* X-axis Label (Exam Name / Date) */}
                 <text
                   x={x}
-                  y={height - padding.bottom + 18}
+                  y={height - padding.bottom + 20}
                   textAnchor="middle"
-                  fontSize="11"
-                  fontWeight={isHovered ? '800' : '600'}
-                  fill={isHovered ? '#001858' : '#475569'}
+                  fontSize="11.5"
+                  fontWeight={isHovered ? '900' : '700'}
+                  fill={isHovered ? '#001858' : '#334155'}
                 >
                   {exam.examName.replace(/20\d\d년\s*/, '')}
                 </text>
                 <text
                   x={x}
-                  y={height - padding.bottom + 32}
+                  y={height - padding.bottom + 34}
                   textAnchor="middle"
                   fontSize="9.5"
+                  fontWeight="600"
                   fill="#94a3b8"
                 >
-                  {exam.examDate.slice(5)}
+                  {exam.examDate}
                 </text>
               </g>
             );
@@ -481,7 +447,7 @@ export default function MockExamChart({
         </svg>
       </div>
 
-      {/* 🎯 Prominent Target-Weighted Score & Gap Calculation Bar */}
+      {/* 🎯 Target-Weighted Score & Breakdown Summary Bar */}
       {activeExam && (
         <div className="bg-gradient-to-r from-indigo-900 to-navy text-cream rounded-2xl p-3.5 border-2 border-indigo-500/40 shadow-sm space-y-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -492,7 +458,7 @@ export default function MockExamChart({
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-black text-sm text-white">
-                    [{targetUniversityName}] 대학 맞춤 환산 백분위:
+                    [{activeExam.examName}] [{targetUniversityName}] 맞춤 환산:
                   </span>
                   <span className="text-base sm:text-lg font-black text-amber-300">
                     {activeWeightedPct}%
@@ -531,11 +497,11 @@ export default function MockExamChart({
           {/* Subject breakdown pill strip */}
           <div className="pt-2 border-t border-white/15 flex items-center gap-3 text-[11px] text-cream/80 flex-wrap">
             <span>
-              국어({wKor}%): <strong className="text-white font-bold">{activeExam.scores.korean.percentile}%</strong>
+              국어({wKor}%): <strong className="text-white font-bold">{activeExam.scores.korean.percentile}%</strong> ({activeExam.scores.korean.grade}등급)
             </span>
             <span>•</span>
             <span className="text-amber-200">
-              수학({wMat}%): <strong className="text-amber-300 font-bold">{activeExam.scores.math.percentile}%</strong>
+              수학({wMat}%): <strong className="text-amber-300 font-bold">{activeExam.scores.math.percentile}%</strong> ({activeExam.scores.math.grade}등급)
             </span>
             <span>•</span>
             <span>
