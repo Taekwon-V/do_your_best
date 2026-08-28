@@ -189,7 +189,7 @@ export default function TargetUniversityModal({
           {/* 1단계: 대학 선택 */}
           <div className="space-y-1">
             <span className="text-[11px] font-bold text-navy/70">1. 대학교 선택:</span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
               {UNIVERSITY_ADMISSIONS_DB.map((u) => (
                 <button
                   key={u.univId}
