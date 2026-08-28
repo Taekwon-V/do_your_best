@@ -1,6 +1,7 @@
 export type AdmissionYear = 2028 | 2029;
 export type GradeLevel = 1 | 2;
 export type SemesterKey = '1-1' | '1-2' | '2-1' | '2-2' | '3-1';
+export type MainTabKey = 'home' | 'susi' | 'jeongsi' | 'targets' | 'reports';
 
 export type SubjectCategory =
   | '국어'

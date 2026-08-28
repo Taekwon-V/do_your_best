@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { ChildProfile, SemesterCourseGrade, FamilyAppData, MockExamRecord } from '@/types/admissions';
+import { ChildProfile, SemesterCourseGrade, FamilyAppData, MockExamRecord, MainTabKey } from '@/types/admissions';
 import { INITIAL_FAMILY_DATA } from '@/data/initialData';
 import { calculateWeightedGPA } from '@/utils/gpaCalculator';
 
@@ -9,6 +9,8 @@ interface AdmissionsContextType {
   childrenList: ChildProfile[];
   activeChildId: string;
   activeChild: ChildProfile;
+  activeTab: MainTabKey;
+  setActiveTab: (tab: MainTabKey) => void;
   targetGPA: number;
   setTargetGPA: (gpa: number) => void;
   switchChild: (childId: string) => void;
@@ -29,10 +31,12 @@ const AdmissionsContext = createContext<AdmissionsContextType | undefined>(undef
 
 const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data';
 const TARGET_GPA_STORAGE_KEY = 'admission_app_target_gpa';
+const ACTIVE_TAB_STORAGE_KEY = 'admission_app_active_tab';
 
 export function AdmissionsProvider({ children }: { children: React.ReactNode }) {
   const [familyData, setFamilyData] = useState<FamilyAppData>(INITIAL_FAMILY_DATA);
   const [targetGPA, setTargetGPAState] = useState<number>(1.15);
+  const [activeTab, setActiveTabState] = useState<MainTabKey>('home');
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -45,12 +49,21 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
       if (savedTarget) {
         setTargetGPAState(parseFloat(savedTarget));
       }
+      const savedTab = localStorage.getItem(ACTIVE_TAB_STORAGE_KEY) as MainTabKey;
+      if (savedTab && ['home', 'susi', 'jeongsi', 'targets', 'reports'].includes(savedTab)) {
+        setActiveTabState(savedTab);
+      }
     } catch (e) {
       console.error('Failed to load admissions data from storage', e);
     } finally {
       setIsLoaded(true);
     }
   }, []);
+
+  const setActiveTab = (tab: MainTabKey) => {
+    setActiveTabState(tab);
+    localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tab);
+  };
 
   const saveFamilyData = (newData: FamilyAppData) => {
     setFamilyData(newData);
@@ -215,6 +228,8 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         childrenList: familyData.children,
         activeChildId: familyData.activeChildId,
         activeChild,
+        activeTab,
+        setActiveTab,
         targetGPA,
         setTargetGPA,
         switchChild,
