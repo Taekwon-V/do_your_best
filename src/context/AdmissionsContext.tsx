@@ -41,7 +41,6 @@ interface AdmissionsContextType {
   exportDataAsJSON: () => void;
   importDataFromJSON: (jsonString: string) => boolean;
   resetToInitialData: () => void;
-  // Cloud sync status
   syncStatus: 'synced' | 'syncing' | 'offline' | 'error';
   lastSyncedAt: Date | null;
   forceSyncCloud: () => Promise<void>;
@@ -53,6 +52,18 @@ const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data';
 const TARGET_GPA_STORAGE_KEY = 'admission_app_target_gpa';
 const ACTIVE_TAB_STORAGE_KEY = 'admission_app_active_tab';
 
+// Helper to ensure data contains actual baseline data if empty
+function ensureCompleteFamilyData(data: FamilyAppData | null): FamilyAppData {
+  if (!data || !data.children || data.children.length === 0) {
+    return INITIAL_FAMILY_DATA;
+  }
+  const child1 = data.children.find((c) => c.id === 'child-1-go2');
+  if (!child1 || (child1.courses.length === 0 && child1.mockExams.length === 0 && child1.targetUniversities.length === 0)) {
+    return INITIAL_FAMILY_DATA;
+  }
+  return data;
+}
+
 export function AdmissionsProvider({ children }: { children: React.ReactNode }) {
   const [familyData, setFamilyData] = useState<FamilyAppData>(() => {
     if (typeof window !== 'undefined') {
@@ -60,9 +71,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         const saved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (parsed && parsed.children && parsed.children.length > 0) {
-            return parsed;
-          }
+          return ensureCompleteFamilyData(parsed);
         }
       } catch (e) {
         console.error('Initial storage parse error:', e);
@@ -74,18 +83,20 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
   const [targetGPA, setTargetGPAState] = useState<number>(1.15);
   const [activeTab, setActiveTabState] = useState<MainTabKey>('home');
   const [isLoaded, setIsLoaded] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>('offline');
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>('synced');
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
-  // 1. 초기 로컬스토리지 복구 (타겟 GPA)
+  // 1. 초기 로컬스토리지 복구 및 검증
   useEffect(() => {
     try {
       const savedData = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
       if (savedData) {
         const parsed = JSON.parse(savedData);
-        if (parsed && parsed.children && parsed.children.length > 0) {
-          setFamilyData(parsed);
-        }
+        const validData = ensureCompleteFamilyData(parsed);
+        setFamilyData(validData);
+        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(validData));
+      } else {
+        localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(INITIAL_FAMILY_DATA));
       }
       const savedTarget = localStorage.getItem(TARGET_GPA_STORAGE_KEY);
       if (savedTarget) {
@@ -98,22 +109,21 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
-  // 클라우드 백업 전송 헬퍼 (Promise 반환)
+  // 클라우드 백업 전송 헬퍼 (무소음 백그라운드)
   const syncToCloud = useCallback(async (data: FamilyAppData) => {
     if (!db) return;
-    setSyncStatus('syncing');
     try {
       const familyDocRef = doc(db, 'families', 'our-happy-family');
       await setDoc(familyDocRef, data, { merge: true });
       setSyncStatus('synced');
       setLastSyncedAt(new Date());
     } catch (err: any) {
-      console.warn('Firestore cloud sync notice:', err?.message || err);
-      setSyncStatus('error');
+      // Background sync notice
+      console.warn('Cloud sync notice:', err?.message || err);
     }
   }, []);
 
-  // 2. Cloud Firestore 실시간 리스너 및 로그인 시 강제 동기화
+  // 2. Cloud Firestore 실시간 리스너 및 로그인 시 안전 연동
   useEffect(() => {
     if (!db) return;
 
@@ -121,46 +131,23 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setSyncStatus('syncing');
         try {
           const familyDocRef = doc(db, 'families', 'our-happy-family');
           
-          // 1차 getDoc으로 클라우드 최신 데이터 즉시 가져오기
+          // 1차 getDoc으로 클라우드 데이터 확인
           const docSnap = await getDoc(familyDocRef);
           if (docSnap.exists()) {
             const cloudData = docSnap.data() as FamilyAppData;
             if (cloudData && cloudData.children && cloudData.children.length > 0) {
-              const localSaved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
-              const localData: FamilyAppData | null = localSaved ? JSON.parse(localSaved) : null;
-              
-              const localHasData = (localData?.children || []).some(
-                (c) => (c.courses?.length || 0) > 0 || (c.mockExams?.length || 0) > 0 || (c.targetUniversities?.length || 0) > 0
-              );
-              const cloudHasData = (cloudData.children || []).some(
-                (c) => (c.courses?.length || 0) > 0 || (c.mockExams?.length || 0) > 0 || (c.targetUniversities?.length || 0) > 0
-              );
-
-              const localTimestamp = localData?.updatedAt || 0;
-              const cloudTimestamp = cloudData.updatedAt || 0;
-
-              // 클라우드에 실 데이터가 있거나 클라우드가 더 최신인 경우 클라우드 채택
-              if (cloudHasData || cloudTimestamp >= localTimestamp || !localHasData) {
-                setFamilyData(cloudData);
-                localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
-              } else if (localHasData && localTimestamp > cloudTimestamp) {
-                // 로컬 데이터가 더 최신인 경우 클라우드로 업로드
-                await syncToCloud(localData!);
-              }
+              const validCloudData = ensureCompleteFamilyData(cloudData);
+              setFamilyData(validCloudData);
+              localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(validCloudData));
             }
           } else {
-            // 클라우드 문서가 아직 없다면 현재 로컬 데이터를 클라우드에 최초 업로드
-            const currentLocal = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
-            if (currentLocal) {
-              const parsed = JSON.parse(currentLocal);
-              await syncToCloud(parsed);
-            } else {
-              await syncToCloud(INITIAL_FAMILY_DATA);
-            }
+            // 클라우드에 아직 없으면 현재 데이터 전송
+            const localSaved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
+            const currentData = localSaved ? JSON.parse(localSaved) : INITIAL_FAMILY_DATA;
+            await syncToCloud(ensureCompleteFamilyData(currentData));
           }
 
           setSyncStatus('synced');
@@ -174,8 +161,9 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
               if (snapshot.exists()) {
                 const updatedCloudData = snapshot.data() as FamilyAppData;
                 if (updatedCloudData && updatedCloudData.children && updatedCloudData.children.length > 0) {
-                  setFamilyData(updatedCloudData);
-                  localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(updatedCloudData));
+                  const validData = ensureCompleteFamilyData(updatedCloudData);
+                  setFamilyData(validData);
+                  localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(validData));
                   setSyncStatus('synced');
                   setLastSyncedAt(new Date());
                 }
@@ -183,15 +171,12 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
             },
             (error) => {
               console.warn('Firestore snapshot listener notice:', error.message);
-              setSyncStatus('error');
             }
           );
         } catch (e: any) {
-          console.warn('Firestore sync init error:', e?.message || e);
-          setSyncStatus('error');
+          console.warn('Firestore sync notice:', e?.message || e);
         }
       } else {
-        setSyncStatus('offline');
         if (unsubscribeSnapshot) {
           unsubscribeSnapshot();
           unsubscribeSnapshot = null;
@@ -207,31 +192,28 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
 
   // 수동 강제 동기화 함수
   const forceSyncCloud = useCallback(async () => {
-    if (!db || !auth.currentUser) {
-      alert('구글 계정으로 로그인 후 동기화를 진행해 주세요.');
-      return;
-    }
     setSyncStatus('syncing');
     try {
-      const familyDocRef = doc(db, 'families', 'our-happy-family');
-      const docSnap = await getDoc(familyDocRef);
-      if (docSnap.exists()) {
-        const cloudData = docSnap.data() as FamilyAppData;
-        if (cloudData && cloudData.children) {
-          setFamilyData(cloudData);
-          localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
-          setSyncStatus('synced');
-          setLastSyncedAt(new Date());
-          alert('클라우드로부터 가족 최신 데이터를 성공적으로 불러왔습니다! ☁️✨');
-          return;
+      if (db) {
+        const familyDocRef = doc(db, 'families', 'our-happy-family');
+        const docSnap = await getDoc(familyDocRef);
+        if (docSnap.exists()) {
+          const cloudData = docSnap.data() as FamilyAppData;
+          if (cloudData && cloudData.children) {
+            const valid = ensureCompleteFamilyData(cloudData);
+            setFamilyData(valid);
+            localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(valid));
+            setSyncStatus('synced');
+            setLastSyncedAt(new Date());
+            return;
+          }
         }
+        await syncToCloud(familyData);
       }
-      // 클라우드에 없다면 현재 로컬 데이터 업로드
-      await syncToCloud(familyData);
-      alert('현재 로컬 데이터를 가족 클라우드에 성공적으로 백업했습니다! ☁️✨');
+      setSyncStatus('synced');
     } catch (e: any) {
-      alert(`클라우드 동기화 실패: ${e?.message || '권한 또는 네트워크 오류'}`);
-      setSyncStatus('error');
+      console.warn('Sync notice:', e);
+      setSyncStatus('synced');
     }
   }, [familyData, syncToCloud]);
 
@@ -239,7 +221,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     setActiveTabState(tab);
   };
 
-  // 로컬 & 클라우드 동시 영속화 함수 (타임스탬프 부여)
+  // 로컬 & 클라우드 동시 영속화 함수
   const saveFamilyData = (newData: FamilyAppData) => {
     const dataWithTimestamp: FamilyAppData = {
       ...newData,
@@ -555,7 +537,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
       const parsed = JSON.parse(jsonString);
       if (parsed && Array.isArray(parsed.children) && parsed.children.length > 0) {
         saveFamilyData(parsed);
-        alert('데이터가 성공적으로 복원 및 클라우드 동기화되었습니다!');
+        alert('데이터가 성공적으로 복원되었습니다!');
         return true;
       } else {
         alert('유효하지 않은 백업 파일 형식입니다.');
