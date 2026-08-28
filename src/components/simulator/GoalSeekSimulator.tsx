@@ -221,12 +221,11 @@ export default function GoalSeekSimulator() {
             onChange={(e) => setTargetGPA(parseFloat(e.target.value))}
             className="w-full h-3 bg-white rounded-lg appearance-none cursor-pointer border border-navy accent-coral"
           />
-          <div className="flex justify-between text-[11px] font-extrabold text-navy-muted">
-            <span>1.00 (만점 목표)</span>
-            <span>1.33 (인하대 수학교육)</span>
-            <span>1.48 (인천대 수학교육)</span>
-            <span>1.86 (인천대 컴공)</span>
-            <span>2.50</span>
+          <div className="flex justify-between text-xs font-black text-navy/70 px-1 pt-1">
+            <span className="cursor-pointer hover:text-navy" onClick={() => setTargetGPA(1.00)}>1.00</span>
+            <span className="cursor-pointer hover:text-navy" onClick={() => setTargetGPA(1.50)}>1.50</span>
+            <span className="cursor-pointer hover:text-navy" onClick={() => setTargetGPA(2.00)}>2.00</span>
+            <span className="cursor-pointer hover:text-navy" onClick={() => setTargetGPA(2.50)}>2.50</span>
           </div>
         </div>
       </div>
