@@ -22,6 +22,7 @@
 | :--- | :--- | :--- |
 | [`01_target_setup.md`](01_target_setup.md) | **[모듈 1] 목표 대학 & 학과 설정** | 자녀별 수시 6장 포트폴리오(안정/적정/소신), 정시 가/나/다군 목표 설정 |
 | [`02_susi_gpa_simulator.md`](02_susi_gpa_simulator.md) | **[모듈 2] 수시 내신 & 역산 시뮬레이터** | 고2(잔여 2학기) / 고1(잔여 4학기) 맞춤형 역산(Goal-Seek), 수능최저 진단 |
+| [`grade_conversion_matrix.md`](grade_conversion_matrix.md) | **[참조] 5등급제 ↔ 9등급제 단위수가중 마스터 환산표** | 일반고 124이수단위 기준 5등급제(0.1단위) ↔ 9등급제 ↔ 수시 2대전형 매트릭스 |
 | [`03_jeongsi_mock_tracker.md`](03_jeongsi_mock_tracker.md) | **[모듈 3] 정시 모의고사 트래커** | 고1/고2 모의고사 누적 관리, 시계열 추이, 대학별 환산점수 및 목표 Gap 분석 |
 | [`04_motivation_dashboard.md`](04_motivation_dashboard.md) | **[모듈 4] 동기부여 & 전략 대시보드** | 자녀별 D-Day, What-If 시뮬레이션 카드, 취약 영역 레이더 차트, 상담용 리포트 |
 | [`05_data_architecture.md`](05_data_architecture.md) | **[모듈 5] 데이터 스키마 & 아키텍처** | 다자녀(고2, 고1) 독립 프로필 스키마, 클라우드 동기화 구조 |
