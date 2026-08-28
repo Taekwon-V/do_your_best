@@ -30,7 +30,15 @@ const DESKTOP_TABS: TabItem[] = [
 ];
 
 export default function Navbar() {
-  const { childrenList, activeChildId, switchChild, activeTab, setActiveTab } = useAdmissions();
+  const {
+    childrenList,
+    activeChildId,
+    switchChild,
+    activeTab,
+    setActiveTab,
+    syncStatus,
+    forceSyncCloud,
+  } = useAdmissions();
   const { user, logout } = useAuth();
 
   return (
@@ -49,17 +57,26 @@ export default function Navbar() {
                 2028 대입 전략
               </span>
               <span className="text-[9px] sm:text-[10px] font-bold text-navy-muted tracking-wider uppercase block">
-                Family Manager
+                Family Cloud Sync
               </span>
             </div>
           </div>
 
-          {/* Mobile Right: Account & Logout */}
+          {/* Mobile Right: Cloud Sync & Account & Logout */}
           <div className="flex md:hidden items-center gap-1.5">
-            <span className="text-[10px] font-black text-navy px-2 py-1 bg-white rounded-xl border border-navy shadow-sm flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 inline" />
-              <span>가족전용</span>
-            </span>
+            <button
+              onClick={forceSyncCloud}
+              title="클라우드 동기화"
+              className={`p-1.5 rounded-xl border text-[11px] font-black flex items-center gap-1 ${
+                syncStatus === 'synced'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                  : syncStatus === 'syncing'
+                  ? 'bg-amber-50 text-amber-800 border-amber-300 animate-pulse'
+                  : 'bg-white text-navy border-navy'
+              }`}
+            >
+              <span>{syncStatus === 'synced' ? '🟢 동기화' : syncStatus === 'syncing' ? '🟡 동기화중' : '🔄 동기화'}</span>
+            </button>
             <button
               onClick={logout}
               title="로그아웃"
@@ -96,8 +113,24 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop Right: Account Info & Logout */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
+        {/* Desktop Right: Cloud Sync Status & Account Info & Logout */}
+        <div className="hidden md:flex items-center gap-2.5 shrink-0">
+          {/* Cloud Sync Status Pill */}
+          <button
+            onClick={forceSyncCloud}
+            title="클라우드 실시간 동기화 상태 (클릭 시 강제 동기화)"
+            className={`px-3 py-1.5 rounded-2xl border-2 font-black text-xs flex items-center gap-1.5 shadow-sm hover:scale-105 transition-all ${
+              syncStatus === 'synced'
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-400'
+                : syncStatus === 'syncing'
+                ? 'bg-amber-50 text-amber-800 border-amber-400 animate-pulse'
+                : 'bg-white text-navy border-navy'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${syncStatus === 'synced' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+            <span>{syncStatus === 'synced' ? '가족 클라우드 연결됨' : syncStatus === 'syncing' ? '동기화 중...' : '클라우드 동기화'}</span>
+          </button>
+
           <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-2xl border-2 border-navy shadow-sm">
             <div className="w-6 h-6 rounded-full bg-navy text-cream flex items-center justify-center font-bold text-xs">
               G

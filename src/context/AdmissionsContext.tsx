@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import {
   ChildProfile,
   SemesterCourseGrade,
@@ -11,8 +11,9 @@ import {
 } from '@/types/admissions';
 import { INITIAL_FAMILY_DATA } from '@/data/initialData';
 import { calculateWeightedGPA } from '@/utils/gpaCalculator';
-import { db } from '@/lib/firebase';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { db, auth } from '@/lib/firebase';
+import { doc, onSnapshot, setDoc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 interface AdmissionsContextType {
   childrenList: ChildProfile[];
@@ -40,6 +41,10 @@ interface AdmissionsContextType {
   exportDataAsJSON: () => void;
   importDataFromJSON: (jsonString: string) => boolean;
   resetToInitialData: () => void;
+  // Cloud sync status
+  syncStatus: 'synced' | 'syncing' | 'offline' | 'error';
+  lastSyncedAt: Date | null;
+  forceSyncCloud: () => Promise<void>;
 }
 
 const AdmissionsContext = createContext<AdmissionsContextType | undefined>(undefined);
@@ -67,9 +72,10 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
   });
 
   const [targetGPA, setTargetGPAState] = useState<number>(1.15);
-  // 모바일/PC 접속 시 항상 종합홈('home')으로 시작
   const [activeTab, setActiveTabState] = useState<MainTabKey>('home');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>('offline');
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
   // 1. 초기 로컬스토리지 복구 (타겟 GPA)
   useEffect(() => {
@@ -92,58 +98,142 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
-  // 클라우드 백업 전송 헬퍼
-  const syncToCloud = (data: FamilyAppData) => {
+  // 클라우드 백업 전송 헬퍼 (Promise 반환)
+  const syncToCloud = useCallback(async (data: FamilyAppData) => {
     if (!db) return;
+    setSyncStatus('syncing');
     try {
       const familyDocRef = doc(db, 'families', 'our-happy-family');
-      setDoc(familyDocRef, data, { merge: true }).catch((err) => {
-        console.warn('Firestore cloud sync notice:', err.message);
-      });
-    } catch (err) {
-      console.warn('Cloud sync error:', err);
+      await setDoc(familyDocRef, data, { merge: true });
+      setSyncStatus('synced');
+      setLastSyncedAt(new Date());
+    } catch (err: any) {
+      console.warn('Firestore cloud sync notice:', err?.message || err);
+      setSyncStatus('error');
     }
-  };
+  }, []);
 
-  // 2. Cloud Firestore 실시간 리스너 연결 (타임스탬프 기반 안전 동기화)
+  // 2. Cloud Firestore 실시간 리스너 및 로그인 시 강제 동기화
   useEffect(() => {
     if (!db) return;
-    try {
-      const familyDocRef = doc(db, 'families', 'our-happy-family');
-      const unsubscribe = onSnapshot(
-        familyDocRef,
-        (docSnap) => {
+
+    let unsubscribeSnapshot: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setSyncStatus('syncing');
+        try {
+          const familyDocRef = doc(db, 'families', 'our-happy-family');
+          
+          // 1차 getDoc으로 클라우드 최신 데이터 즉시 가져오기
+          const docSnap = await getDoc(familyDocRef);
           if (docSnap.exists()) {
             const cloudData = docSnap.data() as FamilyAppData;
             if (cloudData && cloudData.children && cloudData.children.length > 0) {
               const localSaved = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
               const localData: FamilyAppData | null = localSaved ? JSON.parse(localSaved) : null;
+              
+              const localHasData = (localData?.children || []).some(
+                (c) => (c.courses?.length || 0) > 0 || (c.mockExams?.length || 0) > 0 || (c.targetUniversities?.length || 0) > 0
+              );
+              const cloudHasData = (cloudData.children || []).some(
+                (c) => (c.courses?.length || 0) > 0 || (c.mockExams?.length || 0) > 0 || (c.targetUniversities?.length || 0) > 0
+              );
+
               const localTimestamp = localData?.updatedAt || 0;
               const cloudTimestamp = cloudData.updatedAt || 0;
 
-              // 클라우드 데이터가 로컬보다 최신일 때만 로컬 갱신
-              if (cloudTimestamp > localTimestamp) {
+              // 클라우드에 실 데이터가 있거나 클라우드가 더 최신인 경우 클라우드 채택
+              if (cloudHasData || cloudTimestamp >= localTimestamp || !localHasData) {
                 setFamilyData(cloudData);
                 localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
-              } else if (localTimestamp > cloudTimestamp) {
-                // 로컬 데이터가 더 최신이면 클라우드에 업로드
-                if (localData) {
-                  syncToCloud(localData);
-                }
+              } else if (localHasData && localTimestamp > cloudTimestamp) {
+                // 로컬 데이터가 더 최신인 경우 클라우드로 업로드
+                await syncToCloud(localData!);
               }
             }
+          } else {
+            // 클라우드 문서가 아직 없다면 현재 로컬 데이터를 클라우드에 최초 업로드
+            const currentLocal = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
+            if (currentLocal) {
+              const parsed = JSON.parse(currentLocal);
+              await syncToCloud(parsed);
+            } else {
+              await syncToCloud(INITIAL_FAMILY_DATA);
+            }
           }
-        },
-        (error) => {
-          console.warn('Firestore sync listener notice (offline fallback active):', error.message);
-        }
-      );
 
-      return () => unsubscribe();
-    } catch (e) {
-      console.warn('Firestore initialization notice:', e);
+          setSyncStatus('synced');
+          setLastSyncedAt(new Date());
+
+          // 2차 onSnapshot 실시간 동기화 연결
+          if (unsubscribeSnapshot) unsubscribeSnapshot();
+          unsubscribeSnapshot = onSnapshot(
+            familyDocRef,
+            (snapshot) => {
+              if (snapshot.exists()) {
+                const updatedCloudData = snapshot.data() as FamilyAppData;
+                if (updatedCloudData && updatedCloudData.children && updatedCloudData.children.length > 0) {
+                  setFamilyData(updatedCloudData);
+                  localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(updatedCloudData));
+                  setSyncStatus('synced');
+                  setLastSyncedAt(new Date());
+                }
+              }
+            },
+            (error) => {
+              console.warn('Firestore snapshot listener notice:', error.message);
+              setSyncStatus('error');
+            }
+          );
+        } catch (e: any) {
+          console.warn('Firestore sync init error:', e?.message || e);
+          setSyncStatus('error');
+        }
+      } else {
+        setSyncStatus('offline');
+        if (unsubscribeSnapshot) {
+          unsubscribeSnapshot();
+          unsubscribeSnapshot = null;
+        }
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+    };
+  }, [syncToCloud]);
+
+  // 수동 강제 동기화 함수
+  const forceSyncCloud = useCallback(async () => {
+    if (!db || !auth.currentUser) {
+      alert('구글 계정으로 로그인 후 동기화를 진행해 주세요.');
+      return;
     }
-  }, []);
+    setSyncStatus('syncing');
+    try {
+      const familyDocRef = doc(db, 'families', 'our-happy-family');
+      const docSnap = await getDoc(familyDocRef);
+      if (docSnap.exists()) {
+        const cloudData = docSnap.data() as FamilyAppData;
+        if (cloudData && cloudData.children) {
+          setFamilyData(cloudData);
+          localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
+          setSyncStatus('synced');
+          setLastSyncedAt(new Date());
+          alert('클라우드로부터 가족 최신 데이터를 성공적으로 불러왔습니다! ☁️✨');
+          return;
+        }
+      }
+      // 클라우드에 없다면 현재 로컬 데이터 업로드
+      await syncToCloud(familyData);
+      alert('현재 로컬 데이터를 가족 클라우드에 성공적으로 백업했습니다! ☁️✨');
+    } catch (e: any) {
+      alert(`클라우드 동기화 실패: ${e?.message || '권한 또는 네트워크 오류'}`);
+      setSyncStatus('error');
+    }
+  }, [familyData, syncToCloud]);
 
   const setActiveTab = (tab: MainTabKey) => {
     setActiveTabState(tab);
@@ -205,7 +295,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     });
   };
 
-  // 단일 과목 추가 (함수형 업데이트로 완벽 보장)
+  // 단일 과목 추가
   const addCourse = (childId: string, course: SemesterCourseGrade) => {
     setFamilyData((prev) => {
       const updatedChildren = prev.children.map((child) => {
@@ -249,12 +339,11 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     });
   };
 
-  // 여러 과목 일괄 수정/추가 (마법봉 일괄 채우기 등)
+  // 여러 과목 일괄 수정/추가
   const updateMultipleCourses = (childId: string, newCourses: SemesterCourseGrade[]) => {
     setFamilyData((prev) => {
       const updatedChildren = prev.children.map((child) => {
         if (child.id === childId) {
-          // 기존 과목 맵 구성
           const courseMap = new Map(child.courses.map((c) => [c.id, c]));
           newCourses.forEach((nc) => {
             courseMap.set(nc.id, nc);
@@ -449,71 +538,76 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     try {
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(familyData, null, 2));
       const downloadAnchor = document.createElement('a');
-      const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
       downloadAnchor.setAttribute('href', dataStr);
-      downloadAnchor.setAttribute('download', `2028_대입전략_가족데이터_백업_${dateStr}.json`);
+      downloadAnchor.setAttribute('download', `admission_strategy_backup_${new Date().toISOString().slice(0, 10)}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
     } catch (e) {
-      console.error('Failed to export JSON data', e);
-      alert('데이터 내보내기 중 오류가 발생했습니다.');
+      console.error('Failed to export data', e);
+      alert('데이터 내보내기에 실패했습니다.');
     }
   };
 
-  // JSON 백업 파일 불러오기 (복원)
+  // JSON 백업 파일 복원 (가져오기)
   const importDataFromJSON = (jsonString: string): boolean => {
     try {
-      const parsed = JSON.parse(jsonString) as FamilyAppData;
-      if (!parsed.children || !Array.isArray(parsed.children) || parsed.children.length === 0) {
-        alert('올바르지 않은 대입 전략 데이터 파일 형식입니다.');
+      const parsed = JSON.parse(jsonString);
+      if (parsed && Array.isArray(parsed.children) && parsed.children.length > 0) {
+        saveFamilyData(parsed);
+        alert('데이터가 성공적으로 복원 및 클라우드 동기화되었습니다!');
+        return true;
+      } else {
+        alert('유효하지 않은 백업 파일 형식입니다.');
         return false;
       }
-      saveFamilyData(parsed);
-      alert('가족 대입 전략 데이터가 성공적으로 복원되었습니다! 🎉');
-      return true;
     } catch (e) {
-      console.error('Failed to import JSON data', e);
-      alert('파일을 읽는 도중 오류가 발생했습니다. 올바른 JSON 파일인지 확인해 주세요.');
+      console.error('Failed to import data', e);
+      alert('파일을 읽는 중 오류가 발생했습니다.');
       return false;
     }
   };
 
+  // 초기화 함수
   const resetToInitialData = () => {
-    saveFamilyData(INITIAL_FAMILY_DATA);
-    setTargetGPA(1.15);
+    if (confirm('모든 성적과 목표 대학 데이터를 초기화하시겠습니까?')) {
+      saveFamilyData(INITIAL_FAMILY_DATA);
+    }
+  };
+
+  const contextValue: AdmissionsContextType = {
+    childrenList: familyData.children,
+    activeChildId: familyData.activeChildId,
+    activeChild,
+    activeTab,
+    setActiveTab,
+    targetGPA,
+    setTargetGPA,
+    switchChild,
+    updateChildName,
+    updateTargetField,
+    addCourse,
+    updateCourse,
+    updateMultipleCourses,
+    deleteCourse,
+    addMockExam,
+    updateMockExam,
+    deleteMockExam,
+    addTargetUniversity,
+    updateTargetUniversity,
+    deleteTargetUniversity,
+    calculateCumulativeGPA,
+    calculateDDay,
+    exportDataAsJSON,
+    importDataFromJSON,
+    resetToInitialData,
+    syncStatus,
+    lastSyncedAt,
+    forceSyncCloud,
   };
 
   return (
-    <AdmissionsContext.Provider
-      value={{
-        childrenList: familyData.children,
-        activeChildId: familyData.activeChildId,
-        activeChild,
-        activeTab,
-        setActiveTab,
-        targetGPA,
-        setTargetGPA,
-        switchChild,
-        updateChildName,
-        updateTargetField,
-        addCourse,
-        updateCourse,
-        updateMultipleCourses,
-        deleteCourse,
-        addMockExam,
-        updateMockExam,
-        deleteMockExam,
-        addTargetUniversity,
-        updateTargetUniversity,
-        deleteTargetUniversity,
-        calculateCumulativeGPA,
-        calculateDDay,
-        exportDataAsJSON,
-        importDataFromJSON,
-        resetToInitialData,
-      }}
-    >
+    <AdmissionsContext.Provider value={contextValue}>
       {children}
     </AdmissionsContext.Provider>
   );
