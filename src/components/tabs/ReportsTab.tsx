@@ -1,27 +1,58 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAdmissions } from '@/context/AdmissionsContext';
+import OnePageConsultingReport from '@/components/report/OnePageConsultingReport';
 import {
   FileText,
   Printer,
-  Search,
   BookOpen,
   CheckCircle2,
   Download,
+  Upload,
+  RotateCcw,
   Building,
-  GraduationCap,
+  Cloud,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 export default function ReportsTab() {
-  const { activeChild, calculateCumulativeGPA } = useAdmissions();
-  const [searchTerm, setSearchTerm] = useState('');
+  const {
+    activeChild,
+    calculateCumulativeGPA,
+    exportDataAsJSON,
+    importDataFromJSON,
+    resetToInitialData,
+  } = useAdmissions();
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [selectedUnivFilter, setSelectedUnivFilter] = useState<'all' | 'inha' | 'incheon' | 'cau'>('all');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentGPA = calculateCumulativeGPA(activeChild.courses || []);
 
-  const handlePrintReport = () => {
-    window.print();
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (content) {
+        importDataFromJSON(content);
+      }
+    };
+    reader.readAsText(file);
+    // Reset file input value
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleReset = () => {
+    if (confirm('모든 데이터를 최초 기본값(초기 세팅)으로 초기화하시겠습니까? (기존 입력 내용은 초기화됩니다)')) {
+      resetToInitialData();
+      alert('기본 데이터로 초기화되었습니다.');
+    }
   };
 
   return (
@@ -30,7 +61,7 @@ export default function ReportsTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 shadow-sm">
-            <FileText className="w-5 h-5" />
+            <FileText className="w-5 h-5 text-emerald-800" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -38,25 +69,82 @@ export default function ReportsTab() {
                 [모듈 5] 입결 DB & 학부모 상담용 1장 리포트
               </h2>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                Phase 5 Archive 📑
+                Phase 5 완결 💎
               </span>
             </div>
             <p className="text-xs sm:text-sm text-midnight/70 mt-0.5">
-              인하대·인천대·중앙대 5등급제 환산 입결 및 124단위 가중치 마스터 환산표를 조회합니다.
+              상담용 A4 1장 출력, 대학별 5등급제 입결 조회 및 가족 클라우드 백업을 관리합니다.
             </p>
           </div>
         </div>
 
         <button
-          onClick={handlePrintReport}
+          onClick={() => setIsReportModalOpen(true)}
           className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-navy text-cream font-bold text-xs sm:text-sm shadow-retro hover:bg-navy-light active:translate-x-0.5 active:translate-y-0.5 transition-all self-start sm:self-auto"
         >
           <Printer className="w-4 h-4 text-coral" />
-          <span>상담용 1장 리포트 인쇄 / PDF 다운로드</span>
+          <span>상담용 1장 리포트 인쇄 / PDF 출력</span>
         </button>
       </div>
 
-      {/* 2. 124-Unit Master Grade Conversion Matrix Mini-Table */}
+      {/* 2. Cloud Sync & Backup / Restore Management Card */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-peach/50 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-peach/30">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-pastel-sky/30 flex items-center justify-center text-midnight">
+              <Cloud className="w-4 h-4 text-midnight" />
+            </div>
+            <div>
+              <h3 className="font-bold text-midnight text-base sm:text-lg flex items-center gap-2">
+                <span>가족 클라우드 동기화 & 데이터 백업/복원</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>실시간 연동 중</span>
+                </span>
+              </h3>
+              <p className="text-xs text-midnight/60">
+                어떤 기기(PC, 스마트폰, 태블릿)에서든 동일하게 자동 저장되며, 언제든 파일로 백업할 수 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* JSON Export */}
+          <button
+            onClick={exportDataAsJSON}
+            className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-cream/70 hover:bg-peach/30 border border-peach/60 text-midnight font-bold text-xs sm:text-sm transition-all"
+          >
+            <Download className="w-4 h-4 text-navy" />
+            <span>JSON 백업 파일 다운로드</span>
+          </button>
+
+          {/* JSON Import */}
+          <label className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-cream/70 hover:bg-peach/30 border border-peach/60 text-midnight font-bold text-xs sm:text-sm transition-all cursor-pointer">
+            <Upload className="w-4 h-4 text-coral" />
+            <span>JSON 백업 파일 복원</span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+          </label>
+
+          {/* Reset */}
+          <button
+            onClick={handleReset}
+            className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-red-50/60 hover:bg-red-100/60 border border-red-200 text-red-700 font-bold text-xs sm:text-sm transition-all"
+          >
+            <RotateCcw className="w-4 h-4 text-red-600" />
+            <span>기본 프리셋으로 초기화</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 3. 124-Unit Master Grade Conversion Matrix Table */}
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-peach/50 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-peach/30">
           <div className="flex items-center gap-2">
@@ -118,7 +206,7 @@ export default function ReportsTab() {
         </div>
       </div>
 
-      {/* 3. University Admission DB Card (Inha / Incheon / CAU) */}
+      {/* 4. University Admission DB Card (Inha / Incheon / CAU) */}
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-peach/50 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-peach/30">
           <div className="flex items-center gap-2">
@@ -195,6 +283,13 @@ export default function ReportsTab() {
           )}
         </div>
       </div>
+
+      {/* One-Page Report Modal */}
+      <OnePageConsultingReport
+        child={activeChild}
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </div>
   );
 }

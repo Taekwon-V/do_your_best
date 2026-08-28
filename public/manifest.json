@@ -1,0 +1,22 @@
+{
+  "name": "2028 대입 전략 매니저",
+  "short_name": "2028대입",
+  "description": "2028 대입 개편안 맞춤형 수시 5등급제 역산 및 정시 모의고사 트래커",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fef6e4",
+  "theme_color": "#001858",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

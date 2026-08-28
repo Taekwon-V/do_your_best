@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 import { ChildProfile, SemesterCourseGrade, FamilyAppData, MockExamRecord, MainTabKey, TargetUniversity } from '@/types/admissions';
 import { INITIAL_FAMILY_DATA } from '@/data/initialData';
 import { calculateWeightedGPA } from '@/utils/gpaCalculator';
+import { db } from '@/lib/firebase';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
 interface AdmissionsContextType {
   childrenList: ChildProfile[];
@@ -27,6 +29,8 @@ interface AdmissionsContextType {
   deleteTargetUniversity: (childId: string, targetId: string) => void;
   calculateCumulativeGPA: (courses: SemesterCourseGrade[]) => number;
   calculateDDay: (targetDateStr: string) => number;
+  exportDataAsJSON: () => void;
+  importDataFromJSON: (jsonString: string) => boolean;
   resetToInitialData: () => void;
 }
 
@@ -42,6 +46,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
   const [activeTab, setActiveTabState] = useState<MainTabKey>('home');
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // 1. 초기 로컬스토리지 데이터 로드
   useEffect(() => {
     try {
       const savedData = localStorage.getItem(FAMILY_DATA_STORAGE_KEY);
@@ -63,14 +68,50 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
+  // 2. Cloud Firestore 실시간 리스너 연결 (가족 간 기기 자동 동기화)
+  useEffect(() => {
+    if (!db) return;
+    try {
+      const familyDocRef = doc(db, 'families', 'our-happy-family');
+      const unsubscribe = onSnapshot(familyDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const cloudData = docSnap.data() as FamilyAppData;
+          if (cloudData && cloudData.children && cloudData.children.length > 0) {
+            setFamilyData(cloudData);
+            localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(cloudData));
+          }
+        }
+      }, (error) => {
+        console.warn('Firestore sync listener notice (offline fallback active):', error.message);
+      });
+
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn('Firestore initialization notice:', e);
+    }
+  }, []);
+
   const setActiveTab = (tab: MainTabKey) => {
     setActiveTabState(tab);
     localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tab);
   };
 
+  // 로컬 & 클라우드 동시 영속화
   const saveFamilyData = (newData: FamilyAppData) => {
     setFamilyData(newData);
     localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(newData));
+
+    // Firestore 클라우드 백업 (온라인 시 실시간 반영)
+    if (db) {
+      try {
+        const familyDocRef = doc(db, 'families', 'our-happy-family');
+        setDoc(familyDocRef, newData, { merge: true }).catch((err) => {
+          console.warn('Firestore cloud sync notice:', err.message);
+        });
+      } catch (err) {
+        console.warn('Cloud sync error:', err);
+      }
+    }
   };
 
   const setTargetGPA = (gpa: number) => {
@@ -267,6 +308,41 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+  // JSON 백업 파일 다운로드 (내보내기)
+  const exportDataAsJSON = () => {
+    try {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, '');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `2028_대입전략_가족데이터_백업_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    } catch (e) {
+      console.error('Failed to export JSON data', e);
+      alert('데이터 내보내기 중 오류가 발생했습니다.');
+    }
+  };
+
+  // JSON 백업 파일 불러오기 (복원)
+  const importDataFromJSON = (jsonString: string): boolean => {
+    try {
+      const parsed = JSON.parse(jsonString) as FamilyAppData;
+      if (!parsed.children || !Array.isArray(parsed.children) || parsed.children.length === 0) {
+        alert('올바르지 않은 대입 전략 데이터 파일 형식입니다.');
+        return false;
+      }
+      saveFamilyData(parsed);
+      alert('가족 대입 전략 데이터가 성공적으로 복원되었습니다! 🎉');
+      return true;
+    } catch (e) {
+      console.error('Failed to import JSON data', e);
+      alert('파일을 읽는 도중 오류가 발생했습니다. 올바른 JSON 파일인지 확인해 주세요.');
+      return false;
+    }
+  };
+
   const resetToInitialData = () => {
     saveFamilyData(INITIAL_FAMILY_DATA);
     setTargetGPA(1.15);
@@ -296,6 +372,8 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
         deleteTargetUniversity,
         calculateCumulativeGPA,
         calculateDDay,
+        exportDataAsJSON,
+        importDataFromJSON,
         resetToInitialData,
       }}
     >
