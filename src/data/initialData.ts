@@ -71,9 +71,9 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
         },
       },
     ],
-    // 목표 대학 포트폴리오 (수시 6장 + 정시 가/나/다군)
+    // 목표 대학 포트폴리오 (수시 6장 2-2-2 황금 밸런스 + 정시 가/나/다군)
     targetUniversities: [
-      // 수시 6장
+      // 수시 6장 (소신 2장 + 적정 2장 + 안정 2장)
       {
         id: 'susi_cau_energy',
         type: 'susi',
@@ -102,31 +102,31 @@ export const INITIAL_CHILDREN: ChildProfile[] = [
         susiRequirements: { expectedCutoffGrade: 1.92, minimumCsatRequirement: { description: '수능최저 없음 (자기추천)', requiredSubjectsCount: 0, sumGradeLimit: 0 } },
       },
       {
-        id: 'susi_inha_koredu',
-        type: 'susi',
-        susiCategory: 'reach',
-        universityName: '인하대학교',
-        departmentName: '국어교육과',
-        admissionType: '종합',
-        susiRequirements: { expectedCutoffGrade: 1.60, minimumCsatRequirement: { description: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0 } },
-      },
-      {
-        id: 'susi_incheon_mathedu',
+        id: 'susi_ajou_korean',
         type: 'susi',
         susiCategory: 'target',
-        universityName: '국립인천대학교',
-        departmentName: '수학교육과',
+        universityName: '아주대학교',
+        departmentName: '국어국문학과',
         admissionType: '종합',
-        susiRequirements: { expectedCutoffGrade: 1.64, minimumCsatRequirement: { description: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0 } },
+        susiRequirements: { expectedCutoffGrade: 1.95, minimumCsatRequirement: { description: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0 } },
       },
       {
-        id: 'susi_incheon_cse',
+        id: 'susi_suwon_chemmaterial',
         type: 'susi',
-        susiCategory: 'target',
-        universityName: '국립인천대학교',
-        departmentName: '컴퓨터공학부',
-        admissionType: '교과',
-        susiRequirements: { expectedCutoffGrade: 1.86, minimumCsatRequirement: { description: '2개 영역 합 7 이내', requiredSubjectsCount: 2, sumGradeLimit: 7 } },
+        susiCategory: 'safe',
+        universityName: '수원대학교',
+        departmentName: '화학공학·신소재공학부',
+        admissionType: '종합',
+        susiRequirements: { expectedCutoffGrade: 2.60, minimumCsatRequirement: { description: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0 } },
+      },
+      {
+        id: 'susi_kyonggi_math',
+        type: 'susi',
+        susiCategory: 'safe',
+        universityName: '경기대학교',
+        departmentName: '수학과',
+        admissionType: '종합',
+        susiRequirements: { expectedCutoffGrade: 2.62, minimumCsatRequirement: { description: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0 } },
       },
 
       // 정시 가/나/다군

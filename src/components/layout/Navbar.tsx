@@ -13,6 +13,8 @@ import {
   TrendingUp,
   Award,
   FileText,
+  CloudUpload,
+  RefreshCw,
 } from 'lucide-react';
 
 interface TabItem {
@@ -37,9 +39,22 @@ export default function Navbar() {
     activeTab,
     setActiveTab,
     syncStatus,
-    forceSyncCloud,
+    pushLocalToCloud,
   } = useAdmissions();
   const { user, logout } = useAuth();
+  const [isSyncing, setIsSyncing] = React.useState(false);
+
+  const handleFullPush = async () => {
+    setIsSyncing(true);
+    try {
+      const res = await pushLocalToCloud();
+      alert(res.message);
+    } catch (e: any) {
+      alert('동기화 중 오류가 발생했습니다: ' + (e?.message || e));
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   return (
     <header className="w-full bg-cream border-b-2 border-navy sticky top-0 z-50 shadow-sm">
@@ -62,11 +77,20 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Right: Account & Logout */}
+          {/* Mobile Right: Full Sync & Account & Logout */}
           <div className="flex md:hidden items-center gap-1.5">
-            <span className="text-[10px] font-black text-navy px-2 py-1 bg-white rounded-xl border border-navy shadow-sm flex items-center gap-1">
+            <button
+              onClick={handleFullPush}
+              disabled={isSyncing}
+              className="p-1 px-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold text-[11px] border border-navy shadow-sm flex items-center gap-1 shrink-0 transition-all disabled:opacity-50"
+              title="클라우드로 현재 데이터 전체 전송"
+            >
+              <CloudUpload className={`w-3.5 h-3.5 ${isSyncing ? 'animate-bounce' : ''}`} />
+              <span>{isSyncing ? '전송중...' : '전체동기화'}</span>
+            </button>
+            <span className="text-[10px] font-black text-navy px-1.5 py-1 bg-white rounded-xl border border-navy shadow-sm flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 inline" />
-              <span>가족전용</span>
+              <span>가족</span>
             </span>
             <button
               onClick={logout}
@@ -104,8 +128,18 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop Right: Account Info & Logout */}
-        <div className="hidden md:flex items-center gap-2.5 shrink-0">
+        {/* Desktop Right: Full Sync Button & Account Info & Logout */}
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          <button
+            onClick={handleFullPush}
+            disabled={isSyncing}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:translate-x-0.5 active:translate-y-0.5 text-white rounded-2xl border-2 border-navy shadow-retro font-black text-xs transition-all disabled:opacity-50"
+            title="현재 내 화면의 모든 데이터(수시 6장 포트폴리오, 성적 등)를 클라우드로 전송합니다."
+          >
+            <CloudUpload className={`w-4 h-4 ${isSyncing ? 'animate-bounce' : ''}`} />
+            <span>{isSyncing ? '클라우드 전송 중...' : '⚡ 데이터 전체 동기화'}</span>
+          </button>
+
           <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-2xl border-2 border-navy shadow-sm">
             <div className="w-6 h-6 rounded-full bg-navy text-cream flex items-center justify-center font-bold text-xs">
               G
@@ -115,7 +149,7 @@ export default function Navbar() {
                 <span>가족 공용 DB</span>
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 inline" />
               </div>
-              <span className="text-[10px] text-navy-muted truncate max-w-[120px] block mt-0.5">
+              <span className="text-[10px] text-navy-muted truncate max-w-[110px] block mt-0.5">
                 {user?.email}
               </span>
             </div>

@@ -44,11 +44,12 @@ interface AdmissionsContextType {
   syncStatus: 'synced' | 'syncing' | 'offline' | 'error';
   lastSyncedAt: Date | null;
   forceSyncCloud: () => Promise<void>;
+  pushLocalToCloud: () => Promise<{ success: boolean; message: string }>;
 }
 
 const AdmissionsContext = createContext<AdmissionsContextType | undefined>(undefined);
 
-const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data';
+const FAMILY_DATA_STORAGE_KEY = 'admission_app_family_data_v3';
 const TARGET_GPA_STORAGE_KEY = 'admission_app_target_gpa';
 
 export function AdmissionsProvider({ children }: { children: React.ReactNode }) {
@@ -175,7 +176,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     };
   }, [syncToCloud]);
 
-  // 수동 강제 동기화 함수
+  // 수동 강제 동기화 (풀/가져오기) 함수
   const forceSyncCloud = useCallback(async () => {
     setSyncStatus('syncing');
     try {
@@ -200,6 +201,36 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
       setSyncStatus('synced');
     }
   }, [familyData, syncToCloud]);
+
+  // ⚡ 현재 내 화면의 모든 데이터를 클라우드 서버에 직접 푸시(덮어쓰기)하는 강력한 전체 동기화 함수
+  const pushLocalToCloud = useCallback(async (): Promise<{ success: boolean; message: string }> => {
+    setSyncStatus('syncing');
+    try {
+      if (!db) {
+        throw new Error('Firebase DB가 설정되지 않았습니다.');
+      }
+      const familyDocRef = doc(db, 'families', 'our-happy-family');
+      const dataWithTimestamp: FamilyAppData = {
+        ...familyData,
+        updatedAt: Date.now(),
+      };
+      await setDoc(familyDocRef, dataWithTimestamp, { merge: true });
+      localStorage.setItem(FAMILY_DATA_STORAGE_KEY, JSON.stringify(dataWithTimestamp));
+      setSyncStatus('synced');
+      setLastSyncedAt(new Date());
+      return {
+        success: true,
+        message: '현재 화면의 모든 입시 데이터(수시 6장 포트폴리오, 모의고사, 내신 성적 등)가 클라우드 서버에 성공적으로 전송되었습니다!\n\n이제 아내분과 가족 기기에서 앱을 새로고침하시면 100% 동일하게 반영됩니다.',
+      };
+    } catch (err: any) {
+      setSyncStatus('error');
+      console.error('Push to cloud failed:', err);
+      return {
+        success: false,
+        message: `클라우드 전송 실패: ${err?.message || err}\n\nFirebase Console에서 Firestore 보안 규칙(Rules)이 허용되어 있는지 확인해 주세요.`,
+      };
+    }
+  }, [familyData]);
 
   const setActiveTab = (tab: MainTabKey) => {
     setActiveTabState(tab);
@@ -509,6 +540,7 @@ export function AdmissionsProvider({ children }: { children: React.ReactNode }) 
     syncStatus,
     lastSyncedAt,
     forceSyncCloud,
+    pushLocalToCloud,
   };
 
   return (
