@@ -1948,7 +1948,292 @@ export const UNIVERSITY_ADMISSIONS_DB: UniversityData[] = [
     ],
   },
   // ==========================================
-  // 6. 주요 상위 대학 (서울대 / 연세대 / 고려대) - 6개 학과
+  // 6. 아주대학교 (AJOU UNIVERSITY) - 36개 전 학과 수록
+  // ==========================================
+  {
+    univId: 'ajou',
+    univName: '아주대학교',
+    shortName: '아주대',
+    badge: '수도권 명문 공대·의약 🏛️',
+    departments: [
+      // 1. 첨단ICT융합대학 & 소프트웨어융합대학 (SW / IT / 반도체 / 모빌리티)
+      {
+        deptName: '소프트웨어학과',
+        collegeName: '소프트웨어융합대학',
+        susiGyogwa: { expectedCut5: 1.65, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.80, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE/첨단융합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 86.5, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '전자공학과',
+        collegeName: '첨단ICT융합대학',
+        susiGyogwa: { expectedCut5: 1.50, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.70, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 86.2, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '지능형반도체공학과',
+        collegeName: '첨단ICT융합대학',
+        susiGyogwa: { expectedCut5: 1.52, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.72, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '첨단융합인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 89.5, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '미래모빌리티공학과',
+        collegeName: '첨단ICT융합대학',
+        susiGyogwa: { expectedCut5: 1.60, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.78, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '첨단융합인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 86.3, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '사이버보안학과',
+        collegeName: '소프트웨어융합대학',
+        susiGyogwa: { expectedCut5: 1.58, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.75, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 90.3, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '인공지능융합학과',
+        collegeName: '소프트웨어융합대학',
+        susiGyogwa: { expectedCut5: 1.55, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.75, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE/첨단융합', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 87.0, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '디지털미디어학과',
+        collegeName: '소프트웨어융합대학',
+        susiGyogwa: { expectedCut5: 1.68, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.8, subjectWeights: { korean: 25, math: 30, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '국방디지털융합학과',
+        collegeName: '소프트웨어융합대학',
+        susiGyogwa: { expectedCut5: 1.70, minCsatDesc: '공군 장학생 수능최저 적용', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '공군 장학생 선발', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '국방IT우수인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 83.7, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+
+      // 2. 공과대학 (기계 / 화공 / 신소재 / 산업 / 응용화학 / 환경안전 / 건축)
+      {
+        deptName: '기계공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.55, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.75, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 86.2, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '화학공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.52, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.72, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 84.7, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '첨단신소재공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.54, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.72, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '첨단융합인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 90.5, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '산업공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.62, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.80, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.7, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '응용화학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.58, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.75, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '첨단융합인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.7, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '환경안전공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.65, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.2, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '건설시스템공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.72, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.90, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 84.7, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '교통시스템공학과',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.70, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.88, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 83.0, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '건축학과 (5년제)',
+        collegeName: '공과대학',
+        susiGyogwa: { expectedCut5: 1.75, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.90, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 86.2, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+
+      // 3. 첨단바이오융합대학
+      {
+        deptName: '첨단바이오융합대학 (바이오신약/혁신신약)',
+        collegeName: '첨단바이오융합대학',
+        susiGyogwa: { expectedCut5: 1.52, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.72, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '첨단융합인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 83.8, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+
+      // 4. 의약 / 간호
+      {
+        deptName: '의학과',
+        collegeName: '의과대학',
+        susiGyogwa: { expectedCut5: 1.00, minCsatDesc: '국수영탐(2) 3개 1등급 (과탐2평)', requiredSubjectsCount: 3, sumGradeLimit: 3, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.05, minCsatDesc: '국수영탐(2) 3개 1등급', requiredSubjectsCount: 3, sumGradeLimit: 3, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'ga', percentileCut: 98.8, subjectWeights: { korean: 20, math: 40, inquiry: 30, english: 10, history: 0 } },
+      },
+      {
+        deptName: '약학과',
+        collegeName: '약학대학',
+        susiGyogwa: { expectedCut5: 1.10, minCsatDesc: '국수영탐(1) 3개 영역 합 5 이내', requiredSubjectsCount: 3, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.20, minCsatDesc: '국수영탐(1) 3개 영역 합 5 이내', requiredSubjectsCount: 3, sumGradeLimit: 5, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 94.5, subjectWeights: { korean: 20, math: 40, inquiry: 30, english: 10, history: 0 } },
+      },
+      {
+        deptName: '간호학과',
+        collegeName: '간호대학',
+        susiGyogwa: { expectedCut5: 1.45, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.65, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'ga', percentileCut: 86.8, subjectWeights: { korean: 25, math: 30, inquiry: 30, english: 15, history: 0 } },
+      },
+
+      // 5. 경영대학 (금융공학 / 경영 / e-비즈니스)
+      {
+        deptName: '금융공학과',
+        collegeName: '경영대학',
+        susiGyogwa: { expectedCut5: 1.68, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: '첨단융합인재', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.8, subjectWeights: { korean: 25, math: 35, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '경영학과',
+        collegeName: '경영대학',
+        susiGyogwa: { expectedCut5: 1.68, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.88, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.7, subjectWeights: { korean: 30, math: 30, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '경영인텔리전스학과',
+        collegeName: '경영대학',
+        susiGyogwa: { expectedCut5: 1.70, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.90, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 84.8, subjectWeights: { korean: 30, math: 30, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 6. 자연과학대학 (화학 / 수학 / 물리 / 생명)
+      {
+        deptName: '화학과',
+        collegeName: '자연과학대학',
+        susiGyogwa: { expectedCut5: 1.55, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.75, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.5, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '수학과',
+        collegeName: '자연과학대학',
+        susiGyogwa: { expectedCut5: 1.65, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.7, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '물리학과',
+        collegeName: '자연과학대학',
+        susiGyogwa: { expectedCut5: 1.68, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.0, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '생명과학과',
+        collegeName: '자연과학대학',
+        susiGyogwa: { expectedCut5: 1.50, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.70, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 82.2, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+
+      // 7. 사회과학대학 & 인문대학
+      {
+        deptName: '심리학과',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 1.50, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.70, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 84.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '문화콘텐츠학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 1.65, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.80, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 83.3, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '경제정치사회융합학부',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 1.72, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.90, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 81.7, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '행정학과',
+        collegeName: '사회과학대학',
+        susiGyogwa: { expectedCut5: 1.75, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.92, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 82.7, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '국어국문학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 1.80, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.95, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 82.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '영어영문학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 1.75, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.92, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 84.5, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+      {
+        deptName: '사학과',
+        collegeName: '인문대학',
+        susiGyogwa: { expectedCut5: 1.85, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.98, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 83.3, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+
+      // 8. 다산학부대학 (자유전공)
+      {
+        deptName: '자유전공학부 (자연)',
+        collegeName: '다산학부대학',
+        susiGyogwa: { expectedCut5: 1.50, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.70, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 85.8, subjectWeights: { korean: 20, math: 35, inquiry: 30, english: 15, history: 0 } },
+      },
+      {
+        deptName: '자유전공학부 (인문)',
+        collegeName: '다산학부대학',
+        susiGyogwa: { expectedCut5: 1.65, minCsatDesc: '국수영탐(1) 중 2개 합 5 이내', requiredSubjectsCount: 2, sumGradeLimit: 5, susiCategory: 'reach', admissionType: '교과' },
+        susiJonghap: { expectedCut5: 1.85, minCsatDesc: '수능최저 없음', requiredSubjectsCount: 0, sumGradeLimit: 0, susiCategory: 'reach', typeName: 'ACE전형', admissionType: '종합' },
+        jeongsi: { group: 'da', percentileCut: 88.8, subjectWeights: { korean: 35, math: 25, inquiry: 25, english: 15, history: 0 } },
+      },
+    ],
+  },
+  // ==========================================
+  // 7. 주요 상위 대학 (서울대 / 연세대 / 고려대) - 6개 학과
   // ==========================================
   {
     univId: 'sky',
